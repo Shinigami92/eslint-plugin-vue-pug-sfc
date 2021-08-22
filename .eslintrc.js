@@ -29,7 +29,7 @@ module.exports = defineConfig({
 
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
-    '@typescript-eslint/indent': ['error', 'tab', { SwitchCase: 1, ignoredNodes: ['MemberExpression'] }],
+    '@typescript-eslint/indent': ['error', 2, { SwitchCase: 1, ignoredNodes: ['MemberExpression'] }],
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/member-ordering': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
