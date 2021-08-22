@@ -8,6 +8,7 @@
     "build": "tsc",
     "format": "prettier --write .",
     "lint": "eslint .",
+    "test": "jest",
     "prepublishOnly": "yarn clean && yarn install && yarn build"
   },
   "keywords": [
@@ -36,6 +37,7 @@
     "tsconfig.json"
   ],
   "devDependencies": {
+    "@types/eslint": "~7.28.0",
     "@types/node": "~16.7.1",
     "@typescript-eslint/eslint-plugin": "~4.29.2",
     "@typescript-eslint/parser": "~4.29.2",
@@ -43,8 +45,10 @@
     "eslint-config-prettier": "~8.3.0",
     "eslint-define-config": "~1.0.9",
     "eslint-plugin-prettier": "~3.4.1",
+    "jest": "~27.0.6",
     "prettier": "2.3.2",
     "prettier-plugin-organize-imports": "2.3.3",
+    "ts-jest": "~27.0.5",
     "typescript": "~4.3.5"
   }
 }
