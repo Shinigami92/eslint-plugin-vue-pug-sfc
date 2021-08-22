@@ -36,6 +36,9 @@
     "src",
     "tsconfig.json"
   ],
+  "dependencies": {
+    "vue-eslint-parser": "~7.10.0"
+  },
   "devDependencies": {
     "@types/eslint": "~7.28.0",
     "@types/node": "~16.7.1",

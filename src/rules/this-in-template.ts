@@ -16,7 +16,9 @@ export default {
     ]
   },
   create(context) {
-    console.log('create', context);
+    console.log('context', context);
+    console.log('context.getFilename()', context.getFilename());
+    console.log('context.getSourceCode()', context.getSourceCode());
 
     return {};
   }
