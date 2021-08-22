@@ -1,4 +1,5 @@
 import type { Rule } from 'eslint';
+import { defineTemplateBodyVisitor, ParserServices } from '../utils';
 
 export default {
   meta: {
@@ -16,10 +17,30 @@ export default {
     ]
   },
   create(context) {
-    console.log('context', context);
-    console.log('context.getFilename()', context.getFilename());
-    console.log('context.getSourceCode()', context.getSourceCode());
+    const option: 'always' | 'never' = context.options[0] !== 'always' ? 'never' : 'always';
+    const parserServices: ParserServices = context.parserServices;
+    const tokens: any[] = parserServices.getTemplateBodyTokenStore?.()._tokens ?? [];
 
-    return {};
+    // console.log(parserServices);
+    // console.log(tokens);
+    for (const token of tokens) {
+      if ((token.value as string)?.includes('this')) {
+        // console.log(token);
+        if (option === 'never') {
+          const loc = token.loc;
+          context.report({
+            loc: {
+              line: loc.start.line,
+              column: loc.start.column,
+              start: loc.start,
+              end: loc.end
+            },
+            message: "Unexpected usage of 'this'."
+          });
+        }
+      }
+    }
+
+    return defineTemplateBodyVisitor(context, {});
   }
 } as Rule.RuleModule;
