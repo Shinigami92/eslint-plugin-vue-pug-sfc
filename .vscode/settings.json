@@ -1,0 +1,9 @@
+{
+  "cSpell.words": [],
+  "eslint.validate": ["javascript", "typescript"],
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

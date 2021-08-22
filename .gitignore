@@ -22,6 +22,8 @@ lib-cov
 coverage
 *.lcov
 
+junit.xml
+
 # nyc test coverage
 .nyc_output
 
@@ -70,35 +72,27 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
 
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-
-# Next.js build output
+# next.js build output
 .next
 
-# Nuxt.js build / generate output
-.nuxt
+# build
 dist
 
-# Gatsby files
-.cache/
-# Comment in the public line in if your project uses Gatsby and *not* Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
+# docs
+.temp
+.cache
 
-# vuepress build output
-.vuepress/dist
+# yarn no zero-install
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
 
-# Serverless directories
-.serverless/
+# benchmarking
+benchmark/
+processed-*.txt
 
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
