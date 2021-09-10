@@ -1870,7 +1870,7 @@ __metadata:
     prettier-plugin-organize-imports: 2.3.3
     ts-jest: ~27.0.5
     typescript: ~4.3.5
-    vue-eslint-parser: ~7.10.0
+    vue-eslint-parser: ~7.11.0
   languageName: unknown
   linkType: soft
 
@@ -4690,9 +4690,9 @@ typescript@~4.3.5:
   languageName: node
   linkType: hard
 
-"vue-eslint-parser@npm:~7.10.0":
-  version: 7.10.0
-  resolution: "vue-eslint-parser@npm:7.10.0"
+"vue-eslint-parser@npm:~7.11.0":
+  version: 7.11.0
+  resolution: "vue-eslint-parser@npm:7.11.0"
   dependencies:
     debug: ^4.1.1
     eslint-scope: ^5.1.1
@@ -4703,7 +4703,7 @@ typescript@~4.3.5:
     semver: ^6.3.0
   peerDependencies:
     eslint: ">=5.0.0"
-  checksum: 41866f79517ede12b818a66ad07201b8231101dbb40f632cd2bdf117715dd0441275b11025dae1794cf941f2fe9739e5db52ae4516e491c35b926c276ab29890
+  checksum: 16d8bd31dacd9e5d3cd0fc82354c0cfdb42ee3d2e0c3aeda385b82aa48a59a440de3dc18521ea6535f4b00a54eb248d49a6ea2323fbae0d3c1afa0a00c63fe6c
   languageName: node
   linkType: hard
 
