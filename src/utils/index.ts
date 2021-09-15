@@ -55,5 +55,32 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   const pugTokens: lex.Token[] = lex(pugText);
   // console.debug(pugTokens);
 
+  let currentLength: number = pugTemplateElement.startTag.range[1];
+  for (let index: number = 0; index < pugTokens.length; index++) {
+    const token: lex.Token = pugTokens[index]!;
+
+    const start: number = currentLength;
+    const end: number = currentLength + tokenLength(token);
+    // @ts-expect-error: Add range to token
+    token.range = [start, end];
+
+    currentLength = end;
+  }
+
   return { text: pugText, tokens: pugTokens };
+}
+
+function tokenLength(token: lex.Token): number {
+  let length: number = 0;
+  if ('val' in token) {
+    if (typeof token.val === 'string') {
+      if ('name' in token) {
+        length += token.name.length + 1;
+      }
+
+      length += token.val.length;
+    }
+  }
+
+  return length;
 }
