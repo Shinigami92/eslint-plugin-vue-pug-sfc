@@ -220,7 +220,7 @@ div {{ ${suggestionPrefix(prefix, options)}foo.bar() }}
 div(:class="${prefix}foo")
 </template><!-- ${comment} -->`,
       output: `<template lang="pug">
-div( :class="${suggestionPrefix(prefix, options)}foo")
+div(:class="${suggestionPrefix(prefix, options)}foo")
 </template><!-- ${comment} -->`,
       errors: [{ message, type }],
       options
