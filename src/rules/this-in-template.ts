@@ -29,11 +29,21 @@ export default {
     }
 
     const option: 'always' | 'never' = context.options[0] !== 'always' ? 'never' : 'always';
+    console.log('option:', option);
 
     for (const token of tokens) {
-      if ('val' in token && typeof token.val === 'string' && token.val.includes('this')) {
-        // console.log(token);
+      if ('val' in token && typeof token.val === 'string' && /this\.(?!class)/.test(token.val)) {
+        console.log(token);
+
         if (option === 'never') {
+          /*
+           * TODO: Allow stuff like:
+           *
+           * - div(v-for="x of xs") {{this.x}}
+           * - div(v-for="x of xs") {{this.x()}}
+           * - div(v-for="x of xs") {{this.x.y()}}
+           * - div(v-for="x of xs") {{this.x['foo']}}
+           */
           const loc: lex.Loc = token.loc;
           context.report({
             loc: {

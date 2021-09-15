@@ -50,10 +50,10 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   const pugText: string = context
     .getSourceCode()
     .text.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
-  console.debug(pugText);
+  // console.debug(pugText);
 
   const pugTokens: lex.Token[] = lex(pugText);
-  console.debug(pugTokens);
+  // console.debug(pugTokens);
 
   return { text: pugText, tokens: pugTokens };
 }
