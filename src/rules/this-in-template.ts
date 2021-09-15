@@ -1,6 +1,7 @@
 import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
+import { previousTagToken } from '../utils/pug-utils';
 
 export default {
   meta: {
@@ -31,19 +32,29 @@ export default {
     const option: 'always' | 'never' = context.options[0] !== 'always' ? 'never' : 'always';
     console.log('option:', option);
 
-    for (const token of tokens) {
+    for (let index: number = 0; index < tokens.length; index++) {
+      const token: lex.Token = tokens[index]!;
+
       if ('val' in token && typeof token.val === 'string' && /this\.(?!class)/.test(token.val)) {
         console.log(token);
 
         if (option === 'never') {
-          /*
-           * TODO: Allow stuff like:
-           *
-           * - div(v-for="x of xs") {{this.x}}
-           * - div(v-for="x of xs") {{this.x()}}
-           * - div(v-for="x of xs") {{this.x.y()}}
-           * - div(v-for="x of xs") {{this.x['foo']}}
-           */
+          const lastTagToken: lex.TagToken | undefined = previousTagToken(tokens, index);
+          if (lastTagToken) {
+            const lastTagTokenIndex: number = tokens.indexOf(lastTagToken);
+            const vForAttributeToken: lex.AttributeToken | undefined = tokens
+              .slice(lastTagTokenIndex, index)
+              .find((t) => t.type === 'attribute' && t.name === 'v-for') as lex.AttributeToken | undefined;
+            if (typeof vForAttributeToken?.val === 'string') {
+              const ofLoopVariableName: string =
+                vForAttributeToken.val.slice(1, -1).trim().split(' of')[0]?.trim() ?? '';
+
+              if (token.val.includes(`this.${ofLoopVariableName}`)) {
+                continue;
+              }
+            }
+          }
+
           const loc: lex.Loc = token.loc;
           context.report({
             loc: {
