@@ -1,17 +1,62 @@
 import type { Rule } from 'eslint';
 import * as path from 'path';
+import type { VDocumentFragment, VElement } from 'vue-eslint-parser/ast';
 
 export interface TemplateListener {
   [key: string]: ((node: any) => void) | undefined;
 }
 
 export interface ParserServices {
-  defineTemplateBodyVisitor?: (
-    templateBodyVisitor: TemplateListener,
-    scriptVisitor?: Rule.RuleListener,
+  /**
+   * Define handlers to traverse the template body.
+   * @param templateBodyVisitor The template body handlers.
+   * @param scriptVisitor The script handlers. This is optional.
+   * @param options The options. This is optional.
+   */
+  defineTemplateBodyVisitor(
+    templateBodyVisitor: { [key: string]: (...args: any) => void },
+    scriptVisitor?: { [key: string]: (...args: any) => void },
     options?: { templateBodyTriggerSelector: 'Program' | 'Program:exit' }
-  ) => Rule.RuleListener;
-  getTemplateBodyTokenStore?(): { _tokens: any[] | undefined };
+  ): any;
+
+  /**
+   * Define handlers to traverse the document.
+   * @param documentVisitor The document handlers.
+   * @param options The options. This is optional.
+   */
+  defineDocumentVisitor(
+    documentVisitor: { [key: string]: (...args: any) => void },
+    options?: { triggerSelector: 'Program' | 'Program:exit' }
+  ): any;
+
+  /**
+   * Define handlers to traverse custom blocks.
+   * @param context The rule context.
+   * @param parser The custom parser.
+   * @param rule The custom block rule definition
+   * @param scriptVisitor The script handlers. This is optional.
+   */
+  defineCustomBlocksVisitor(
+    context: Rule.RuleContext,
+    parser: any,
+    rule: {
+      target: string | string[] | ((lang: string | null, customBlock: VElement) => boolean);
+      create: any;
+    },
+    scriptVisitor: { [key: string]: (...args: any) => void }
+  ): { [key: string]: (...args: any) => void };
+
+  /**
+   * Get the token store of the template body.
+   * @returns The token store of template body.
+   */
+  getTemplateBodyTokenStore(): any;
+
+  /**
+   * Get the root document fragment.
+   * @returns The root document fragment.
+   */
+  getDocumentFragment(): VDocumentFragment | null;
 }
 
 /**
@@ -20,17 +65,9 @@ export interface ParserServices {
  * this generates a warning.
  *
  * @param context The rule context to use parser services.
- * @param templateBodyVisitor The visitor to traverse the template body.
- * @param scriptVisitor The visitor to traverse the script.
- * @param options The options.
  * @returns The merged visitor.
  */
-export function defineTemplateBodyVisitor(
-  context: Rule.RuleContext,
-  templateBodyVisitor: TemplateListener,
-  scriptVisitor?: Rule.RuleListener,
-  options?: { templateBodyTriggerSelector: 'Program' | 'Program:exit' }
-): Rule.RuleListener {
+export function checkIfVueFile(context: Rule.RuleContext): Rule.RuleListener {
   const parserServices: ParserServices = context.parserServices;
   if (parserServices.defineTemplateBodyVisitor == null) {
     const filename: string = context.getFilename();
@@ -43,5 +80,6 @@ export function defineTemplateBodyVisitor(
     }
     return {};
   }
-  return parserServices.defineTemplateBodyVisitor(templateBodyVisitor, scriptVisitor, options);
+
+  return {};
 }
