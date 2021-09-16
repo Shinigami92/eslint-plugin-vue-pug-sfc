@@ -25,13 +25,24 @@ export interface ParsePugContentReturn {
   tokens: lex.Token[];
 }
 
+const CACHED_PUG_CONTENT_RETURN_CONTENT_MAP: Map<string, ParsePugContentReturn> = new Map();
+
 export function parsePugContent(context: Rule.RuleContext): ParsePugContentReturn {
+  const cacheKey: string = context.getSourceCode().text;
+  const cachedValue: ParsePugContentReturn | undefined = CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.get(cacheKey);
+  if (cachedValue) {
+    return cachedValue;
+  }
+
+  const result: ParsePugContentReturn = { text: '', tokens: [] };
+
   const parserServices: ParserServices = context.parserServices;
 
   // Parse the pug content to tokens
   const df: AST.VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
   if (!df) {
-    return { text: '', tokens: [] };
+    CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
+    return result;
   }
 
   const pugTemplateElement: AST.VElement | undefined = df.children.find(
@@ -44,7 +55,8 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   ) as AST.VElement | undefined;
 
   if (!pugTemplateElement) {
-    return { text: '', tokens: [] };
+    CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
+    return result;
   }
 
   const pugText: string = context
@@ -67,7 +79,10 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
     currentLength = end;
   }
 
-  return { text: pugText, tokens: pugTokens };
+  result.text = pugText;
+  result.tokens = pugTokens;
+  CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
+  return result;
 }
 
 function tokenLength(token: lex.Token): number {
