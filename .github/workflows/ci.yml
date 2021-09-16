@@ -62,15 +62,8 @@ jobs:
       - name: Build
         run: yarn build
 
-      # - name: Test
-      #   run: yarn jest --ci --silent --reporters=default --reporters=jest-junit
-
-      # - name: Upload test artifact
-      #   uses: actions/upload-artifact@v2
-      #   if: ${{ always() }}
-      #   with:
-      #     name: JUnit_${{ matrix.os }}_${{ matrix.node }}_${{ github.sha }}
-      #     path: junit.xml
+      - name: Test
+        run: yarn test --silent
 
   lint:
     runs-on: ubuntu-latest
