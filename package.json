@@ -52,7 +52,8 @@
     "eslint-define-config": "~1.0.9",
     "eslint-plugin-prettier": "~4.0.0",
     "jest": "~27.2.0",
-    "prettier": "2.4.0",
+    "np": "~7.5.0",
+    "prettier": "2.4.1",
     "prettier-plugin-organize-imports": "2.3.3",
     "ts-jest": "~27.0.5",
     "typescript": "~4.4.3"
