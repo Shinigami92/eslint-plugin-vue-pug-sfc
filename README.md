@@ -1,3 +1,8 @@
+<h1 align="center">
+:warning: THIS PROJECT IS CURRENTLY IN ALPHA :warning:<br>
+Use fixer at your own risk, could damage your code!
+</h1>
+
 <p align="center">
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://eslint.org" target="_blank">
