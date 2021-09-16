@@ -796,7 +796,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:~7.28.0":
+"@types/eslint-scope@npm:~3.7.1":
+  version: 3.7.1
+  resolution: "@types/eslint-scope@npm:3.7.1"
+  dependencies:
+    "@types/eslint": "*"
+    "@types/estree": "*"
+  checksum: 4271c9adad19ad8a1d23062d9020468a51c7f81594b12b8e68f7d460c09e14d57cae3e82b077c402766369c0c17e2de72da72c405fa465d18a46c0b14ce92530
+  languageName: node
+  linkType: hard
+
+"@types/eslint-visitor-keys@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "@types/eslint-visitor-keys@npm:1.0.0"
+  checksum: a90f0b023e357a59ea04268e0387cfb0ea06703068cc48fe2ca97fa158bcf3c51a6611a56bdbdf763e3451150b92bba3fb5d0b689fc55f856cae8555ec366a63
+  languageName: node
+  linkType: hard
+
+"@types/eslint@npm:*, @types/eslint@npm:~7.28.0":
   version: 7.28.0
   resolution: "@types/eslint@npm:7.28.0"
   dependencies:
@@ -1895,6 +1912,8 @@ __metadata:
   resolution: "eslint-plugin-vue-pug-sfc@workspace:."
   dependencies:
     "@types/eslint": ~7.28.0
+    "@types/eslint-scope": ~3.7.1
+    "@types/eslint-visitor-keys": ~1.0.0
     "@types/node": ~16.9.1
     "@typescript-eslint/eslint-plugin": ~4.31.1
     "@typescript-eslint/parser": ~4.31.1
