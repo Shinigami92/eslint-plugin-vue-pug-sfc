@@ -69,11 +69,21 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   let end: number = start;
   for (let index: number = 0; index < pugTokens.length; index++) {
     const token: lex.Token = pugTokens[index]!;
+    const previousToken: lex.Token | undefined = pugTokens[index - 1];
 
-    // Take \n into account
-    if (index > 1 && token.loc.start.column !== pugTokens[index - 1]!.loc.end.column) {
-      start += 1;
-      end += 1;
+    if (previousToken) {
+      if (token.loc.start.line !== previousToken.loc.end.line) {
+        // Take `\n` into account
+        start += 1;
+        end += 1;
+      } else {
+        const diff: number = token.loc.start.column - previousToken.loc.end.column;
+        if (diff > 0) {
+          // Take attribute separators and such into account
+          start += diff;
+          end += diff;
+        }
+      }
     }
 
     const length: number = tokenLength(token);
