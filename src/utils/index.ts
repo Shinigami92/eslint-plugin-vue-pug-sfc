@@ -91,7 +91,7 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
       }
     }
 
-    const length: number = tokenLength(token);
+    const length: number = tokenLength(token, previousToken);
     end += length;
     // @ts-expect-error: Add range to token
     token.range = [start, end];
@@ -104,7 +104,13 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   return result;
 }
 
-export function tokenLength(token: lex.Token): number {
+export function tokenLength(token: lex.Token, previousToken?: lex.Token): number {
+  if (token.type === 'newline') {
+    const length: number = token.loc.end.column - token.loc.start.column;
+    const diff: number = token.loc.start.line - (previousToken?.loc.end.line ?? 1);
+    return length + (diff - 1);
+  }
+
   if (token.loc.start.line === token.loc.end.line) {
     return token.loc.end.column - token.loc.start.column;
   }
