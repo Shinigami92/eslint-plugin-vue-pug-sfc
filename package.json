@@ -46,7 +46,7 @@
     "@types/eslint": "~7.28.0",
     "@types/eslint-scope": "~3.7.1",
     "@types/eslint-visitor-keys": "~1.0.0",
-    "@types/node": "~16.9.1",
+    "@types/node": "~16.9.2",
     "@typescript-eslint/eslint-plugin": "~4.31.1",
     "@typescript-eslint/parser": "~4.31.1",
     "eslint": "~7.32.0",
