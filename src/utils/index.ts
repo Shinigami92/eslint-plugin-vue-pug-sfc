@@ -85,17 +85,11 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   return result;
 }
 
-function tokenLength(token: lex.Token): number {
-  let length: number = 0;
-  if ('val' in token) {
-    if (typeof token.val === 'string') {
-      if ('name' in token) {
-        length += token.name.length + 1;
-      }
-
-      length += token.val.length;
-    }
+export function tokenLength(token: lex.Token): number {
+  if (token.loc.start.line === token.loc.end.line) {
+    return token.loc.end.column - token.loc.start.column;
   }
 
-  return length;
+  console.debug('Please report token:', JSON.stringify(token));
+  return 0;
 }
