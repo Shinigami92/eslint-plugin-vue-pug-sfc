@@ -59,14 +59,19 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
     return result;
   }
 
-  const pugText: string = context
-    .getSourceCode()
-    .text.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
+  const rawText: string = cacheKey; // Same as `context.getSourceCode().text`
+  const pugText: string = rawText.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
 
   const pugTokens: lex.Token[] = lex(pugText);
 
   let start: number = pugTemplateElement.startTag.range[1];
+
+  if (pugTokens[0]?.type === 'newline') {
+    start++;
+  }
+
   let end: number = start;
+
   for (let index: number = 0; index < pugTokens.length; index++) {
     const token: lex.Token = pugTokens[index]!;
     const previousToken: lex.Token | undefined = pugTokens[index - 1];
