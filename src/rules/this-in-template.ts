@@ -30,14 +30,11 @@ export default {
     }
 
     const option: 'always' | 'never' = context.options[0] !== 'always' ? 'never' : 'always';
-    // console.log('option:', option);
 
     for (let index: number = 0; index < tokens.length; index++) {
       const token: lex.Token = tokens[index]!;
 
       if ('val' in token && typeof token.val === 'string' && /this\.(?!class)/.test(token.val)) {
-        // console.log(token);
-
         if (option === 'never') {
           const lastTagToken: lex.TagToken | undefined = previousTagToken(tokens, index);
           if (lastTagToken) {
@@ -70,7 +67,7 @@ export default {
               const textSlice: string = context.getSourceCode().text.slice(range[0], range[1]);
               const rangeOffset: number = textSlice.indexOf('this.');
               // TODO: Fix `div {{ this['xs'] }}` to `div {{ xs }}`
-              return fixer.removeRange([range[0] + rangeOffset, range[0] + rangeOffset + 5]);
+              return fixer.removeRange([range[0] + rangeOffset, range[0] + rangeOffset + 'this.'.length]);
             },
             message: "Unexpected usage of 'this'."
           });
