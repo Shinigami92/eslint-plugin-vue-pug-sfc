@@ -78,23 +78,28 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
 
     if (previousToken) {
       if (token.loc.start.line !== previousToken.loc.end.line) {
-        // Take `\n` into account
-        start += 1;
-        end += 1;
+        // Take `\n` and attribute wrapping into account
+        start += token.loc.start.column;
+        if (previousToken.type === 'attribute') {
+          start++;
+        }
       } else {
         const diff: number = token.loc.start.column - previousToken.loc.end.column;
-        if (diff > 0) {
-          // Take attribute separators and such into account
-          start += diff;
-          end += diff;
-        }
+
+        // Take attribute separators and such into account
+        start += diff;
       }
     }
+
+    end = start;
 
     const length: number = tokenLength(token, previousToken);
     end += length;
     // @ts-expect-error: Add range to token
     token.range = [start, end];
+    // // @ts-expect-error: Add range to token
+    // console.log(token.type, token.range, rawText.slice(start, end));
+
     start = end;
   }
 
