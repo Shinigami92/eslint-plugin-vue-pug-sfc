@@ -50,6 +50,7 @@ This plugin adds support for the Pug language to Eslint in `.vue` files.
 - [Getting started](#getting-started)
 - [Usage](#usage)
 - [Motivation](#motivation)
+- [Current Project Process](#current-project-process)
 
 ## Getting started
 
@@ -69,6 +70,17 @@ In `eslint` config:
   }
 }
 ```
+
+## Current Project Process
+
+- [ ] Stabilizing the `range` calculation of pug tokens [src/utils/index#parsePugContent](https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/blob/main/src/utils/index.ts#L67)
+- [ ] Full support of `vue-pug-sfc/this-in-template`
+  - [x] `never`
+    - [x] Detecting `this.` _range needs to be adjusted_
+    - [ ] Auto-fix `this.` _not stable yet_
+    - [ ] Detect more complex code like `this[`
+  - [ ] `always`
+    - [ ] Detect missing `this`
 
 ## Motivation
 
