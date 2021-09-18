@@ -76,8 +76,8 @@ In `eslint` config:
 - [ ] Stabilizing the `range` calculation of pug tokens [src/utils/index#parsePugContent](https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/blob/main/src/utils/index.ts#L67)
 - [ ] Full support of `vue-pug-sfc/this-in-template`
   - [x] `never`
-    - [x] Detecting `this.` _range needs to be adjusted_
-    - [ ] Auto-fix `this.` _not stable yet_
+    - [x] Detecting `this.`
+    - [x] Auto-fix `this.` _stable? if not please open issue!_
     - [ ] Detect more complex code like `this[`
   - [ ] `always`
     - [ ] Detect missing `this`

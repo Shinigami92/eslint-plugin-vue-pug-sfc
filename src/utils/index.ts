@@ -91,13 +91,10 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
       }
     }
 
-    end = start;
-
-    const length: number = tokenLength(token, previousToken);
-    end += length;
+    end = start + tokenLength(token, previousToken);
     // @ts-expect-error: Add range to token
     token.range = [start, end];
-    // // @ts-expect-error: Add range to token
+    //// @ts-expect-error: Access range
     // console.log(token.type, token.range, rawText.slice(start, end));
 
     start = end;

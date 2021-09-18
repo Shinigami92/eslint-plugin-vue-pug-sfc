@@ -53,21 +53,32 @@ export default {
           }
 
           const loc: lex.Loc = token.loc;
+
+          // @ts-expect-error: Access range from token
+          const range: [number, number] = token.range;
+          const textSlice: string = context.getSourceCode().text.slice(range[0], range[1]);
+          const columnOffset: number = textSlice.indexOf('this.');
+
+          const columnStart: number = loc.start.column - 1 + columnOffset;
+          const columnEnd: number = columnStart + 'this.'.length;
+
           context.report({
             node: { type: 'ThisExpression' },
             loc: {
               line: loc.start.line,
-              column: loc.start.column,
-              start: loc.start,
-              end: loc.end
+              column: loc.start.column - 1,
+              start: {
+                line: loc.start.line,
+                column: columnStart
+              },
+              end: {
+                line: loc.end.line,
+                column: columnEnd
+              }
             },
             fix(fixer) {
-              // @ts-expect-error: Access range from token
-              const range: [number, number] = token.range;
-              const textSlice: string = context.getSourceCode().text.slice(range[0], range[1]);
-              const rangeOffset: number = textSlice.indexOf('this.');
               // TODO: Fix `div {{ this['xs'] }}` to `div {{ xs }}`
-              return fixer.removeRange([range[0] + rangeOffset, range[0] + rangeOffset + 'this.'.length]);
+              return fixer.removeRange([range[0] + columnOffset, range[0] + columnOffset + 'this.'.length]);
             },
             message: "Unexpected usage of 'this'."
           });
