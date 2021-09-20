@@ -1,4 +1,4 @@
-export default {
+export = {
   parser: require.resolve('vue-eslint-parser'),
   parserOptions: {
     ecmaVersion: 2020,

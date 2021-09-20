@@ -70,6 +70,14 @@ In `eslint` config:
 }
 ```
 
+or via `extends`:
+
+```jsonc
+{
+  "extends": ["plugin:vue-pug-sfc/recommended"]
+}
+```
+
 ## Motivation
 
 - https://github.com/vuejs/eslint-plugin-vue/issues/640

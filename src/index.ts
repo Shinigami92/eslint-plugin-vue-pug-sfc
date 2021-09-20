@@ -1,17 +1,13 @@
-import base from './configs/base';
-import essential from './configs/essential';
-import recommended from './configs/recommended';
-import stronglyRecommended from './configs/strongly-recommended';
 import processor from './processor';
 import rules from './rules';
 
 export = {
   rules,
   configs: {
-    base,
-    essential,
-    recommended,
-    'strongly-recommended': stronglyRecommended
+    base: require('./configs/base'),
+    essential: require('./configs/essential'),
+    recommended: require('./configs/recommended'),
+    'strongly-recommended': require('./configs/strongly-recommended')
   },
   processors: {
     '.vue': processor
