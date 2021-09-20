@@ -87,6 +87,7 @@ export default {
             message: "Unexpected usage of 'this'."
           });
         } else {
+          // TODO: Add support for option `always`
           console.warn(
             '[vue-pug-sfc] this-in-template option always is not supported yet.' +
               ' Please comment in https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6 and ask for support.'

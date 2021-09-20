@@ -22,6 +22,7 @@ div
     ...createInvalidTests('this?.', [], "Unexpected usage of 'this'.", 'ThisExpression'),
     ...createInvalidTests('this.', ['never'], "Unexpected usage of 'this'.", 'ThisExpression'),
     ...createInvalidTests('this?.', ['never'], "Unexpected usage of 'this'.", 'ThisExpression'),
+    // TODO: Add support for option `always`
     // ...createInvalidTests('', ['always'], "Expected 'this'.", 'Identifier'),
     {
       code: `<template lang="pug">
@@ -277,6 +278,7 @@ div(v-for="foo in ${suggestionPrefix(prefix, options)}bar")
     options[0] === 'always'
       ? []
       : [
+          // TODO: Lint `this[`
           //           {
           //             code: `<template lang="pug">
           // div {{ this['xs'] }}
