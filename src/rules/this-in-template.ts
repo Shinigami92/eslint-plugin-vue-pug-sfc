@@ -34,7 +34,7 @@ export default {
     for (let index: number = 0; index < tokens.length; index++) {
       const token: lex.Token = tokens[index]!;
 
-      if ('val' in token && typeof token.val === 'string' && /this\.(?!class)/.test(token.val)) {
+      if ('val' in token && typeof token.val === 'string' && /this\??\.(?!class)/.test(token.val)) {
         if (option === 'never') {
           const lastTagToken: lex.TagToken | undefined = previousTagToken(tokens, index);
           if (lastTagToken) {
@@ -52,15 +52,17 @@ export default {
             }
           }
 
+          const withOptionalChaining: boolean = token.val.includes('this?.');
+
           const loc: lex.Loc = token.loc;
 
           // @ts-expect-error: Access range from token
           const range: [number, number] = token.range;
           const textSlice: string = context.getSourceCode().text.slice(range[0], range[1]);
-          const columnOffset: number = textSlice.indexOf('this.');
+          const columnOffset: number = textSlice.indexOf(`this${withOptionalChaining ? '?' : ''}.`);
 
           const columnStart: number = loc.start.column - 1 + columnOffset;
-          const columnEnd: number = columnStart + 'this'.length;
+          const columnEnd: number = columnStart + 'this'.length + (withOptionalChaining ? 1 : 0);
 
           context.report({
             node: { type: 'ThisExpression' },
@@ -78,10 +80,17 @@ export default {
             },
             fix(fixer) {
               // TODO: Fix `div {{ this['xs'] }}` to `div {{ xs }}`
-              return fixer.removeRange([range[0] + columnOffset, range[0] + columnOffset + 'this'.length]);
+              const removeFrom: number = range[0] + columnOffset;
+              const removeTo: number = removeFrom + 'this.'.length + (withOptionalChaining ? 1 : 0);
+              return fixer.removeRange([removeFrom, removeTo]);
             },
             message: "Unexpected usage of 'this'."
           });
+        } else {
+          console.warn(
+            '[vue-pug-sfc] this-in-template option always is not supported yet.' +
+              ' Please comment in https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6 and ask for support.'
+          );
         }
       }
     }

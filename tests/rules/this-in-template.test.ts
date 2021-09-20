@@ -22,7 +22,7 @@ div
     ...createInvalidTests('this?.', [], "Unexpected usage of 'this'.", 'ThisExpression'),
     ...createInvalidTests('this.', ['never'], "Unexpected usage of 'this'.", 'ThisExpression'),
     ...createInvalidTests('this?.', ['never'], "Unexpected usage of 'this'.", 'ThisExpression'),
-    ...createInvalidTests('', ['always'], "Expected 'this'.", 'Identifier'),
+    // ...createInvalidTests('', ['always'], "Expected 'this'.", 'Identifier'),
     {
       code: `<template lang="pug">
 div(v-if="fn(this.$foo)")
@@ -277,26 +277,26 @@ div(v-for="foo in ${suggestionPrefix(prefix, options)}bar")
     options[0] === 'always'
       ? []
       : [
-          {
-            code: `<template lang="pug">
-div {{ this['xs'] }}
-</template><!-- ${comment} -->`,
-            output: `<template lang="pug">
-div {{ xs }}
-</template><!-- ${comment} -->`,
-            errors: [{ message, type }],
-            options
-          },
-          {
-            code: `<template lang="pug">
-div {{ this['xs0AZ_foo'] }}
-</template><!-- ${comment} -->`,
-            output: `<template lang="pug">
-div {{ xs0AZ_foo }}
-</template><!-- ${comment} -->`,
-            errors: [{ message, type }],
-            options
-          }
+          //           {
+          //             code: `<template lang="pug">
+          // div {{ this['xs'] }}
+          // </template><!-- ${comment} -->`,
+          //             output: `<template lang="pug">
+          // div {{ xs }}
+          // </template><!-- ${comment} -->`,
+          //             errors: [{ message, type }],
+          //             options
+          //           },
+          //           {
+          //             code: `<template lang="pug">
+          // div {{ this['xs0AZ_foo'] }}
+          // </template><!-- ${comment} -->`,
+          //             output: `<template lang="pug">
+          // div {{ xs0AZ_foo }}
+          // </template><!-- ${comment} -->`,
+          //             errors: [{ message, type }],
+          //             options
+          //           }
         ]
     /* eslint-enable @typescript-eslint/indent */
   );
