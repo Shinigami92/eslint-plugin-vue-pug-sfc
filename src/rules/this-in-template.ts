@@ -60,7 +60,7 @@ export default {
           const columnOffset: number = textSlice.indexOf('this.');
 
           const columnStart: number = loc.start.column - 1 + columnOffset;
-          const columnEnd: number = columnStart + 'this.'.length;
+          const columnEnd: number = columnStart + 'this'.length;
 
           context.report({
             node: { type: 'ThisExpression' },
@@ -78,7 +78,7 @@ export default {
             },
             fix(fixer) {
               // TODO: Fix `div {{ this['xs'] }}` to `div {{ xs }}`
-              return fixer.removeRange([range[0] + columnOffset, range[0] + columnOffset + 'this.'.length]);
+              return fixer.removeRange([range[0] + columnOffset, range[0] + columnOffset + 'this'.length]);
             },
             message: "Unexpected usage of 'this'."
           });
