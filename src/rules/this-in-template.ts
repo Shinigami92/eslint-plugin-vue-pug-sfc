@@ -34,8 +34,14 @@ export default {
     for (let index: number = 0; index < tokens.length; index++) {
       const token: lex.Token = tokens[index]!;
 
-      if ('val' in token && typeof token.val === 'string' && /this\??\.(?!class)/.test(token.val)) {
+      if (
+        (token.type === 'attribute' || token.type === 'text') &&
+        typeof token.val === 'string' &&
+        /this\??\.(?!class)/.test(token.val)
+      ) {
         if (option === 'never') {
+          console.log(token.type, JSON.stringify(token));
+
           const lastTagToken: lex.TagToken | undefined = previousTagToken(tokens, index);
           if (lastTagToken) {
             const lastTagTokenIndex: number = tokens.indexOf(lastTagToken);
