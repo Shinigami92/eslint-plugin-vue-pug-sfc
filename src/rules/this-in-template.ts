@@ -2,6 +2,7 @@ import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { previousTagToken } from '../utils/pug-utils';
+import { isVueBinding } from '../utils/vue';
 
 export default {
   meta: {
@@ -37,11 +38,10 @@ export default {
       if (
         (token.type === 'attribute' || token.type === 'text') &&
         typeof token.val === 'string' &&
+        (token.type === 'text' || isVueBinding(token)) &&
         /this\??\.(?!class)/.test(token.val)
       ) {
         if (option === 'never') {
-          console.log(token.type, JSON.stringify(token));
-
           const lastTagToken: lex.TagToken | undefined = previousTagToken(tokens, index);
           if (lastTagToken) {
             const lastTagTokenIndex: number = tokens.indexOf(lastTagToken);
