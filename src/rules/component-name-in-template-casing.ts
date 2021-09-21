@@ -1,7 +1,7 @@
 import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
-import { getConverter, isKebabCase, isPascalCase } from '../utils/casing';
+import { getChecker, getConverter } from '../utils/casing';
 
 type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
 interface RuleOptions {
@@ -60,10 +60,7 @@ export default {
       if (token.type === 'tag') {
         const tagName: string = token.val;
 
-        if (
-          (caseOption === 'PascalCase' && !isPascalCase(tagName)) ||
-          (caseOption === 'kebab-case' && !isKebabCase(tagName))
-        ) {
+        if (!getChecker(caseOption)(tagName)) {
           const loc: lex.Loc = token.loc;
 
           // @ts-expect-error: Access range from token
