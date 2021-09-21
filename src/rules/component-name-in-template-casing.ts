@@ -1,10 +1,11 @@
 import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
-import { getChecker, getExactConverter, pascalCase } from '../utils/casing';
+import { getChecker, getExactConverter, isPascalCase, pascalCase } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
 import { toRegExp } from '../utils/regexp';
 import { isSvgWellKnownElementName } from '../utils/svg-element';
+import { executeOnVue, getRegisteredVueComponents } from '../utils/vue';
 
 type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
 interface RuleOptions {
@@ -62,14 +63,14 @@ export default {
     return {
       ...(registeredComponentsOnly
         ? executeOnVue(context, (obj) => {
-            registeredComponents.push(...getRegisteredComponents(obj).map((n) => n.name));
+            registeredComponents.push(
+              ...getRegisteredVueComponents(obj)
+                .map((n) => n!.name)
+                .filter(isPascalCase)
+            );
           })
         : {}),
-      onCodePathEnd(codePath, node) {
-        // const registeredComponents: string[] = getRegisteredVueComponents(context)
-        //   .map((n) => n.name)
-        //   .filter(isPascalCase);
-
+      onCodePathStart(codePath, node) {
         for (let index: number = 0; index < tokens.length; index++) {
           const token: lex.Token = tokens[index]!;
 
