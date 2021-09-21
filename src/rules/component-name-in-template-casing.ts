@@ -1,8 +1,13 @@
 import type { Rule } from 'eslint';
+import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
+import { isKebabCase, isPascalCase } from '../utils/casing';
 
-const allowedCaseOptions: ['PascalCase', 'kebab-case'] = ['PascalCase', 'kebab-case'];
-const defaultCase: 'PascalCase' = 'PascalCase' as const;
+type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
+interface RuleOptions {
+  registeredComponentsOnly: boolean;
+  ignores: string[];
+}
 
 export default {
   meta: {
@@ -15,7 +20,7 @@ export default {
     fixable: 'code',
     schema: [
       {
-        enum: allowedCaseOptions
+        enum: ['PascalCase', 'kebab-case']
       },
       {
         type: 'object',
@@ -45,9 +50,46 @@ export default {
       return {};
     }
 
-    const caseOption = context.options[0];
-    const options = context.options[1] || {};
-    const caseType = allowedCaseOptions.indexOf(caseOption) !== -1 ? caseOption : defaultCase;
+    const caseOption: AllowedCaseOptions = context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
+    // TODO: Use `registeredComponentsOnly` and `ignores`.
+    const { registeredComponentsOnly = true, ignores = [] }: RuleOptions = context.options[1] ?? {};
+
+    for (let index: number = 0; index < tokens.length; index++) {
+      const token: lex.Token = tokens[index]!;
+
+      if (token.type === 'tag') {
+        const tagName: string = token.val;
+
+        if (
+          (caseOption === 'PascalCase' && !isPascalCase(tagName)) ||
+          (caseOption === 'kebab-case' && !isKebabCase(tagName))
+        ) {
+          const loc: lex.Loc = token.loc;
+
+          context.report({
+            node: {
+              // TODO: Find a suitable node type.
+              type: 'ThisExpression'
+            },
+            loc: {
+              line: loc.start.line,
+              column: loc.start.column,
+              start: { line: loc.start.line, column: loc.start.column },
+              end: { line: loc.end.line, column: loc.end.column }
+            },
+            message: 'Component name "{{name}}" is not {{caseType}}.',
+            data: {
+              name: tagName,
+              caseType: caseOption
+            },
+            fix(fixer) {
+              // TODO: Implement fixer.
+              return fixer.removeRange([0, 0]);
+            }
+          });
+        }
+      }
+    }
 
     return {};
   }

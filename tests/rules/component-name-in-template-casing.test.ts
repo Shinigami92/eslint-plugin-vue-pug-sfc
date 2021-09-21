@@ -2,7 +2,11 @@ import { RuleTester } from 'eslint';
 import rule from '../../src/rules/component-name-in-template-casing';
 
 const ruleTester: RuleTester = new RuleTester({
-  parser: require.resolve('vue-eslint-parser')
+  parser: require.resolve('vue-eslint-parser'),
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: 'module'
+  }
 });
 
 ruleTester.run('component-name-in-template-casing', rule, {
