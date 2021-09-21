@@ -3,6 +3,7 @@ import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { getChecker, getExactConverter, isPascalCase, pascalCase } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
+import { isMathMlWellKnownElementName } from '../utils/math-ml-element';
 import { toRegExp } from '../utils/regexp';
 import { isSvgWellKnownElementName } from '../utils/svg-element';
 import { executeOnVue, getRegisteredVueComponents } from '../utils/vue';
@@ -74,7 +75,11 @@ export default {
 
       if (!registeredComponentsOnly) {
         // Checks all component tags.
-        if (isHtmlWellKnownElementName(tagName) || isSvgWellKnownElementName(tagName)) {
+        if (
+          isHtmlWellKnownElementName(tagName) ||
+          isSvgWellKnownElementName(tagName) ||
+          isMathMlWellKnownElementName(tagName)
+        ) {
           return false;
         }
         return true;
