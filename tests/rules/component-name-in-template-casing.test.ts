@@ -149,24 +149,24 @@ export default {
       errors: [
         {
           message: 'Component name "cool-component" is not PascalCase.',
-          line: 4,
-          column: 11,
-          endLine: 4,
-          endColumn: 26
+          line: 3,
+          column: 1,
+          endLine: 3,
+          endColumn: 15
         },
         {
           message: 'Component name "coolComponent" is not PascalCase.',
-          line: 5,
-          column: 11,
-          endLine: 5,
-          endColumn: 25
+          line: 4,
+          column: 1,
+          endLine: 4,
+          endColumn: 14
         },
         {
           message: 'Component name "Cool-component" is not PascalCase.',
-          line: 6,
-          column: 11,
-          endLine: 6,
-          endColumn: 26
+          line: 5,
+          column: 1,
+          endLine: 5,
+          endColumn: 15
         }
       ]
     },
@@ -202,15 +202,15 @@ export default {
       errors: [
         {
           message: 'Component name "CoolComponent" is not kebab-case.',
-          line: 4
+          line: 3
         },
         {
           message: 'Component name "coolComponent" is not kebab-case.',
-          line: 5
+          line: 4
         },
         {
           message: 'Component name "Cool-component" is not kebab-case.',
-          line: 6
+          line: 5
         }
       ]
     },
