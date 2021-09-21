@@ -2,6 +2,8 @@ import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { getChecker, getExactConverter } from '../utils/casing';
+import { isHtmlWellKnownElementName } from '../utils/html-element';
+import { isSvgWellKnownElementName } from '../utils/svg-element';
 
 type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
 interface RuleOptions {
@@ -61,6 +63,13 @@ export default {
         const tagName: string = token.val;
 
         if (!getChecker(caseOption)(tagName)) {
+          if (!registeredComponentsOnly) {
+            // Checks all component tags.
+            if (isHtmlWellKnownElementName(tagName) || isSvgWellKnownElementName(tagName)) {
+              continue;
+            }
+          }
+
           const loc: lex.Loc = token.loc;
 
           // @ts-expect-error: Access range from token
