@@ -29,7 +29,7 @@ import {
   VText
 } from '../util-types/ast';
 import { Token } from '../util-types/node';
-import { ParserServices } from '../util-types/parser-services';
+import { ParserServices, TemplateListener } from '../util-types/parser-services';
 import { VueObjectType } from '../util-types/utils';
 
 /**
@@ -520,9 +520,8 @@ export function compositingVisitors<T>(visitor: T, ...visitors: Array<Rule.RuleL
 export function executeOnVueComponent(
   context: Rule.RuleContext,
   cb: (node: ObjectExpression, type: VueObjectType) => void
-): Rule.RuleListener {
+): TemplateListener {
   return {
-    // @ts-expect-error
     'ObjectExpression:exit'(node: ObjectExpression): void {
       const type: VueObjectType | null = getVueObjectType(context, node);
       if (!type || (type !== 'mark' && type !== 'export' && type !== 'definition')) {
@@ -533,11 +532,32 @@ export function executeOnVueComponent(
   };
 }
 
+/**
+ * Check if current file is a Vue instance (new Vue) and call callback.
+ *
+ * @param context The ESLint rule context object.
+ * @param cb Callback function.
+ */
+export function executeOnVueInstance(
+  context: Rule.RuleContext,
+  cb: (node: ObjectExpression, type: VueObjectType) => void
+): TemplateListener {
+  return {
+    'ObjectExpression:exit'(node: ObjectExpression) {
+      const type: VueObjectType | null = getVueObjectType(context, node);
+      if (!type || type !== 'instance') {
+        return;
+      }
+      cb(node, type);
+    }
+  };
+}
+
 export function executeOnVue(
   context: Rule.RuleContext,
   cb: (node: ObjectExpression, type: VueObjectType) => void
-): Rule.RuleListener {
-  return compositingVisitors(executeOnVueComponent(context, cb) /*, executeOnVueInstance(context, cb)*/);
+): TemplateListener {
+  return compositingVisitors(executeOnVueComponent(context, cb), executeOnVueInstance(context, cb));
 }
 
 /**
