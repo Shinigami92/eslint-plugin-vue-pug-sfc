@@ -1,7 +1,7 @@
 import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
-import { getChecker, getConverter } from '../utils/casing';
+import { getChecker, getExactConverter } from '../utils/casing';
 
 type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
 interface RuleOptions {
@@ -91,7 +91,8 @@ export default {
               caseType: caseOption
             },
             fix(fixer) {
-              return fixer.replaceTextRange(range, getConverter(caseOption)(tagName));
+              const casingTagName: string = getExactConverter(caseOption)(tagName);
+              return fixer.replaceTextRange(range, casingTagName);
             }
           });
         }
