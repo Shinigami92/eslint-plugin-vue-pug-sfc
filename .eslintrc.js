@@ -34,6 +34,7 @@ module.exports = defineConfig({
     '@typescript-eslint/member-ordering': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-parameter-properties': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
