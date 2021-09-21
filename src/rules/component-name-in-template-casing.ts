@@ -60,6 +60,34 @@ export default {
 
     const registeredComponents: string[] = [];
 
+    /**
+     * Checks whether the given tag is the verification target.
+     *
+     * @param tagName Name of the tag.
+     * @returns `true` if the given node is the verification target node.
+     */
+    function isVerifyTarget(tagName: string): boolean {
+      if (ignoresRE.some((re) => re.test(tagName))) {
+        // ignore
+        return false;
+      }
+
+      if (!registeredComponentsOnly) {
+        // Checks all component tags.
+        if (isHtmlWellKnownElementName(tagName) || isSvgWellKnownElementName(tagName)) {
+          return false;
+        }
+        return true;
+      }
+
+      // When defining a component with PascalCase, we can use either case.
+      if (registeredComponents.some((name) => tagName === name || pascalCase(tagName) === name)) {
+        return true;
+      }
+
+      return false;
+    }
+
     return {
       ...(registeredComponentsOnly
         ? executeOnVue(context, (obj) => {
@@ -70,30 +98,14 @@ export default {
             );
           })
         : {}),
-      onCodePathStart(codePath, node) {
+      'Program:exit'() {
         for (let index: number = 0; index < tokens.length; index++) {
           const token: lex.Token = tokens[index]!;
 
           if (token.type === 'tag') {
             const tagName: string = token.val;
 
-            if (!getChecker(caseOption)(tagName)) {
-              if (ignoresRE.some((re) => re.test(tagName))) {
-                continue;
-              }
-
-              if (!registeredComponentsOnly) {
-                // Checks all component tags.
-                if (isHtmlWellKnownElementName(tagName) || isSvgWellKnownElementName(tagName)) {
-                  continue;
-                }
-              }
-
-              // When defining a component with PascalCase, we can use either case.
-              if (registeredComponents.some((name) => tagName === name || pascalCase(tagName) === name)) {
-                continue;
-              }
-
+            if (!getChecker(caseOption)(tagName) && isVerifyTarget(tagName)) {
               const loc: lex.Loc = token.loc;
 
               // @ts-expect-error: Access range from token
