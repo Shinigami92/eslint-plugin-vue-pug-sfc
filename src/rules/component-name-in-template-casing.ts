@@ -66,6 +66,9 @@ export default {
         ) {
           const loc: lex.Loc = token.loc;
 
+          const columnStart: number = loc.start.column - 1;
+          const columnEnd: number = columnStart + tagName.length;
+
           context.report({
             node: {
               // TODO: Find a suitable node type.
@@ -73,9 +76,15 @@ export default {
             },
             loc: {
               line: loc.start.line,
-              column: loc.start.column,
-              start: { line: loc.start.line, column: loc.start.column },
-              end: { line: loc.end.line, column: loc.end.column }
+              column: loc.start.column - 1,
+              start: {
+                line: loc.start.line,
+                column: columnStart
+              },
+              end: {
+                line: loc.end.line,
+                column: columnEnd
+              }
             },
             message: 'Component name "{{name}}" is not {{caseType}}.',
             data: {
