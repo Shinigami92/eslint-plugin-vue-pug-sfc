@@ -1,8 +1,8 @@
 import type { Rule } from 'eslint';
 import * as path from 'path';
 import * as lex from 'pug-lexer';
-import { AST } from 'vue-eslint-parser';
-import type { ParserServices } from '../types/ParserServices';
+import { VDocumentFragment, VElement } from '../util-types/ast/v-ast';
+import { ParserServices } from '../util-types/parser-services';
 
 export function checkIsVueFile(context: Rule.RuleContext): boolean {
   const parserServices: ParserServices = context.parserServices;
@@ -39,20 +39,20 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   const parserServices: ParserServices = context.parserServices;
 
   // Parse the pug content to tokens
-  const df: AST.VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
+  const df: VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
   if (!df) {
     CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
     return result;
   }
 
-  const pugTemplateElement: AST.VElement | undefined = df.children.find(
+  const pugTemplateElement: VElement | undefined = df.children.find(
     (node) =>
       node.type === 'VElement' &&
       node.name === 'template' &&
       node.startTag.attributes.some(
         (attr) => !attr.directive && attr.key.name === 'lang' && attr.value && attr.value.value === 'pug'
       )
-  ) as AST.VElement | undefined;
+  ) as VElement | undefined;
 
   if (!pugTemplateElement) {
     CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
