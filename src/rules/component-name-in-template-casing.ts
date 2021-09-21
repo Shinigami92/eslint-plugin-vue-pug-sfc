@@ -3,6 +3,7 @@ import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { getChecker, getExactConverter } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
+import { toRegExp } from '../utils/regexp';
 import { isSvgWellKnownElementName } from '../utils/svg-element';
 
 type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
@@ -53,8 +54,8 @@ export default {
     }
 
     const caseOption: AllowedCaseOptions = context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
-    // TODO: Use `registeredComponentsOnly` and `ignores`.
     const { registeredComponentsOnly = true, ignores = [] }: RuleOptions = context.options[1] ?? {};
+    const ignoresRE: RegExp[] = ignores.map(toRegExp);
 
     for (let index: number = 0; index < tokens.length; index++) {
       const token: lex.Token = tokens[index]!;
@@ -63,6 +64,10 @@ export default {
         const tagName: string = token.val;
 
         if (!getChecker(caseOption)(tagName)) {
+          if (ignoresRE.some((re) => re.test(tagName))) {
+            continue;
+          }
+
           if (!registeredComponentsOnly) {
             // Checks all component tags.
             if (isHtmlWellKnownElementName(tagName) || isSvgWellKnownElementName(tagName)) {
