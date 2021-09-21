@@ -1,7 +1,7 @@
 import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
-import { isKebabCase, isPascalCase } from '../utils/casing';
+import { getConverter, isKebabCase, isPascalCase } from '../utils/casing';
 
 type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
 interface RuleOptions {
@@ -66,6 +66,8 @@ export default {
         ) {
           const loc: lex.Loc = token.loc;
 
+          // @ts-expect-error: Access range from token
+          const range: [number, number] = token.range;
           const columnStart: number = loc.start.column - 1;
           const columnEnd: number = columnStart + tagName.length;
 
@@ -92,8 +94,7 @@ export default {
               caseType: caseOption
             },
             fix(fixer) {
-              // TODO: Implement fixer.
-              return fixer.removeRange([0, 0]);
+              return fixer.replaceTextRange(range, getConverter(caseOption)(tagName));
             }
           });
         }
