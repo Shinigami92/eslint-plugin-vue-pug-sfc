@@ -27,9 +27,10 @@ module.exports = defineConfig({
     quotes: ['error', 'single', { avoidEscape: true }],
     semi: ['error', 'always'],
 
+    '@typescript-eslint/array-type': ['warn', { default: 'array-simple', readonly: 'generic' }],
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
-    '@typescript-eslint/indent': ['error', 2, { SwitchCase: 1, ignoredNodes: ['MemberExpression'] }],
+    '@typescript-eslint/indent': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/member-ordering': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
