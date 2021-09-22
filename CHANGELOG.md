@@ -10,6 +10,8 @@
   - `this-in-template` ([#6])
     - option `always` currently not supported
   - `component-name-in-template-casing` ([#79])
+  - `attribute-hyphenation` ([#57])
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
+[#57]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/57
 [#79]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/79
