@@ -3687,9 +3687,9 @@ fsevents@^2.3.2:
   linkType: hard
 
 "nanocolors@npm:^0.1.5":
-  version: 0.1.5
-  resolution: "nanocolors@npm:0.1.5"
-  checksum: 032c12a5d8d901a3a59679db1f906d258080352ce6a5ea7a90df033fe969d1257f63000bc37c9562d068ba0c980f629868e9698e69511c9761080d030a6bc7b1
+  version: 0.1.6
+  resolution: "nanocolors@npm:0.1.6"
+  checksum: 3e748505531f5b21b98275cc8012efa92394ae1b6132d80e96646c20f0ca46442e82ab4b11ad57edccb8bf40433ade6e16d1ce535bc536bde6c009396467c887
   languageName: node
   linkType: hard
 
