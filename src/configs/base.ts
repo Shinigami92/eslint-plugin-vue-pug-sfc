@@ -8,6 +8,5 @@ export = {
     browser: true,
     es6: true
   },
-  plugins: ['vue-pug-sfc'],
-  rules: {}
+  plugins: ['vue-pug-sfc']
 };

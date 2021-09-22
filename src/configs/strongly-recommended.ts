@@ -1,6 +1,11 @@
 export = {
   extends: require.resolve('./essential'),
-  rules: {
-    'vue-pug-sfc/component-name-in-template-casing': 'warn'
-  }
+  overrides: [
+    {
+      files: ['*.vue'],
+      rules: {
+        'vue-pug-sfc/component-name-in-template-casing': 'warn'
+      }
+    }
+  ]
 };

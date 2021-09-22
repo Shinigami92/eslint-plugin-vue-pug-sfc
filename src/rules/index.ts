@@ -3,6 +3,6 @@ import componentNameInTemplateCasing from './component-name-in-template-casing';
 import thisInTemplate from './this-in-template';
 
 export default {
-  'this-in-template': thisInTemplate,
-  'component-name-in-template-casing': componentNameInTemplateCasing
+  'component-name-in-template-casing': componentNameInTemplateCasing,
+  'this-in-template': thisInTemplate
 } as Record<string, Rule.RuleModule>;
