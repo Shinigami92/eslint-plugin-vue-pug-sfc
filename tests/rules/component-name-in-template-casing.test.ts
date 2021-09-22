@@ -127,7 +127,7 @@ v-row(no-gutters)
 
 <script lang="ts" src="./test"></script>`,
       filename: 'test.vue',
-      options: ['kebab-case'],
+      options: ['kebab-case', { registeredComponentsOnly: false }],
       output: `<template lang="pug">
 v-row(no-gutters)
   v-col(cols="12")
@@ -139,7 +139,7 @@ v-row(no-gutters)
         {
           message: 'Component name "VCol" is not kebab-case.',
           line: 3,
-          column: 2,
+          column: 3,
           endLine: 3,
           endColumn: 7
         }
