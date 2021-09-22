@@ -6,8 +6,9 @@ export default {
   //   return [text];
   // },
   postprocess(messages, filename) {
+    // TODO: This filters messages for all plugins :(
     const filteredMessages: Linter.LintMessage[] =
-      messages[0]?.filter((message) => message.ruleId?.startsWith('vue-pug-sfc/')) ?? [];
+      messages[0]?.filter((message) => message.ruleId !== 'vue/comment-directive') ?? [];
 
     return [...filteredMessages];
   },
