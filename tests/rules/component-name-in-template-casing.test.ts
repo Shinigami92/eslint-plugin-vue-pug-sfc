@@ -120,6 +120,33 @@ global-grid
   invalid: [
     {
       code: `<template lang="pug">
+v-row(no-gutters)
+  VCol(cols="12")
+    span test
+</template>
+
+<script lang="ts" src="./test"></script>`,
+      filename: 'test.vue',
+      options: ['kebab-case'],
+      output: `<template lang="pug">
+v-row(no-gutters)
+  v-col(cols="12")
+    span test
+</template>
+
+<script lang="ts" src="./test"></script>`,
+      errors: [
+        {
+          message: 'Component name "VCol" is not kebab-case.',
+          line: 3,
+          column: 2,
+          endLine: 3,
+          endColumn: 7
+        }
+      ]
+    },
+    {
+      code: `<template lang="pug">
 //- ✗ BAD
 cool-component
 coolComponent
