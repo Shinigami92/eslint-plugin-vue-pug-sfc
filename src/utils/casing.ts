@@ -149,8 +149,8 @@ export const checkersMap: Record<CaseType, (str: string) => boolean> = {
 /**
  * Return case checker.
  *
- * @param { 'camelCase' | 'kebab-case' | 'PascalCase' | 'snake_case' } name type of checker to return ('camelCase', 'kebab-case', 'PascalCase')
- * @return {isKebabCase|isCamelCase|isPascalCase|isSnakeCase}
+ * @param name type of checker to return ('camelCase', 'kebab-case', 'PascalCase')
+ * @return isKebabCase | isCamelCase | isPascalCase | isSnakeCase
  */
 export function getChecker(name: CaseType): (str: string) => boolean {
   return checkersMap[name] || isPascalCase;

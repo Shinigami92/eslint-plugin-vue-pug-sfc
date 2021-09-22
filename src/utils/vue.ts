@@ -421,9 +421,11 @@ function getVueComponentDefinitionType(
 }
 
 /**
- * Check whether given node is new Vue instance
+ * Check whether given node is new Vue instance.
+ *
  * `new Vue({})`
- * @param {NewExpression} node Node to check
+ *
+ * @param node Node to check.
  */
 export function isVueInstance(node: NewExpression): boolean {
   const callee: Expression = node.callee;

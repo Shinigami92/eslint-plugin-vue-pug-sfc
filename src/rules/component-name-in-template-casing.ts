@@ -104,13 +104,15 @@ export default {
           })
         : {}),
       'Program:exit'() {
-        for (let index: number = 0; index < tokens.length; index++) {
-          const token: lex.Token = tokens[index]!;
-
+        for (const token of tokens) {
           if (token.type === 'tag') {
             const tagName: string = token.val;
 
-            if (!getChecker(caseOption)(tagName) && isVerifyTarget(tagName)) {
+            if (!isVerifyTarget(tagName)) {
+              continue;
+            }
+
+            if (!getChecker(caseOption)(tagName)) {
               const loc: lex.Loc = token.loc;
 
               // @ts-expect-error: Access range from token
@@ -119,10 +121,6 @@ export default {
               const columnEnd: number = columnStart + tagName.length;
 
               context.report({
-                node: {
-                  // TODO: Find a suitable node type.
-                  type: 'ThisExpression'
-                },
                 loc: {
                   line: loc.start.line,
                   column: loc.start.column - 1,
