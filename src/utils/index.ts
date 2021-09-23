@@ -117,8 +117,21 @@ export function tokenLength(token: lex.Token, previousToken?: lex.Token): number
     const length: number = token.loc.end.column - token.loc.start.column;
     const diff: number = token.loc.start.line - (previousToken?.loc.end.line ?? 1);
     return length + (diff - 1);
+  } else if (
+    token.type === 'end-attributes' &&
+    previousToken?.type === 'attribute' &&
+    // Detect brace on new line wrapping after last attribute
+    token.loc.start.line - 1 === previousToken.loc.end.line
+  ) {
+    return 0;
+  } else if (
+    token.type === 'outdent' &&
+    previousToken &&
+    // Some outdents seems to be larger than one blank line
+    token.loc.start.line - 1 > previousToken.loc.end.line
+  ) {
+    return token.loc.end.column;
   }
-
   if (token.loc.start.line === token.loc.end.line) {
     return token.loc.end.column - token.loc.start.column;
   }
