@@ -48,11 +48,11 @@ ruleTester.run('no-duplicate-attributes', rule, {
     }
   ],
   invalid: [
-    // {
-    //   filename: 'test.vue',
-    //   code: '<template lang="pug">div: div(foo foo)</template>',
-    //   errors: ["Duplicate attribute 'foo'."]
-    // },
+    {
+      filename: 'test.vue',
+      code: '<template lang="pug">div: div(foo foo)</template>',
+      errors: ["Duplicate attribute 'foo'."]
+    },
     {
       filename: 'test.vue',
       code: '<template lang="pug">div: div(foo v-bind:foo)</template>',

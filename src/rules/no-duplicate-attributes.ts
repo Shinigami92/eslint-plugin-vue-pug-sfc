@@ -37,21 +37,39 @@ export default {
       return {};
     }
 
-    let currentTagAttributes: lex.AttributeToken[] = [];
+    const { allowCoexistStyle = true, allowCoexistClass = true } = context.options[0] ?? {};
+
+    let currentAttributeNames: string[] = [];
+
+    function findDuplicate(name: string): string | undefined {
+      if (allowCoexistClass && /^(v-bind)?:?class$/i.test(name)) {
+        return;
+      }
+      if (allowCoexistStyle && /^(v-bind)?:?style$/i.test(name)) {
+        return;
+      }
+      return currentAttributeNames.find((attrName) => attrName === name);
+    }
+
     for (let index: number = 0; index < tokens.length; index++) {
       const token: lex.Token = tokens[index]!;
 
       if (token.type === 'start-attributes') {
-        currentTagAttributes = [];
+        currentAttributeNames = [];
         continue;
       }
 
       if (token.type === 'attribute') {
         const attributeName: string = token.name;
 
-        const alreadyThere: boolean = currentTagAttributes.some((attr) => attr.name === attributeName);
+        if (/^(@|v-on:)/.test(attributeName)) {
+          continue;
+        }
 
-        if (alreadyThere) {
+        const cleanedAttributeName: string = attributeName.replace(/^(v-bind)?:/, '');
+
+        const duplicateAttributeName: string | undefined = findDuplicate(cleanedAttributeName);
+        if (duplicateAttributeName) {
           const loc: lex.Loc = token.loc;
 
           const columnStart: number = loc.start.column - 1;
@@ -72,11 +90,11 @@ export default {
               }
             },
             message: "Duplicate attribute '{{name}}'.",
-            data: { name: attributeName }
+            data: { name: duplicateAttributeName }
           });
         }
 
-        currentTagAttributes.push(token);
+        currentAttributeNames.push(cleanedAttributeName);
       }
     }
 
