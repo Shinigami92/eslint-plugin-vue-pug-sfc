@@ -62,7 +62,13 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   const rawText: string = cacheKey; // Same as `context.getSourceCode().text`
   const pugText: string = rawText.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
 
-  const pugTokens: lex.Token[] = lex(pugText);
+  const pugTokens: lex.Token[] = [];
+  try {
+    pugTokens.push(...lex(pugText));
+  } catch (error) {
+    CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
+    return result;
+  }
 
   let start: number = pugTemplateElement.startTag.range[1];
 
