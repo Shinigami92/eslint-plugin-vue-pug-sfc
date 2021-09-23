@@ -1,4 +1,6 @@
 export = {
   extends: require.resolve('./base'),
-  rules: {}
+  rules: {
+    'vue-pug-sfc/no-duplicate-attributes': 'error'
+  }
 };
