@@ -7,11 +7,13 @@
 [diff](https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/compare/e1dcc9f1e2ffb75e1726782d5df7978e424e4705...main)
 
 - Migrated rules from [eslint-plugin-vue](https://github.com/vuejs/eslint-plugin-vue)
+  - `attribute-hyphenation` ([#57])
+  - `component-name-in-template-casing` ([#79])
+  - `no-duplicate-attributes` ([#10])
   - `this-in-template` ([#6])
     - option `always` currently not supported
-  - `component-name-in-template-casing` ([#79])
-  - `attribute-hyphenation` ([#57])
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
+[#10]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/10
 [#57]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/57
 [#79]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/79
