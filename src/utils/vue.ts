@@ -1,7 +1,8 @@
 // Copy of https://github.com/prettier/plugin-pug/blob/main/src/utils/vue.ts
 
 import { Rule, SourceCode } from 'eslint';
-import type { AttributeToken } from 'pug-lexer';
+import type { AttributeToken, TagToken } from 'pug-lexer';
+import * as lex from 'pug-lexer';
 import {
   AssignmentProperty,
   ASTNode,
@@ -31,6 +32,9 @@ import {
 import { Token } from '../util-types/node';
 import { ParserServices, TemplateListener } from '../util-types/parser-services';
 import { VueObjectType } from '../util-types/utils';
+import { isHtmlWellKnownElementName } from './html-element';
+import { getAttributeTokens } from './pug-utils';
+import { isSvgWellKnownElementName } from './svg-element';
 
 /**
  * Indicates whether the attribute name is a Vue event binding.
@@ -600,4 +604,21 @@ export function getRegisteredVueComponents(
       return name ? { node, name } : null;
     })
     .filter(isDef);
+}
+
+/**
+ * Check whether the given tag token is a custom component or not.
+ * @param token The start tag token to check.
+ * @returns `true` if the token is a custom component.
+ */
+export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<lex.Token>): boolean {
+  if (!isHtmlWellKnownElementName(tag.val) && !isSvgWellKnownElementName(tag.val)) {
+    return true;
+  }
+
+  // If the tag has an `is` attribute, it is also declared as a custom component.
+  const attributeTokens: AttributeToken[] = getAttributeTokens(tag, tokens);
+  const hasIsAttribute: boolean = attributeTokens.some(({ name }) => /^(v-bind)?:?is$/.test(name));
+
+  return hasIsAttribute;
 }

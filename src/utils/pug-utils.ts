@@ -1,6 +1,7 @@
 // Partial copy of https://github.com/prettier/plugin-pug/blob/main/src/utils/common.ts
 
 import type { AttributeToken, TagToken, Token } from 'pug-lexer';
+import { findIndexFrom } from './index';
 
 /**
  * Returns the previous tag token if there was one.
@@ -64,6 +65,45 @@ export function previousTypeAttributeToken(tokens: ReadonlyArray<Token>, index: 
     }
   }
   return;
+}
+
+export function getAttributeTokens(tag: TagToken, tokens: ReadonlyArray<Token>): AttributeToken[] {
+  const tagIndex: number = tokens.indexOf(tag);
+  const startAttributesIndex: number = findIndexFrom(tokens, ({ type }) => type === 'start-attributes', tagIndex);
+  const endAttributesIndex: number = findIndexFrom(
+    tokens,
+    ({ type }) => type === 'end-attributes',
+    startAttributesIndex
+  );
+
+  return tokens.slice(startAttributesIndex + 1, endAttributesIndex) as AttributeToken[];
+}
+
+export function getChildTags(tag: TagToken, tokens: ReadonlyArray<Token>): TagToken[] {
+  const tagIndex: number = tokens.indexOf(tag);
+
+  const children: TagToken[] = [];
+
+  let indentLevel: number = 0;
+  for (let index: number = tagIndex + 1; index < tokens.length; index++) {
+    const token: Token = tokens[index]!;
+
+    if (token.type === 'tag') {
+      children.push(token);
+    }
+
+    if (token.type === 'indent') {
+      indentLevel++;
+    } else if (token.type === 'outdent') {
+      indentLevel--;
+    }
+
+    if (indentLevel < 0) {
+      break;
+    }
+  }
+
+  return children;
 }
 
 /**

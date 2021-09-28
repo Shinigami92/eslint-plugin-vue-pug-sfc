@@ -144,3 +144,12 @@ export function tokenLength(token: lex.Token, previousToken?: lex.Token): number
   console.debug('Please report token:', JSON.stringify(token));
   return 0;
 }
+
+export function findIndexFrom<T>(
+  arr: ReadonlyArray<T>,
+  predicate: (value: T, index: number, obj: ReadonlyArray<T>) => unknown,
+  fromIndex: number
+): number {
+  const index: number = arr.slice(fromIndex).findIndex(predicate);
+  return index === -1 ? -1 : index + fromIndex;
+}
