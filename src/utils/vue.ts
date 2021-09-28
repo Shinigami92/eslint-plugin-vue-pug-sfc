@@ -605,14 +605,40 @@ export function getRegisteredVueComponents(
     .filter(isDef);
 }
 
+export function findIndexFrom<T>(
+  arr: ReadonlyArray<T>,
+  predicate: (value: T, index: number, obj: ReadonlyArray<T>) => unknown,
+  fromIndex: number
+): number {
+  const index: number = arr.slice(fromIndex).findIndex(predicate);
+  return index === -1 ? -1 : index + fromIndex;
+}
+
 /**
  * Check whether the given tag token is a custom component or not.
  * @param token The start tag token to check.
  * @returns `true` if the token is a custom component.
  */
 export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<lex.Token>): boolean {
-  return (
-    !isHtmlWellKnownElementName(tag.val) || !isSvgWellKnownElementName(tag.val)
-    // TODO: Check if the tag has a `is` (or `v-bind:is`) attribute
+  if (!isHtmlWellKnownElementName(tag.val) || !isSvgWellKnownElementName(tag.val)) {
+    return true;
+  }
+
+  // If the tag has an `is` attribute, it is also declared as a custom component.
+  const tagIndex: number = tokens.indexOf(tag);
+  const startAttributesIndex: number = findIndexFrom(tokens, ({ type }) => type === 'start-attributes', tagIndex);
+  const endAttributesIndex: number = findIndexFrom(
+    tokens,
+    ({ type }) => type === 'end-attributes',
+    startAttributesIndex
   );
+
+  const attributeTokens: AttributeToken[] = tokens.slice(
+    startAttributesIndex + 1,
+    endAttributesIndex
+  ) as AttributeToken[];
+
+  const hasIsAttribute: boolean = attributeTokens.some(({ name }) => /^(v-bind)?:?is$/.test(name));
+
+  return hasIsAttribute;
 }
