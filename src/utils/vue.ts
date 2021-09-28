@@ -612,7 +612,7 @@ export function getRegisteredVueComponents(
  * @returns `true` if the token is a custom component.
  */
 export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<lex.Token>): boolean {
-  if (!isHtmlWellKnownElementName(tag.val) || !isSvgWellKnownElementName(tag.val)) {
+  if (!isHtmlWellKnownElementName(tag.val) && !isSvgWellKnownElementName(tag.val)) {
     return true;
   }
 
