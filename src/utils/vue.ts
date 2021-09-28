@@ -33,6 +33,7 @@ import { Token } from '../util-types/node';
 import { ParserServices, TemplateListener } from '../util-types/parser-services';
 import { VueObjectType } from '../util-types/utils';
 import { isHtmlWellKnownElementName } from './html-element';
+import { getAttributeTokens } from './pug-utils';
 import { isSvgWellKnownElementName } from './svg-element';
 
 /**
@@ -605,15 +606,6 @@ export function getRegisteredVueComponents(
     .filter(isDef);
 }
 
-export function findIndexFrom<T>(
-  arr: ReadonlyArray<T>,
-  predicate: (value: T, index: number, obj: ReadonlyArray<T>) => unknown,
-  fromIndex: number
-): number {
-  const index: number = arr.slice(fromIndex).findIndex(predicate);
-  return index === -1 ? -1 : index + fromIndex;
-}
-
 /**
  * Check whether the given tag token is a custom component or not.
  * @param token The start tag token to check.
@@ -625,19 +617,7 @@ export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<lex.Token
   }
 
   // If the tag has an `is` attribute, it is also declared as a custom component.
-  const tagIndex: number = tokens.indexOf(tag);
-  const startAttributesIndex: number = findIndexFrom(tokens, ({ type }) => type === 'start-attributes', tagIndex);
-  const endAttributesIndex: number = findIndexFrom(
-    tokens,
-    ({ type }) => type === 'end-attributes',
-    startAttributesIndex
-  );
-
-  const attributeTokens: AttributeToken[] = tokens.slice(
-    startAttributesIndex + 1,
-    endAttributesIndex
-  ) as AttributeToken[];
-
+  const attributeTokens: AttributeToken[] = getAttributeTokens(tag, tokens);
   const hasIsAttribute: boolean = attributeTokens.some(({ name }) => /^(v-bind)?:?is$/.test(name));
 
   return hasIsAttribute;
