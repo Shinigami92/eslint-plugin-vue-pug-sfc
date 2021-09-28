@@ -66,6 +66,10 @@ export default {
         // `template` and `slot` doesn't need a key directly but a child of them
         if (lastTagToken.val === 'template' || lastTagToken.val === 'slot') {
           const childTagTokens: TagToken[] = getChildTags(lastTagToken, tokens);
+          if (childTagTokens.length === 0) {
+            continue;
+          }
+
           let foundChildTagWithKey: boolean = false;
           for (const childTag of childTagTokens) {
             const attributeTokens: AttributeToken[] = getAttributeTokens(childTag, tokens);
