@@ -10,10 +10,13 @@
   - `attribute-hyphenation` ([#57])
   - `component-name-in-template-casing` ([#79])
   - `no-duplicate-attributes` ([#10])
+  - `require-v-for-key` ([#19])
+    - _could have some issues with `template`/`slot`, please report in the issue_
   - `this-in-template` ([#6])
     - option `always` currently not supported
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
 [#10]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/10
+[#19]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/19
 [#57]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/57
 [#79]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/79
