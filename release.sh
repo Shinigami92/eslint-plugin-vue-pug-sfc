@@ -5,14 +5,14 @@ set -x
 rm -Rf coverage
 rm -Rf dist
 rm -Rf node_modules
-rm yarn.lock
+rm pnpm-lock.yaml
 
 # Prepare
-yarn install
-yarn lint
-yarn test --silent
-yarn npm audit --all --recursive
-yarn build
+pnpm install
+pnpm run lint
+pnpm run test -- --silent
+pnpm audit
+pnpm run build
 
 # Publish
 npm publish --dry-run

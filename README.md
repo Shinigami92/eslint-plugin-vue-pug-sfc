@@ -54,7 +54,11 @@ This plugin adds support for the Pug language to Eslint in `.vue` files.
 ## Getting started
 
 ```bash
+npm add --save-dev eslint-plugin-vue-pug-sfc
+#or
 yarn add --dev eslint-plugin-vue-pug-sfc
+#or
+pnpm add --save-dev eslint-plugin-vue-pug-sfc
 ```
 
 ## Usage
