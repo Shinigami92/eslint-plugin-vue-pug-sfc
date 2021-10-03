@@ -2,6 +2,11 @@ import type { Rule } from 'eslint';
 import * as lex from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 
+function isSubset(operandsA: string | boolean, operandsB: string | boolean): boolean {
+  // TODO: Check conditions more deeply
+  return operandsA === operandsB;
+}
+
 export default {
   meta: {
     type: 'problem',
@@ -67,7 +72,7 @@ export default {
             ifs[indentLevel] = [];
           }
 
-          if (ifs[indentLevel]!.some((tok) => tok.val === token.val)) {
+          if (ifs[indentLevel]!.some((tok) => isSubset(tok.val, token.val))) {
             const loc: lex.Loc = token.loc;
 
             const columnStart: number = loc.start.column - 1 + 'v-else-if="'.length;
