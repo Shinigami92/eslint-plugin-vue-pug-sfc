@@ -56,8 +56,8 @@ export default {
           if (ifs[indentLevel]!.some((tok) => tok.val === token.val)) {
             const loc: lex.Loc = token.loc;
 
-            const columnStart: number = loc.start.column - 1;
-            const columnEnd: number = columnStart + 'v-else-if'.length;
+            const columnStart: number = loc.start.column - 1 + 'v-else-if="'.length;
+            const columnEnd: number = columnStart - 1 + String(token.val).length - '"'.length;
 
             context.report({
               node: {} as unknown as Rule.Node,

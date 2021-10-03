@@ -201,10 +201,10 @@ div(v-else-if="foo")
         {
           message:
             'This branch can never execute. Its condition is a duplicate or covered by previous conditions in the `v-if` / `v-else-if` chain.',
-          line: 4,
-          column: 25,
-          endLine: 4,
-          endColumn: 28
+          line: 3,
+          column: 16,
+          endLine: 3,
+          endColumn: 19
         }
       ]
     },
@@ -217,7 +217,7 @@ div(v-else-if="isSomething(x)")
       errors: [
         {
           messageId: 'unexpected',
-          line: 4
+          line: 3
         }
       ]
     },
@@ -232,7 +232,7 @@ div(v-else-if="c && d")
       errors: [
         {
           messageId: 'unexpected',
-          line: 6
+          line: 5
         }
       ]
     },
@@ -248,7 +248,7 @@ div(v-else-if="n === 5")
       errors: [
         {
           messageId: 'unexpected',
-          line: 6
+          line: 5
         }
       ]
     },
@@ -261,7 +261,7 @@ div(v-else-if="a")
       errors: [
         {
           messageId: 'unexpected',
-          line: 4
+          line: 3
         }
       ]
     },
@@ -275,7 +275,7 @@ div(v-else-if="a || b")
       errors: [
         {
           messageId: 'unexpected',
-          line: 5
+          line: 4
         }
       ]
     },
@@ -288,7 +288,7 @@ div(v-else-if="a && b")
       errors: [
         {
           messageId: 'unexpected',
-          line: 4
+          line: 3
         }
       ]
     },
@@ -301,7 +301,7 @@ div(v-else-if="a && b && c")
       errors: [
         {
           messageId: 'unexpected',
-          line: 4
+          line: 3
         }
       ]
     },
@@ -314,7 +314,7 @@ div(v-else-if="b && c")
       errors: [
         {
           messageId: 'unexpected',
-          line: 4
+          line: 3
         }
       ]
     },
@@ -328,7 +328,7 @@ div(v-else-if="d && (c && e && b || a)")
       errors: [
         {
           messageId: 'unexpected',
-          line: 5
+          line: 4
         }
       ]
     },
@@ -342,17 +342,17 @@ div(v-else-if="baz && foo")
       errors: [
         {
           messageId: 'unexpected',
-          line: 4,
-          column: 25,
-          endLine: 4,
-          endColumn: 28
+          line: 3,
+          column: 16,
+          endLine: 3,
+          endColumn: 19
         },
         {
           messageId: 'unexpected',
-          line: 5,
-          column: 32,
-          endLine: 5,
-          endColumn: 35
+          line: 4,
+          column: 23,
+          endLine: 4,
+          endColumn: 26
         }
       ]
     },
@@ -364,8 +364,8 @@ div(v-else-if="a && b && c")
 div(v-else-if="a && c && b")
 </template>`,
       errors: [
-        { messageId: 'unexpected', line: 4 },
-        { messageId: 'unexpected', line: 5 }
+        { messageId: 'unexpected', line: 3 },
+        { messageId: 'unexpected', line: 4 }
       ]
     },
     {
@@ -376,8 +376,8 @@ div(v-else-if="a")
 div(v-else-if="b")
 </template>`,
       errors: [
-        { messageId: 'unexpected', line: 4 },
-        { messageId: 'unexpected', line: 5 }
+        { messageId: 'unexpected', line: 3 },
+        { messageId: 'unexpected', line: 4 }
       ]
     },
     {
