@@ -63,39 +63,39 @@ export default {
           });
         }
       }
+    }
 
-      for (const { token, index } of memory) {
-        if (
-          token.name === 'v-else-if' &&
-          // Potentially we could optimize this loop by breaking out with a classic for-loop.
-          memory.some(
-            (t) =>
-              // We only need to check tokens before the current token
-              t.index < index && t.token.val === token.val
-          )
-        ) {
-          const loc: lex.Loc = token.loc;
+    for (const { token, index } of memory) {
+      if (
+        token.name === 'v-else-if' &&
+        // Potentially we could optimize this loop by breaking out with a classic for-loop.
+        memory.some(
+          (t) =>
+            // We only need to check tokens before the current token
+            t.index < index && t.token.val === token.val
+        )
+      ) {
+        const loc: lex.Loc = token.loc;
 
-          const columnStart: number = loc.start.column - 1;
-          const columnEnd: number = columnStart + 'v-else-if'.length;
+        const columnStart: number = loc.start.column - 1;
+        const columnEnd: number = columnStart + 'v-else-if'.length;
 
-          context.report({
-            node: {} as unknown as Rule.Node,
-            loc: {
+        context.report({
+          node: {} as unknown as Rule.Node,
+          loc: {
+            line: loc.start.line,
+            column: loc.start.column - 1,
+            start: {
               line: loc.start.line,
-              column: loc.start.column - 1,
-              start: {
-                line: loc.start.line,
-                column: columnStart
-              },
-              end: {
-                line: loc.end.line,
-                column: columnEnd
-              }
+              column: columnStart
             },
-            messageId: 'unexpected'
-          });
-        }
+            end: {
+              line: loc.end.line,
+              column: columnEnd
+            }
+          },
+          messageId: 'unexpected'
+        });
       }
     }
 
