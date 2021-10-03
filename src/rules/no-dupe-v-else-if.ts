@@ -48,7 +48,10 @@ export default {
       if (token.type === 'attribute') {
         if (token.name === 'v-if') {
           ifs[indentLevel] = [token];
-        } else if (token.name === 'v-else-if') {
+        } else if (
+          token.name === 'v-else-if' &&
+          ((typeof token.val === 'string' && token.val) || typeof token.val !== 'string')
+        ) {
           if (!Array.isArray(ifs[indentLevel])) {
             ifs[indentLevel] = [];
           }
