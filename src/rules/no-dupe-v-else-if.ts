@@ -30,6 +30,7 @@ export default {
 
     let indentLevel: number = 0;
     const ifs: lex.AttributeToken[][] = [];
+    const currentTagHasIf: boolean[] = [];
 
     for (let index: number = 0; index < tokens.length; index++) {
       const token: lex.Token = tokens[index]!;
@@ -45,13 +46,23 @@ export default {
         continue;
       }
 
+      if (token.type === 'tag') {
+        if (!currentTagHasIf[indentLevel]) {
+          delete ifs[indentLevel];
+        }
+        currentTagHasIf[indentLevel] = false;
+        continue;
+      }
+
       if (token.type === 'attribute') {
         if (token.name === 'v-if') {
           ifs[indentLevel] = [token];
+          currentTagHasIf[indentLevel] = true;
         } else if (
           token.name === 'v-else-if' &&
           ((typeof token.val === 'string' && token.val) || typeof token.val !== 'string')
         ) {
+          currentTagHasIf[indentLevel] = true;
           if (!Array.isArray(ifs[indentLevel])) {
             ifs[indentLevel] = [];
           }
