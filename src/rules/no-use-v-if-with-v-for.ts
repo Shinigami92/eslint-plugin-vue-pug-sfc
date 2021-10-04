@@ -61,16 +61,10 @@ export default {
 
     const { allowUsingIterationVar = false } = context.options[0] ?? {};
 
-    let lastTagTokenIndex: number | undefined;
     let lastStartAttributesTokenIndex: number | undefined;
 
     for (let index: number = 0; index < tokens.length; index++) {
       const token: Token = tokens[index]!;
-
-      if (token.type === 'tag') {
-        lastTagTokenIndex = index;
-        continue;
-      }
 
       if (token.type === 'start-attributes') {
         lastStartAttributesTokenIndex = index;
@@ -113,11 +107,12 @@ export default {
 
         const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
         if (allowUsingIterationVar) {
-          // TODO: Check if `variable` in `v-for` is used in `v-if`
+          // Check if `variable` in `v-for` is used in `v-if`
           if (usesVariable(iterationVariable, vIfValue)) {
             continue;
           }
         } else {
+          // Check if `variable` in `v-for` is not used in `v-if`
           if (!usesVariable(iterationVariable, vIfValue)) {
             shouldMove = true;
           }
@@ -126,7 +121,7 @@ export default {
         const loc: Loc = token.loc;
 
         const columnStart: number = loc.start.column - 1;
-        const columnEnd: number = columnStart + token.name.length;
+        const columnEnd: number = loc.end.column - 1;
 
         context.report({
           node: {} as unknown as Rule.Node,
