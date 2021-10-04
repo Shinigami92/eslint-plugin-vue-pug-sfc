@@ -68,9 +68,17 @@ export default {
           endAttributesTokenIndex
         ) as AttributeToken[];
         const vForAttribute: AttributeToken | undefined = attributeTokens.find((attr) => attr.name === 'v-for');
-        if (!vForAttribute) {
+        if (
+          !vForAttribute ||
+          // Ignore the rule if `val` is not a string
+          typeof vForAttribute.val !== 'string'
+        ) {
           continue;
         }
+
+        const vForVar: string = vForAttribute.val.slice(1, -1); // Remove surrounding quotes
+        const iteratorName: string = vForVar.split(' in ')[1]?.trim() ?? '';
+        const kind: string = /^(?!\d)\w+$/i.test(iteratorName) ? 'variable' : 'expression';
 
         const loc: Loc = token.loc;
 
@@ -93,10 +101,7 @@ export default {
           },
           message:
             "The '{{iteratorName}}' {{kind}} inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          data: {
-            iteratorName: '', // iteratorNode.type === 'Identifier' ? iteratorNode.name : context.getSourceCode().getText(iteratorNode),
-            kind: '' // iteratorNode.type === 'Identifier' ? 'variable' : 'expression'
-          }
+          data: { iteratorName, kind }
         });
       }
     }
