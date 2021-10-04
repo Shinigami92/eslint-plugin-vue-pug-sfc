@@ -6,8 +6,6 @@ const ruleTester: RuleTester = new RuleTester({
   parserOptions: { ecmaVersion: 2019, sourceType: 'module' }
 });
 
-// TODO: Lines and columns are not being set correctly yet!
-
 ruleTester.run('no-dupe-v-else-if', rule, {
   valid: [
     {
