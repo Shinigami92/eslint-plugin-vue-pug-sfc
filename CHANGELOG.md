@@ -9,6 +9,8 @@
 - Migrated rules from [eslint-plugin-vue](https://github.com/vuejs/eslint-plugin-vue)
   - `attribute-hyphenation` ([#57])
   - `component-name-in-template-casing` ([#79])
+  - `no-dupe-v-else-if` ([#9])
+    - _only simply checked_
   - `no-duplicate-attributes` ([#10])
   - `no-use-v-if-with-v-for` ([#17])
   - `require-component-is` ([#18])
@@ -18,6 +20,7 @@
     - option `always` currently not supported
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
+[#9]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/9
 [#10]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/10
 [#17]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/17
 [#18]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/18
