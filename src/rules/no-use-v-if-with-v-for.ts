@@ -2,6 +2,31 @@ import type { Rule } from 'eslint';
 import type { AttributeToken, Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 
+/**
+ * Check if the given string `expression` uses a given `variable`.
+ *
+ * This function calls itself recursively for each `variable` if the `variable` argument is a tuple or destructuring.
+ *
+ * @param variable The variable to check for. Can also contain tuples or destructuring.
+ * @param expression The expression to check if the variables is used.
+ * @returns `true` if the variable is used in the given expression, `false` otherwise.
+ */
+function usesVariable(variable: string, expression: string): boolean {
+  if (new RegExp(`\\s?${variable}(?!\\w)`).test(expression)) {
+    return true;
+  }
+
+  if ((variable.startsWith('{') && variable.endsWith('}')) || (variable.startsWith('(') && variable.endsWith(')'))) {
+    const variables: string[] = variable
+      .slice(1, -1)
+      .split(',')
+      .map((v) => v.trim());
+    return variables.some((variable) => usesVariable(variable, expression));
+  }
+
+  return false;
+}
+
 export default {
   meta: {
     type: 'suggestion',
@@ -82,14 +107,21 @@ export default {
         iterationVariable = (iterationVariable ?? '').trim();
         iteratorName = (iteratorName ?? '').trim();
 
+        const kind: 'variable' | 'expression' = /^(?!\d)\w+$/.test(iteratorName) ? 'variable' : 'expression';
+
+        let shouldMove: boolean = false;
+
+        const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
         if (allowUsingIterationVar) {
-          const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
-          if (vIfValue === iterationVariable) {
+          // TODO: Check if `variable` in `v-for` is used in `v-if`
+          if (usesVariable(iterationVariable, vIfValue)) {
             continue;
           }
+        } else {
+          if (!usesVariable(iterationVariable, vIfValue)) {
+            shouldMove = true;
+          }
         }
-
-        const kind: string = /^(?!\d)\w+$/i.test(iteratorName) ? 'variable' : 'expression';
 
         const loc: Loc = token.loc;
 
@@ -110,9 +142,10 @@ export default {
               column: columnEnd
             }
           },
-          message:
-            "The '{{iteratorName}}' {{kind}} inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          data: { iteratorName, kind }
+          message: shouldMove
+            ? "This 'v-if' should be moved to the wrapper element."
+            : "The '{{iteratorName}}' {{kind}} inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
+          data: shouldMove ? undefined : { iteratorName, kind }
         });
       }
     }
@@ -120,9 +153,3 @@ export default {
     return {};
   }
 } as Rule.RuleModule;
-
-// context.report({
-//   node,
-//   loc: node.loc,
-//   message: "This 'v-if' should be moved to the wrapper element."
-// })
