@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import * as lex from 'pug-lexer';
+import type { AttributeToken, Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 
 export default {
@@ -34,11 +34,45 @@ export default {
       return {};
     }
 
+    const { allowUsingIterationVar = false } = context.options[0] ?? {};
+
+    let lastTagTokenIndex: number | undefined;
+    let lastStartAttributesTokenIndex: number | undefined;
+
     for (let index: number = 0; index < tokens.length; index++) {
-      const token: lex.Token = tokens[index]!;
+      const token: Token = tokens[index]!;
+
+      if (token.type === 'tag') {
+        lastTagTokenIndex = index;
+        continue;
+      }
+
+      if (token.type === 'start-attributes') {
+        lastStartAttributesTokenIndex = index;
+        continue;
+      }
 
       if (token.type === 'attribute' && token.name === 'v-if') {
-        const loc: lex.Loc = token.loc;
+        let endAttributesTokenIndex: number = index;
+        for (let index2: number = index; index2 < tokens.length; index2++) {
+          endAttributesTokenIndex = index2;
+          const element: Token = tokens[index2]!;
+          if (element.type === 'end-attributes') {
+            break;
+          }
+        }
+
+        // Find `v-for` attribute in attributes
+        const attributeTokens: AttributeToken[] = tokens.slice(
+          lastStartAttributesTokenIndex! + 1,
+          endAttributesTokenIndex
+        ) as AttributeToken[];
+        const vForAttribute: AttributeToken | undefined = attributeTokens.find((attr) => attr.name === 'v-for');
+        if (!vForAttribute) {
+          continue;
+        }
+
+        const loc: Loc = token.loc;
 
         const columnStart: number = loc.start.column - 1;
         const columnEnd: number = columnStart + token.name.length;
