@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-vue-pug-sfc",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "description": "eslint plugin vue pug sfc",
   "main": "dist/index.js",
   "scripts": {
