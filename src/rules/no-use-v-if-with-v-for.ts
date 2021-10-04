@@ -77,7 +77,18 @@ export default {
         }
 
         const vForVar: string = vForAttribute.val.slice(1, -1); // Remove surrounding quotes
-        const iteratorName: string = vForVar.split(' in ')[1]?.trim() ?? '';
+        let [iterationVariable, iteratorName] = vForVar.split(' in ');
+
+        iterationVariable = (iterationVariable ?? '').trim();
+        iteratorName = (iteratorName ?? '').trim();
+
+        if (allowUsingIterationVar) {
+          const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
+          if (vIfValue === iterationVariable) {
+            continue;
+          }
+        }
+
         const kind: string = /^(?!\d)\w+$/i.test(iteratorName) ? 'variable' : 'expression';
 
         const loc: Loc = token.loc;
