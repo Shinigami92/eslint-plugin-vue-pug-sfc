@@ -113,7 +113,9 @@ div
       errors: [
         {
           message: "This 'v-if' should be moved to the wrapper element.",
-          line: 3
+          line: 3,
+          column: 25,
+          endColumn: 37
         }
       ]
     },
@@ -121,12 +123,14 @@ div
       filename: 'test.vue',
       code: `<template lang="pug">
 div
-  div(v-for="x in list" v-if="list.length&gt;0")
+  div(v-for="x in list" v-if="list.length > 0")
 </template>`,
       errors: [
         {
           message: "This 'v-if' should be moved to the wrapper element.",
-          line: 3
+          line: 3,
+          column: 25,
+          endColumn: 47
         }
       ]
     },
@@ -140,7 +144,9 @@ div
         {
           message:
             "The 'list' variable inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          line: 3
+          line: 3,
+          column: 25,
+          endColumn: 42
         }
       ]
     },
@@ -154,7 +160,9 @@ ul
         {
           message:
             "The 'users' variable inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          line: 3
+          line: 3,
+          column: 28,
+          endColumn: 48
         }
       ]
     },
@@ -167,7 +175,9 @@ ul
       errors: [
         {
           message: "This 'v-if' should be moved to the wrapper element.",
-          line: 3
+          line: 3,
+          column: 28,
+          endColumn: 50
         }
       ]
     },
@@ -181,7 +191,9 @@ div
         {
           message:
             "The 'list' variable inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          line: 3
+          line: 3,
+          column: 31,
+          endColumn: 48
         }
       ]
     },
@@ -195,7 +207,9 @@ ul
         {
           message:
             "The 'users' variable inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          line: 3
+          line: 3,
+          column: 40,
+          endColumn: 60
         }
       ]
     },
@@ -208,7 +222,9 @@ ul
       errors: [
         {
           message: "This 'v-if' should be moved to the wrapper element.",
-          line: 3
+          line: 3,
+          column: 40,
+          endColumn: 62
         }
       ]
     },
@@ -222,7 +238,9 @@ div
         {
           message:
             "The 'list()' expression inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          line: 3
+          line: 3,
+          column: 29,
+          endColumn: 46
         }
       ]
     },
@@ -236,7 +254,9 @@ div
         {
           message:
             "The '5' expression inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          line: 3
+          line: 3,
+          column: 22,
+          endColumn: 30
         }
       ]
     }
