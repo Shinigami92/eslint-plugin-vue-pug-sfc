@@ -18,6 +18,7 @@
     - _could have some issues with `template`/`slot`, please report in the issue_
   - `this-in-template` ([#6])
     - option `always` currently not supported
+  - `use-v-on-exact` ([#20])
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
 [#9]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/9
@@ -25,5 +26,6 @@
 [#17]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/17
 [#18]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/18
 [#19]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/19
+[#20]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/20
 [#57]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/57
 [#79]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/79
