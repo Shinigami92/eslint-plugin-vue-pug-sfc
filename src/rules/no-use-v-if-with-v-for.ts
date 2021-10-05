@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
 import type { AttributeToken, Loc, Token } from 'pug-lexer';
-import { checkIsVueFile, parsePugContent } from '../utils';
+import { processRule } from '../utils';
 
 /**
  * Check if the given string `expression` uses a given `variable`.
@@ -49,102 +49,92 @@ export default {
     ]
   },
   create(context) {
-    if (!checkIsVueFile(context)) {
-      return {};
-    }
+    return processRule(context, () => {
+      const { allowUsingIterationVar = false } = context.options[0] ?? {};
 
-    const { tokens } = parsePugContent(context);
+      let lastStartAttributesTokenIndex: number | undefined;
 
-    if (tokens.length === 0) {
-      return {};
-    }
-
-    const { allowUsingIterationVar = false } = context.options[0] ?? {};
-
-    let lastStartAttributesTokenIndex: number | undefined;
-
-    for (let index: number = 0; index < tokens.length; index++) {
-      const token: Token = tokens[index]!;
-
-      if (token.type === 'start-attributes') {
-        lastStartAttributesTokenIndex = index;
-        continue;
-      }
-
-      if (token.type === 'attribute' && token.name === 'v-if') {
-        let endAttributesTokenIndex: number = index;
-        for (let index2: number = index; index2 < tokens.length; index2++) {
-          endAttributesTokenIndex = index2;
-          const element: Token = tokens[index2]!;
-          if (element.type === 'end-attributes') {
-            break;
+      return {
+        'start-attributes'(_, { index }) {
+          lastStartAttributesTokenIndex = index;
+        },
+        attribute(token, { index, tokens }) {
+          if (token.name !== 'v-if') {
+            return;
           }
-        }
 
-        // Find `v-for` attribute in attributes
-        const attributeTokens: AttributeToken[] = tokens.slice(
-          lastStartAttributesTokenIndex! + 1,
-          endAttributesTokenIndex
-        ) as AttributeToken[];
-        const vForAttribute: AttributeToken | undefined = attributeTokens.find((attr) => attr.name === 'v-for');
-        if (
-          !vForAttribute ||
-          // Ignore the rule if `val` is not a string
-          typeof vForAttribute.val !== 'string'
-        ) {
-          continue;
-        }
-
-        const vForVar: string = vForAttribute.val.slice(1, -1); // Remove surrounding quotes
-        let [iterationVariable, iteratorName] = vForVar.split(' in ');
-
-        iterationVariable = (iterationVariable ?? '').trim();
-        iteratorName = (iteratorName ?? '').trim();
-
-        const kind: 'variable' | 'expression' = /^(?!\d)\w+$/.test(iteratorName) ? 'variable' : 'expression';
-
-        let shouldMove: boolean = false;
-
-        const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
-        if (allowUsingIterationVar) {
-          // Check if `variable` in `v-for` is used in `v-if`
-          if (usesVariable(iterationVariable, vIfValue)) {
-            continue;
-          }
-        } else {
-          // Check if `variable` in `v-for` is not used in `v-if`
-          if (!usesVariable(iterationVariable, vIfValue)) {
-            shouldMove = true;
-          }
-        }
-
-        const loc: Loc = token.loc;
-
-        const columnStart: number = loc.start.column - 1;
-        const columnEnd: number = loc.end.column - 1;
-
-        context.report({
-          node: {} as unknown as Rule.Node,
-          loc: {
-            line: loc.start.line,
-            column: loc.start.column - 1,
-            start: {
-              line: loc.start.line,
-              column: columnStart
-            },
-            end: {
-              line: loc.end.line,
-              column: columnEnd
+          let endAttributesTokenIndex: number = index;
+          for (let index2: number = index; index2 < tokens.length; index2++) {
+            endAttributesTokenIndex = index2;
+            const element: Token = tokens[index2]!;
+            if (element.type === 'end-attributes') {
+              break;
             }
-          },
-          message: shouldMove
-            ? "This 'v-if' should be moved to the wrapper element."
-            : "The '{{iteratorName}}' {{kind}} inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-          data: shouldMove ? undefined : { iteratorName, kind }
-        });
-      }
-    }
+          }
 
-    return {};
+          // Find `v-for` attribute in attributes
+          const attributeTokens: AttributeToken[] = tokens.slice(
+            lastStartAttributesTokenIndex! + 1,
+            endAttributesTokenIndex
+          ) as AttributeToken[];
+          const vForAttribute: AttributeToken | undefined = attributeTokens.find((attr) => attr.name === 'v-for');
+          if (
+            !vForAttribute ||
+            // Ignore the rule if `val` is not a string
+            typeof vForAttribute.val !== 'string'
+          ) {
+            return;
+          }
+
+          const vForVar: string = vForAttribute.val.slice(1, -1); // Remove surrounding quotes
+          let [iterationVariable, iteratorName] = vForVar.split(' in ');
+
+          iterationVariable = (iterationVariable ?? '').trim();
+          iteratorName = (iteratorName ?? '').trim();
+
+          const kind: 'variable' | 'expression' = /^(?!\d)\w+$/.test(iteratorName) ? 'variable' : 'expression';
+
+          let shouldMove: boolean = false;
+
+          const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
+          if (allowUsingIterationVar) {
+            // Check if `variable` in `v-for` is used in `v-if`
+            if (usesVariable(iterationVariable, vIfValue)) {
+              return;
+            }
+          } else {
+            // Check if `variable` in `v-for` is not used in `v-if`
+            if (!usesVariable(iterationVariable, vIfValue)) {
+              shouldMove = true;
+            }
+          }
+
+          const loc: Loc = token.loc;
+
+          const columnStart: number = loc.start.column - 1;
+          const columnEnd: number = loc.end.column - 1;
+
+          context.report({
+            node: {} as unknown as Rule.Node,
+            loc: {
+              line: loc.start.line,
+              column: loc.start.column - 1,
+              start: {
+                line: loc.start.line,
+                column: columnStart
+              },
+              end: {
+                line: loc.end.line,
+                column: columnEnd
+              }
+            },
+            message: shouldMove
+              ? "This 'v-if' should be moved to the wrapper element."
+              : "The '{{iteratorName}}' {{kind}} inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
+            data: shouldMove ? undefined : { iteratorName, kind }
+          });
+        }
+      };
+    });
   }
 } as Rule.RuleModule;

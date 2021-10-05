@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
-import type { Loc, Token } from 'pug-lexer';
-import { checkIsVueFile, parsePugContent } from '../utils';
+import type { Loc } from 'pug-lexer';
+import { processRule } from '../utils';
 
 export default {
   meta: {
@@ -27,77 +27,63 @@ export default {
     ]
   },
   create(context) {
-    if (!checkIsVueFile(context)) {
-      return {};
-    }
+    return processRule(context, () => {
+      const { allowCoexistStyle = true, allowCoexistClass = true } = context.options[0] ?? {};
 
-    const { tokens } = parsePugContent(context);
+      let currentAttributeNames: string[] = [];
 
-    if (tokens.length === 0) {
-      return {};
-    }
-
-    const { allowCoexistStyle = true, allowCoexistClass = true } = context.options[0] ?? {};
-
-    let currentAttributeNames: string[] = [];
-
-    function findDuplicate(name: string): string | undefined {
-      if (allowCoexistClass && /^(v-bind)?:?class$/i.test(name)) {
-        return;
-      }
-      if (allowCoexistStyle && /^(v-bind)?:?style$/i.test(name)) {
-        return;
-      }
-      return currentAttributeNames.find((attrName) => attrName === name);
-    }
-
-    for (let index: number = 0; index < tokens.length; index++) {
-      const token: Token = tokens[index]!;
-
-      if (token.type === 'start-attributes') {
-        currentAttributeNames = [];
-        continue;
-      }
-
-      if (token.type === 'attribute') {
-        const attributeName: string = token.name;
-
-        if (/^(@|v-on:)/.test(attributeName)) {
-          continue;
+      function findDuplicate(name: string): string | undefined {
+        if (allowCoexistClass && /^(v-bind)?:?class$/i.test(name)) {
+          return;
         }
+        if (allowCoexistStyle && /^(v-bind)?:?style$/i.test(name)) {
+          return;
+        }
+        return currentAttributeNames.find((attrName) => attrName === name);
+      }
 
-        const cleanedAttributeName: string = attributeName.replace(/^(v-bind)?:/, '');
+      return {
+        'start-attributes'() {
+          currentAttributeNames = [];
+        },
+        attribute(token) {
+          const attributeName: string = token.name;
 
-        const duplicateAttributeName: string | undefined = findDuplicate(cleanedAttributeName);
-        if (duplicateAttributeName) {
-          const loc: Loc = token.loc;
+          if (/^(@|v-on:)/.test(attributeName)) {
+            return;
+          }
 
-          const columnStart: number = loc.start.column - 1;
-          const columnEnd: number = columnStart + attributeName.length;
+          const cleanedAttributeName: string = attributeName.replace(/^(v-bind)?:/, '');
 
-          context.report({
-            node: {} as unknown as Rule.Node,
-            loc: {
-              line: loc.start.line,
-              column: loc.start.column - 1,
-              start: {
+          const duplicateAttributeName: string | undefined = findDuplicate(cleanedAttributeName);
+          if (duplicateAttributeName) {
+            const loc: Loc = token.loc;
+
+            const columnStart: number = loc.start.column - 1;
+            const columnEnd: number = columnStart + attributeName.length;
+
+            context.report({
+              node: {} as unknown as Rule.Node,
+              loc: {
                 line: loc.start.line,
-                column: columnStart
+                column: loc.start.column - 1,
+                start: {
+                  line: loc.start.line,
+                  column: columnStart
+                },
+                end: {
+                  line: loc.end.line,
+                  column: columnEnd
+                }
               },
-              end: {
-                line: loc.end.line,
-                column: columnEnd
-              }
-            },
-            message: "Duplicate attribute '{{name}}'.",
-            data: { name: duplicateAttributeName }
-          });
+              message: "Duplicate attribute '{{name}}'.",
+              data: { name: duplicateAttributeName }
+            });
+          }
+
+          currentAttributeNames.push(cleanedAttributeName);
         }
-
-        currentAttributeNames.push(cleanedAttributeName);
-      }
-    }
-
-    return {};
+      };
+    });
   }
 } as Rule.RuleModule;

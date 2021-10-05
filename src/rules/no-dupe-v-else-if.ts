@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
-import type { AttributeToken, Loc, Token } from 'pug-lexer';
-import { checkIsVueFile, parsePugContent } from '../utils';
+import type { AttributeToken, Loc } from 'pug-lexer';
+import { processRule } from '../utils';
 
 function isSubset(operandsA: string | boolean, operandsB: string | boolean): boolean {
   // TODO: Check conditions more deeply
@@ -23,84 +23,66 @@ export default {
     }
   },
   create(context) {
-    if (!checkIsVueFile(context)) {
-      return {};
-    }
+    return processRule(context, () => {
+      let indentLevel: number = 0;
+      const ifs: AttributeToken[][] = [];
+      const currentTagHasIf: boolean[] = [];
 
-    const { tokens } = parsePugContent(context);
-
-    if (tokens.length === 0) {
-      return {};
-    }
-
-    let indentLevel: number = 0;
-    const ifs: AttributeToken[][] = [];
-    const currentTagHasIf: boolean[] = [];
-
-    for (let index: number = 0; index < tokens.length; index++) {
-      const token: Token = tokens[index]!;
-
-      if (token.type === 'indent') {
-        indentLevel++;
-        continue;
-      }
-
-      if (token.type === 'outdent') {
-        delete ifs[indentLevel];
-        indentLevel--;
-        continue;
-      }
-
-      if (token.type === 'tag') {
-        if (!currentTagHasIf[indentLevel]) {
+      return {
+        indent() {
+          indentLevel++;
+        },
+        outdent() {
           delete ifs[indentLevel];
-        }
-        currentTagHasIf[indentLevel] = false;
-        continue;
-      }
-
-      if (token.type === 'attribute') {
-        if (token.name === 'v-if') {
-          ifs[indentLevel] = [token];
-          currentTagHasIf[indentLevel] = true;
-        } else if (
-          token.name === 'v-else-if' &&
-          ((typeof token.val === 'string' && token.val) || typeof token.val !== 'string')
-        ) {
-          currentTagHasIf[indentLevel] = true;
-          if (!Array.isArray(ifs[indentLevel])) {
-            ifs[indentLevel] = [];
+          indentLevel--;
+        },
+        tag() {
+          if (!currentTagHasIf[indentLevel]) {
+            delete ifs[indentLevel];
           }
+          currentTagHasIf[indentLevel] = false;
+        },
+        attribute(token) {
+          if (token.name === 'v-if') {
+            ifs[indentLevel] = [token];
+            currentTagHasIf[indentLevel] = true;
+          } else if (
+            token.name === 'v-else-if' &&
+            ((typeof token.val === 'string' && token.val) || typeof token.val !== 'string')
+          ) {
+            currentTagHasIf[indentLevel] = true;
+            if (!Array.isArray(ifs[indentLevel])) {
+              ifs[indentLevel] = [];
+            }
 
-          if (ifs[indentLevel]!.some((tok) => isSubset(tok.val, token.val))) {
-            const loc: Loc = token.loc;
+            if (ifs[indentLevel]!.some((tok) => isSubset(tok.val, token.val))) {
+              const loc: Loc = token.loc;
 
-            const columnStart: number = loc.start.column - 1 + 'v-else-if="'.length;
-            const columnEnd: number = columnStart - 1 + String(token.val).length - '"'.length;
+              const columnStart: number = loc.start.column - 1 + 'v-else-if="'.length;
+              const columnEnd: number = columnStart - 1 + String(token.val).length - '"'.length;
 
-            context.report({
-              node: {} as unknown as Rule.Node,
-              loc: {
-                line: loc.start.line,
-                column: loc.start.column - 1,
-                start: {
+              context.report({
+                node: {} as unknown as Rule.Node,
+                loc: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: loc.start.column - 1,
+                  start: {
+                    line: loc.start.line,
+                    column: columnStart
+                  },
+                  end: {
+                    line: loc.end.line,
+                    column: columnEnd
+                  }
                 },
-                end: {
-                  line: loc.end.line,
-                  column: columnEnd
-                }
-              },
-              messageId: 'unexpected'
-            });
+                messageId: 'unexpected'
+              });
+            }
+
+            ifs[indentLevel]!.push(token);
           }
-
-          ifs[indentLevel]!.push(token);
         }
-      }
-    }
-
-    return {};
+      };
+    });
   }
 } as Rule.RuleModule;

@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
-import type { Loc, Token } from 'pug-lexer';
-import { checkIsVueFile, parsePugContent } from '../utils';
+import type { Loc } from 'pug-lexer';
+import { processRule } from '../utils';
 import { getExactConverter } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
 import { isMathMlWellKnownElementName } from '../utils/math-ml-element';
@@ -42,107 +42,95 @@ export default {
     ]
   },
   create(context) {
-    if (!checkIsVueFile(context)) {
-      return {};
-    }
+    return processRule(context, () => {
+      const useHyphenated: boolean = context.options[0] !== 'never';
+      const { ignore = [] } = context.options[1] ?? {};
+      const ignoredAttributes: string[] = ['data-', 'aria-', 'slot-scope', ...SVG_ATTRIBUTES_WEIRD_CASE, ...ignore];
 
-    const { tokens } = parsePugContent(context);
+      const caseConverter: (str: string) => string = getExactConverter(useHyphenated ? 'kebab-case' : 'camelCase');
 
-    if (tokens.length === 0) {
-      return {};
-    }
+      function isIgnoredAttribute(value: string): boolean {
+        const isIgnored: boolean = ignoredAttributes.some((attr) => value.includes(attr));
 
-    const useHyphenated: boolean = context.options[0] !== 'never';
-    const { ignore = [] } = context.options[1] ?? {};
-    const ignoredAttributes: string[] = ['data-', 'aria-', 'slot-scope', ...SVG_ATTRIBUTES_WEIRD_CASE, ...ignore];
-
-    const caseConverter: (str: string) => string = getExactConverter(useHyphenated ? 'kebab-case' : 'camelCase');
-
-    function isIgnoredAttribute(value: string): boolean {
-      const isIgnored: boolean = ignoredAttributes.some((attr) => value.includes(attr));
-
-      if (isIgnored) {
-        return true;
-      }
-
-      // Check if attribute is a variable binding
-      if (/^(v-bind)?:\[.+\]$/.test(value)) {
-        return true;
-      }
-
-      if (useHyphenated) {
-        return value.toLowerCase() === value;
-      }
-
-      // Check if attribute contains a hyphen
-      return !value.includes('-');
-    }
-
-    for (let index: number = 0; index < tokens.length; index++) {
-      const token: Token = tokens[index]!;
-
-      if (token.type === 'attribute') {
-        const attributeName: string = token.name;
-
-        // TODO: Theoretically this could be optimized with saving the previous `tag` token on `start-attributes` token.
-        const tagName: string = previousTagToken(tokens, index)?.val ?? '';
-        if (
-          tagName &&
-          (isHtmlWellKnownElementName(tagName) ||
-            isSvgWellKnownElementName(tagName) ||
-            isMathMlWellKnownElementName(tagName))
-        ) {
-          continue;
+        if (isIgnored) {
+          return true;
         }
 
-        if (!attributeName || isIgnoredAttribute(attributeName)) {
-          continue;
+        // Check if attribute is a variable binding
+        if (/^(v-bind)?:\[.+\]$/.test(value)) {
+          return true;
         }
 
-        const loc: Loc = token.loc;
+        if (useHyphenated) {
+          return value.toLowerCase() === value;
+        }
 
-        // @ts-expect-error: Access range from token
-        const range: [number, number] = token.range;
-        const columnStart: number = loc.start.column - 1;
-        const columnEnd: number = columnStart + attributeName.length;
+        // Check if attribute contains a hyphen
+        return !value.includes('-');
+      }
 
-        context.report({
-          node: {
-            type: /^(v-bind)?:/.test(attributeName) ? 'VDirectiveKey' : 'VIdentifier'
-          } as unknown as Rule.Node,
-          loc: {
-            line: loc.start.line,
-            column: loc.start.column - 1,
-            start: {
-              line: loc.start.line,
-              column: columnStart
-            },
-            end: {
-              line: loc.end.line,
-              column: columnEnd
-            }
-          },
-          message: useHyphenated
-            ? "Attribute '{{text}}' must be hyphenated."
-            : "Attribute '{{text}}' can't be hyphenated.",
-          data: {
-            text: attributeName
-          },
-          fix(fixer) {
-            let converted: string;
-            const parts: string[] = attributeName.split(':');
-            if (parts.length > 1 && (parts[0] === '' || parts[0] === 'v-bind')) {
-              const name: string = parts.slice(1).join('');
-              converted = `${parts[0]}:${caseConverter(name)}`;
-            } else {
-              converted = caseConverter(attributeName);
-            }
-            return fixer.replaceTextRange([range[0], range[0] + attributeName.length], converted);
+      return {
+        attribute(token, { index, tokens }) {
+          const attributeName: string = token.name;
+
+          // TODO: Theoretically this could be optimized with saving the previous `tag` token on `start-attributes` token.
+          const tagName: string = previousTagToken(tokens, index)?.val ?? '';
+          if (
+            tagName &&
+            (isHtmlWellKnownElementName(tagName) ||
+              isSvgWellKnownElementName(tagName) ||
+              isMathMlWellKnownElementName(tagName))
+          ) {
+            return;
           }
-        });
-      }
-    }
 
-    return {};
+          if (!attributeName || isIgnoredAttribute(attributeName)) {
+            return;
+          }
+
+          const loc: Loc = token.loc;
+
+          // @ts-expect-error: Access range from token
+          const range: [number, number] = token.range;
+          const columnStart: number = loc.start.column - 1;
+          const columnEnd: number = columnStart + attributeName.length;
+
+          context.report({
+            node: {
+              type: /^(v-bind)?:/.test(attributeName) ? 'VDirectiveKey' : 'VIdentifier'
+            } as unknown as Rule.Node,
+            loc: {
+              line: loc.start.line,
+              column: loc.start.column - 1,
+              start: {
+                line: loc.start.line,
+                column: columnStart
+              },
+              end: {
+                line: loc.end.line,
+                column: columnEnd
+              }
+            },
+            message: useHyphenated
+              ? "Attribute '{{text}}' must be hyphenated."
+              : "Attribute '{{text}}' can't be hyphenated.",
+            data: {
+              text: attributeName
+            },
+            fix(fixer) {
+              let converted: string;
+              const parts: string[] = attributeName.split(':');
+              if (parts.length > 1 && (parts[0] === '' || parts[0] === 'v-bind')) {
+                const name: string = parts.slice(1).join('');
+                converted = `${parts[0]}:${caseConverter(name)}`;
+              } else {
+                converted = caseConverter(attributeName);
+              }
+              return fixer.replaceTextRange([range[0], range[0] + attributeName.length], converted);
+            }
+          });
+        }
+      };
+    });
   }
 } as Rule.RuleModule;
