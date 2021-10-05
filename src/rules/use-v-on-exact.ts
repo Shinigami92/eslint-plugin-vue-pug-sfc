@@ -2,6 +2,51 @@ import type { Rule } from 'eslint';
 import type { AttributeToken, Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 
+const SYSTEM_MODIFIERS: ReadonlyArray<string> = ['ctrl', 'shift', 'alt', 'meta'];
+const GLOBAL_MODIFIERS: ReadonlyArray<string> = ['stop', 'prevent', 'capture', 'self', 'once', 'passive', 'native'];
+
+type SystemModifier = 'ctrl' | 'shift' | 'alt' | 'meta';
+type GlobalModifier = 'stop' | 'prevent' | 'capture' | 'self' | 'once' | 'passive' | 'native';
+
+/**
+ * Checks whether given modifier is a key modifier.
+ */
+function isKeyModifier(modifier: string): boolean {
+  return !GLOBAL_MODIFIERS.includes(modifier) && !SYSTEM_MODIFIERS.includes(modifier);
+}
+
+/**
+ * Checks whether given modifier is system one.
+ */
+function isSystemModifier(modifier: string): boolean {
+  return SYSTEM_MODIFIERS.includes(modifier);
+}
+
+/**
+ * Checks whether given any of provided modifiers has system modifier.
+ */
+function hasSystemModifier(modifiers: string[]): boolean {
+  return modifiers.some(isSystemModifier);
+}
+
+/**
+ * Creates alphabetically sorted string with system modifiers.
+ *
+ * @returns e.g. "alt,ctrl,del,shift"
+ */
+function getSystemModifiersString(modifiers: string[]): string {
+  return modifiers.filter(isSystemModifier).sort().join(',');
+}
+
+/**
+ * Creates alphabetically sorted string with key modifiers.
+ *
+ * @returns e.g. "enter,tab"
+ */
+function getKeyModifiersString(modifiers: string[]): string {
+  return modifiers.filter(isKeyModifier).sort().join(',');
+}
+
 export default {
   meta: {
     type: 'suggestion',
@@ -29,6 +74,8 @@ export default {
     for (let index: number = 0; index < tokens.length; index++) {
       const token: Token = tokens[index]!;
 
+      // TODO: For components consider only events with `native` modifier
+
       // Reset attributes cache
       if (token.type === 'start-attributes') {
         eventAttributes = [];
@@ -50,6 +97,12 @@ export default {
         for (let outerIndex: number = 1; outerIndex < eventAttributes.length; outerIndex++) {
           const eventAttributeToken: AttributeToken = eventAttributes[outerIndex]!;
           const { name: eventName, modifiers: eventModifiersGroup } = eventAttributeMatches[outerIndex]!.groups!;
+          const eventModifiers: string[] = eventModifiersGroup?.split('.') ?? [];
+
+          if (eventModifiers.includes('exact')) {
+            // No need to check if `exact` modifier is already present
+            continue;
+          }
 
           for (let matchIndex: number = 0; matchIndex < eventAttributeMatches.length; matchIndex++) {
             if (matchIndex === outerIndex) {
@@ -60,39 +113,49 @@ export default {
             const { name: otherName, modifiers: otherModifiersGroup } = eventAttributeMatches[matchIndex]!.groups!;
 
             if (eventName === otherName) {
-              const eventModifiers: string[] = eventModifiersGroup?.split('.') ?? [];
+              const otherModifiers: string[] = otherModifiersGroup?.split('.') ?? [];
 
-              if (!eventModifiers.includes('exact')) {
-                const otherModifiers: string[] = otherModifiersGroup?.split('.') ?? [];
-                if (
-                  otherModifiers.length === 0 ||
-                  !eventModifiers.every((modifier) => otherModifiers.includes(modifier))
-                ) {
-                  continue;
-                }
+              const eventKeyModifiers: string = getKeyModifiersString(eventModifiers);
+              const otherKeyModifiers: string = getKeyModifiersString(otherModifiers);
 
-                const loc: Loc = eventAttributeToken.loc;
-
-                const columnStart: number = loc.start.column - 1;
-                const columnEnd: number = loc.end.column - 1;
-
-                context.report({
-                  node: {} as unknown as Rule.Node,
-                  loc: {
-                    line: loc.start.line,
-                    column: loc.start.column - 1,
-                    start: {
-                      line: loc.start.line,
-                      column: columnStart
-                    },
-                    end: {
-                      line: loc.end.line,
-                      column: columnEnd
-                    }
-                  },
-                  message: "Consider to use '.exact' modifier."
-                });
+              if (eventKeyModifiers && otherKeyModifiers && eventKeyModifiers !== otherKeyModifiers) {
+                continue;
               }
+
+              const eventSystemModifiers: string = getSystemModifiersString(eventModifiers);
+              const otherSystemModifiers: string = getSystemModifiersString(otherModifiers);
+
+              if (
+                !(
+                  otherModifiers.length >= 1 &&
+                  otherSystemModifiers !== eventSystemModifiers &&
+                  otherSystemModifiers.indexOf(eventSystemModifiers) > -1
+                )
+              ) {
+                continue;
+              }
+
+              const loc: Loc = eventAttributeToken.loc;
+
+              const columnStart: number = loc.start.column - 1;
+              const columnEnd: number = loc.end.column - 1;
+
+              context.report({
+                node: {} as unknown as Rule.Node,
+                loc: {
+                  line: loc.start.line,
+                  column: loc.start.column - 1,
+                  start: {
+                    line: loc.start.line,
+                    column: columnStart
+                  },
+                  end: {
+                    line: loc.end.line,
+                    column: columnEnd
+                  }
+                },
+                message: "Consider to use '.exact' modifier."
+              });
             }
           }
         }
