@@ -1,6 +1,7 @@
 import type { Rule } from 'eslint';
 import type { AttributeToken, Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
+import { isCustomComponent } from '../utils/vue';
 
 const SYSTEM_MODIFIERS: ReadonlyArray<string> = ['ctrl', 'shift', 'alt', 'meta'];
 const GLOBAL_MODIFIERS: ReadonlyArray<string> = ['stop', 'prevent', 'capture', 'self', 'once', 'passive', 'native'];
@@ -69,12 +70,17 @@ export default {
       return {};
     }
 
+    let tagIsCustomComponent: boolean = false;
     let eventAttributes: AttributeToken[] = [];
 
     for (let index: number = 0; index < tokens.length; index++) {
       const token: Token = tokens[index]!;
 
-      // TODO: For components consider only events with `native` modifier
+      // For components consider only events with `native` modifier
+      if (token.type === 'tag') {
+        tagIsCustomComponent = isCustomComponent(token, tokens);
+        continue;
+      }
 
       // Reset attributes cache
       if (token.type === 'start-attributes') {
@@ -84,6 +90,11 @@ export default {
 
       // Add only event attributes
       if (token.type === 'attribute' && (token.name.startsWith('v-on:') || token.name.startsWith('@'))) {
+        if (tagIsCustomComponent && !token.name.includes('.native')) {
+          // For components consider only events with `native` modifier
+          continue;
+        }
+
         eventAttributes.push(token);
         continue;
       }
@@ -138,7 +149,7 @@ export default {
               const loc: Loc = eventAttributeToken.loc;
 
               const columnStart: number = loc.start.column - 1;
-              const columnEnd: number = loc.end.column - 1;
+              const columnEnd: number = columnStart + eventAttributeToken.name.length;
 
               context.report({
                 node: {} as unknown as Rule.Node,
