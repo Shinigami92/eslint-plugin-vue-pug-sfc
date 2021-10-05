@@ -172,18 +172,17 @@ export default {
       // Check if there are similar event attributes
       if (token.type === 'end-attributes' && eventAttributes.length > 1) {
         const groupedEvents: Record<string, AttributeToken[]> = groupEvents(eventAttributes);
-        Object.entries(groupedEvents).forEach(([eventName, eventsInGroup]) => {
+        for (const eventsInGroup of Object.values(groupedEvents)) {
           const hasEventWithKeyModifiers: boolean = eventsInGroup.some((event) =>
             hasSystemModifier(extractModifiers(event.name))
           );
 
           if (!hasEventWithKeyModifiers) {
-            return;
+            continue;
           }
 
           const conflictedEvents: AttributeToken[] = findConflictedEvents(eventsInGroup);
-
-          conflictedEvents.forEach((event) => {
+          for (const event of conflictedEvents) {
             const loc: Loc = event.loc;
 
             const columnStart: number = loc.start.column - 1;
@@ -205,8 +204,8 @@ export default {
               },
               message: "Consider to use '.exact' modifier."
             });
-          });
-        });
+          }
+        }
       }
     }
 
