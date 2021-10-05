@@ -28,7 +28,7 @@ function hasSystemModifier(modifiers: string[]): boolean {
 }
 
 function extractName(event: string): string {
-  return /^(v-on:|@)(?<name>\w+)\./.exec(event)?.groups?.name ?? '';
+  return event.replace(/^(v-on:|@)/, '').split('.')[0] ?? '';
 }
 
 function extractModifiers(event: string): string[] {
