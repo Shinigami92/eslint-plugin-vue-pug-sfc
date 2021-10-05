@@ -1,8 +1,7 @@
 // Copy of https://github.com/prettier/plugin-pug/blob/main/src/utils/vue.ts
 
 import type { Rule, SourceCode } from 'eslint';
-import type { AttributeToken, TagToken } from 'pug-lexer';
-import type { Token as PugToken } from 'pug-lexer';
+import type { AttributeToken, TagToken, Token as PugToken } from 'pug-lexer';
 import type {
   AssignmentProperty,
   ASTNode,
