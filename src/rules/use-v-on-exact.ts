@@ -6,9 +6,6 @@ import { isCustomComponent } from '../utils/vue';
 const SYSTEM_MODIFIERS: ReadonlyArray<string> = ['ctrl', 'shift', 'alt', 'meta'];
 const GLOBAL_MODIFIERS: ReadonlyArray<string> = ['stop', 'prevent', 'capture', 'self', 'once', 'passive', 'native'];
 
-type SystemModifier = 'ctrl' | 'shift' | 'alt' | 'meta';
-type GlobalModifier = 'stop' | 'prevent' | 'capture' | 'self' | 'once' | 'passive' | 'native';
-
 /**
  * Checks whether given modifier is a key modifier.
  */
@@ -30,6 +27,31 @@ function hasSystemModifier(modifiers: string[]): boolean {
   return modifiers.some(isSystemModifier);
 }
 
+function extractName(event: string): string {
+  return /^(v-on:|@)(?<name>\w+)\./.exec(event)?.groups?.name ?? '';
+}
+
+function extractModifiers(event: string): string[] {
+  return event.replace(/^(v-on:|@)(\w+).?/, '').split('.');
+}
+
+/**
+ * Group all events in an object, with keys representing each event name.
+ *
+ * @returns e.g. `{ click: [], keypress: [] }`
+ */
+function groupEvents(events: AttributeToken[]): Record<string, AttributeToken[]> {
+  return events.reduce<Record<string, AttributeToken[]>>((acc, event) => {
+    const name: string = extractName(event.name);
+    if (acc[name]) {
+      acc[name]!.push(event);
+    } else {
+      acc[name] = [event];
+    }
+    return acc;
+  }, {});
+}
+
 /**
  * Creates alphabetically sorted string with system modifiers.
  *
@@ -46,6 +68,54 @@ function getSystemModifiersString(modifiers: string[]): string {
  */
 function getKeyModifiersString(modifiers: string[]): string {
   return modifiers.filter(isKeyModifier).sort().join(',');
+}
+
+/**
+ * Compares two events based on their modifiers to detect possible event leakage.
+ */
+function hasConflictedModifiers(baseEvent: AttributeToken, event: AttributeToken): boolean {
+  if (event === baseEvent) {
+    return false;
+  }
+
+  const eventModifiers: string[] = extractModifiers(event.name);
+  if (eventModifiers.includes('exact')) {
+    return false;
+  }
+
+  const baseEventModifiers: string[] = extractModifiers(baseEvent.name);
+
+  const eventKeyModifiers: string = getKeyModifiersString(eventModifiers);
+  const baseEventKeyModifiers: string = getKeyModifiersString(baseEventModifiers);
+
+  if (eventKeyModifiers && baseEventKeyModifiers && eventKeyModifiers !== baseEventKeyModifiers) {
+    return false;
+  }
+
+  const eventSystemModifiers: string = getSystemModifiersString(eventModifiers);
+  const baseEventSystemModifiers: string = getSystemModifiersString(baseEventModifiers);
+
+  return (
+    baseEventModifiers.length >= 1 &&
+    baseEventSystemModifiers !== eventSystemModifiers &&
+    baseEventSystemModifiers.indexOf(eventSystemModifiers) > -1
+  );
+}
+
+/**
+ * Searches for events that might conflict with each other.
+ *
+ * @returns Conflicted events, without duplicates.
+ */
+function findConflictedEvents(events: AttributeToken[]): AttributeToken[] {
+  return events.reduce<AttributeToken[]>((acc, event) => {
+    return [
+      ...acc,
+      ...events
+        .filter((evt) => !acc.find((e) => evt === e)) // No duplicates
+        .filter(hasConflictedModifiers.bind(null, event))
+    ];
+  }, []);
 }
 
 export default {
@@ -101,75 +171,42 @@ export default {
 
       // Check if there are similar event attributes
       if (token.type === 'end-attributes' && eventAttributes.length > 1) {
-        const eventAttributeMatches: RegExpExecArray[] = eventAttributes.map(
-          (attr) => /^(v-on:|@)(?<name>[\w[\]]+)\.?(?<modifiers>(.+))?/.exec(attr.name)!
-        );
-        // Start at index 1 / skip first element
-        for (let outerIndex: number = 1; outerIndex < eventAttributes.length; outerIndex++) {
-          const eventAttributeToken: AttributeToken = eventAttributes[outerIndex]!;
-          const { name: eventName, modifiers: eventModifiersGroup } = eventAttributeMatches[outerIndex]!.groups!;
-          const eventModifiers: string[] = eventModifiersGroup?.split('.') ?? [];
+        const groupedEvents: Record<string, AttributeToken[]> = groupEvents(eventAttributes);
+        Object.entries(groupedEvents).forEach(([eventName, eventsInGroup]) => {
+          const hasEventWithKeyModifiers: boolean = eventsInGroup.some((event) =>
+            hasSystemModifier(extractModifiers(event.name))
+          );
 
-          if (eventModifiers.includes('exact')) {
-            // No need to check if `exact` modifier is already present
-            continue;
+          if (!hasEventWithKeyModifiers) {
+            return;
           }
 
-          for (let matchIndex: number = 0; matchIndex < eventAttributeMatches.length; matchIndex++) {
-            if (matchIndex === outerIndex) {
-              // Don't compare attribute with itself
-              continue;
-            }
+          const conflictedEvents: AttributeToken[] = findConflictedEvents(eventsInGroup);
 
-            const { name: otherName, modifiers: otherModifiersGroup } = eventAttributeMatches[matchIndex]!.groups!;
+          conflictedEvents.forEach((event) => {
+            const loc: Loc = event.loc;
 
-            if (eventName === otherName) {
-              const otherModifiers: string[] = otherModifiersGroup?.split('.') ?? [];
+            const columnStart: number = loc.start.column - 1;
+            const columnEnd: number = columnStart + event.name.length;
 
-              const eventKeyModifiers: string = getKeyModifiersString(eventModifiers);
-              const otherKeyModifiers: string = getKeyModifiersString(otherModifiers);
-
-              if (eventKeyModifiers && otherKeyModifiers && eventKeyModifiers !== otherKeyModifiers) {
-                continue;
-              }
-
-              const eventSystemModifiers: string = getSystemModifiersString(eventModifiers);
-              const otherSystemModifiers: string = getSystemModifiersString(otherModifiers);
-
-              if (
-                !(
-                  otherModifiers.length >= 1 &&
-                  otherSystemModifiers !== eventSystemModifiers &&
-                  otherSystemModifiers.indexOf(eventSystemModifiers) > -1
-                )
-              ) {
-                continue;
-              }
-
-              const loc: Loc = eventAttributeToken.loc;
-
-              const columnStart: number = loc.start.column - 1;
-              const columnEnd: number = columnStart + eventAttributeToken.name.length;
-
-              context.report({
-                node: {} as unknown as Rule.Node,
-                loc: {
+            context.report({
+              node: {} as unknown as Rule.Node,
+              loc: {
+                line: loc.start.line,
+                column: loc.start.column - 1,
+                start: {
                   line: loc.start.line,
-                  column: loc.start.column - 1,
-                  start: {
-                    line: loc.start.line,
-                    column: columnStart
-                  },
-                  end: {
-                    line: loc.end.line,
-                    column: columnEnd
-                  }
+                  column: columnStart
                 },
-                message: "Consider to use '.exact' modifier."
-              });
-            }
-          }
-        }
+                end: {
+                  line: loc.end.line,
+                  column: columnEnd
+                }
+              },
+              message: "Consider to use '.exact' modifier."
+            });
+          });
+        });
       }
     }
 
