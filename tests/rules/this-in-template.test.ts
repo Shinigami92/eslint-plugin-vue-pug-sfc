@@ -304,7 +304,7 @@ div(v-for="foo in ${suggestionPrefix(prefix, options)}bar")
   );
 }
 
-function suggestionPrefix(prefix: string, options: any[]): string {
+function suggestionPrefix(prefix: string, options: string[]): string {
   if (options[0] === 'always' && !['this.', 'this?.'].includes(prefix)) {
     return 'this.';
   } else {

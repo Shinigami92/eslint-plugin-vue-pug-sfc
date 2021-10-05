@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import * as lex from 'pug-lexer';
+import type { AttributeToken, Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 
 function isSubset(operandsA: string | boolean, operandsB: string | boolean): boolean {
@@ -34,11 +34,11 @@ export default {
     }
 
     let indentLevel: number = 0;
-    const ifs: lex.AttributeToken[][] = [];
+    const ifs: AttributeToken[][] = [];
     const currentTagHasIf: boolean[] = [];
 
     for (let index: number = 0; index < tokens.length; index++) {
-      const token: lex.Token = tokens[index]!;
+      const token: Token = tokens[index]!;
 
       if (token.type === 'indent') {
         indentLevel++;
@@ -73,7 +73,7 @@ export default {
           }
 
           if (ifs[indentLevel]!.some((tok) => isSubset(tok.val, token.val))) {
-            const loc: lex.Loc = token.loc;
+            const loc: Loc = token.loc;
 
             const columnStart: number = loc.start.column - 1 + 'v-else-if="'.length;
             const columnEnd: number = columnStart - 1 + String(token.val).length - '"'.length;

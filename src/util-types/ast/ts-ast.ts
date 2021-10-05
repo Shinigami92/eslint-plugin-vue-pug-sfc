@@ -1,10 +1,10 @@
 /**
  * @see https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/typescript-estree/src/ts-estree/ts-estree.ts
  */
-import { TSESTree } from '@typescript-eslint/types';
-import { Expression } from '.';
-import { HasParentNode } from '../node';
-import * as ES from './es-ast';
+import type { TSESTree } from '@typescript-eslint/types';
+import type { Expression } from '.';
+import type { HasParentNode } from '../node';
+import type * as ES from './es-ast';
 export type TSNode =
   | TSAsExpression
   | TSTypeParameterInstantiation
@@ -17,7 +17,7 @@ export type TSNode =
 export interface TSAsExpression extends HasParentNode {
   type: 'TSAsExpression';
   expression: ES.Expression;
-  typeAnnotation: any;
+  typeAnnotation: unknown;
 }
 
 export interface TSTypeParameterInstantiation extends HasParentNode {

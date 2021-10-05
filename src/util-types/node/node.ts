@@ -1,11 +1,11 @@
-import * as VAST from '../ast';
-import { HasLocation } from './locations';
+import type { ASTNode } from '../ast';
+import type { HasLocation } from './locations';
 
 export interface BaseNode extends HasLocation {
   type: string;
-  parent: VAST.ASTNode | null;
+  parent: ASTNode | null;
 }
 
 export interface HasParentNode extends BaseNode {
-  parent: VAST.ASTNode;
+  parent: ASTNode;
 }

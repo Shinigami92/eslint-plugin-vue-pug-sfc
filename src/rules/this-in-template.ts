@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import * as lex from 'pug-lexer';
+import type { AttributeToken, Loc, TagToken, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { previousTagToken } from '../utils/pug-utils';
 import { isVueBinding } from '../utils/vue';
@@ -33,7 +33,7 @@ export default {
     const option: 'always' | 'never' = context.options[0] !== 'always' ? 'never' : 'always';
 
     for (let index: number = 0; index < tokens.length; index++) {
-      const token: lex.Token = tokens[index]!;
+      const token: Token = tokens[index]!;
 
       if (
         (token.type === 'attribute' || token.type === 'text') &&
@@ -42,12 +42,12 @@ export default {
         /this\??\.(?!class)/.test(token.val)
       ) {
         if (option === 'never') {
-          const lastTagToken: lex.TagToken | undefined = previousTagToken(tokens, index);
+          const lastTagToken: TagToken | undefined = previousTagToken(tokens, index);
           if (lastTagToken) {
             const lastTagTokenIndex: number = tokens.indexOf(lastTagToken);
-            const vForAttributeToken: lex.AttributeToken | undefined = tokens
+            const vForAttributeToken: AttributeToken | undefined = tokens
               .slice(lastTagTokenIndex, index)
-              .find((t) => t.type === 'attribute' && t.name === 'v-for') as lex.AttributeToken | undefined;
+              .find((t) => t.type === 'attribute' && t.name === 'v-for') as AttributeToken | undefined;
             if (typeof vForAttributeToken?.val === 'string') {
               const ofLoopVariableName: string =
                 vForAttributeToken.val.slice(1, -1).trim().split(' of')[0]?.trim() ?? '';
@@ -60,7 +60,7 @@ export default {
 
           const withOptionalChaining: boolean = token.val.includes('this?.');
 
-          const loc: lex.Loc = token.loc;
+          const loc: Loc = token.loc;
 
           // @ts-expect-error: Access range from token
           const range: [number, number] = token.range;

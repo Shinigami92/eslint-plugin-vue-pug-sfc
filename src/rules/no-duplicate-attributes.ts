@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import * as lex from 'pug-lexer';
+import type { Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 
 export default {
@@ -52,7 +52,7 @@ export default {
     }
 
     for (let index: number = 0; index < tokens.length; index++) {
-      const token: lex.Token = tokens[index]!;
+      const token: Token = tokens[index]!;
 
       if (token.type === 'start-attributes') {
         currentAttributeNames = [];
@@ -70,7 +70,7 @@ export default {
 
         const duplicateAttributeName: string | undefined = findDuplicate(cleanedAttributeName);
         if (duplicateAttributeName) {
-          const loc: lex.Loc = token.loc;
+          const loc: Loc = token.loc;
 
           const columnStart: number = loc.start.column - 1;
           const columnEnd: number = columnStart + attributeName.length;

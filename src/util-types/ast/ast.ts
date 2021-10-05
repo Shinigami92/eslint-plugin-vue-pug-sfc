@@ -1,8 +1,8 @@
-import { VExpressionContainer, VLiteral } from '.';
-import * as ES from './es-ast';
-import * as JSX from './jsx-ast';
-import * as TS from './ts-ast';
-import * as V from './v-ast';
+import type { VExpressionContainer, VLiteral } from '.';
+import type * as ES from './es-ast';
+import type * as JSX from './jsx-ast';
+import type * as TS from './ts-ast';
+import type * as V from './v-ast';
 
 export type ASTNode = ES.ESNode | V.VNode | TS.TSNode | JSX.JSXNode;
 

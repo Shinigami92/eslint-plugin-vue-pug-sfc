@@ -1,8 +1,8 @@
 import type { Rule } from 'eslint';
 import * as path from 'path';
 import * as lex from 'pug-lexer';
-import { VDocumentFragment, VElement } from '../util-types/ast/v-ast';
-import { ParserServices } from '../util-types/parser-services';
+import type { VDocumentFragment, VElement } from '../util-types/ast/v-ast';
+import type { ParserServices } from '../util-types/parser-services';
 
 export function checkIsVueFile(context: Rule.RuleContext): boolean {
   const parserServices: ParserServices = context.parserServices;

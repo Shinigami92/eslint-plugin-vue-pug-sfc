@@ -1,4 +1,4 @@
-import { HasLocation } from './locations';
+import type { HasLocation } from './locations';
 export interface Token extends HasLocation {
   type: string;
   value: string;

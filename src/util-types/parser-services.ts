@@ -1,6 +1,6 @@
-import { Rule, SourceCode } from 'eslint';
-import { ParamNode, VDocumentFragment, VNodeListenerMap } from './ast';
-import { HasLocation, Token } from './node';
+import type { Rule, SourceCode } from 'eslint';
+import type { ParamNode, VDocumentFragment, VNodeListenerMap } from './ast';
+import type { HasLocation, Token } from './node';
 
 export type TemplateListenerBase = {
   [T in keyof VNodeListenerMap]?: (node: VNodeListenerMap[T]) => void;

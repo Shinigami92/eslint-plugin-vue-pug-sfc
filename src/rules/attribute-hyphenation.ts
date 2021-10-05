@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import * as lex from 'pug-lexer';
+import type { Loc, Token } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { getExactConverter } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
@@ -79,7 +79,7 @@ export default {
     }
 
     for (let index: number = 0; index < tokens.length; index++) {
-      const token: lex.Token = tokens[index]!;
+      const token: Token = tokens[index]!;
 
       if (token.type === 'attribute') {
         const attributeName: string = token.name;
@@ -99,7 +99,7 @@ export default {
           continue;
         }
 
-        const loc: lex.Loc = token.loc;
+        const loc: Loc = token.loc;
 
         // @ts-expect-error: Access range from token
         const range: [number, number] = token.range;

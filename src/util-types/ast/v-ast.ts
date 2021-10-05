@@ -1,9 +1,9 @@
 /**
  * @see https://github.com/vuejs/vue-eslint-parser/blob/master/docs/ast.md
  */
-import { ParseError } from '../errors';
-import { BaseNode, Comment, HasParentNode, HTMLBogusComment, HTMLComment, Token } from '../node';
-import * as ES from './es-ast';
+import type { ParseError } from '../errors';
+import type { BaseNode, Comment, HasParentNode, HTMLBogusComment, HTMLComment, Token } from '../node';
+import type * as ES from './es-ast';
 
 export type NS = {
   HTML: 'http://www.w3.org/1999/xhtml';

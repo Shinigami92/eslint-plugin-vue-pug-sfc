@@ -1,11 +1,11 @@
 /**
  * @see https://github.com/estree/estree
  */
-import { ParseError } from '../errors';
-import { BaseNode, HasParentNode, Token } from '../node';
-import * as JSX from './jsx-ast';
-import * as TS from './ts-ast';
-import * as V from './v-ast';
+import type { ParseError } from '../errors';
+import type { BaseNode, HasParentNode, Token } from '../node';
+import type * as JSX from './jsx-ast';
+import type * as TS from './ts-ast';
+import type * as V from './v-ast';
 
 export type ESNode =
   | PrivateIdentifier

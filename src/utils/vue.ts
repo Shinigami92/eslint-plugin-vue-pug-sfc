@@ -1,9 +1,9 @@
 // Copy of https://github.com/prettier/plugin-pug/blob/main/src/utils/vue.ts
 
-import { Rule, SourceCode } from 'eslint';
+import type { Rule, SourceCode } from 'eslint';
 import type { AttributeToken, TagToken } from 'pug-lexer';
-import * as lex from 'pug-lexer';
-import {
+import type { Token as PugToken } from 'pug-lexer';
+import type {
   AssignmentProperty,
   ASTNode,
   CallExpression,
@@ -29,9 +29,9 @@ import {
   VExpressionContainer,
   VText
 } from '../util-types/ast';
-import { Token } from '../util-types/node';
-import { ParserServices, TemplateListener } from '../util-types/parser-services';
-import { VueObjectType } from '../util-types/utils';
+import type { Token } from '../util-types/node';
+import type { ParserServices, TemplateListener } from '../util-types/parser-services';
+import type { VueObjectType } from '../util-types/utils';
 import { isHtmlWellKnownElementName } from './html-element';
 import { getAttributeTokens } from './pug-utils';
 import { isSvgWellKnownElementName } from './svg-element';
@@ -507,7 +507,7 @@ export function compositingVisitors<T>(visitor: T, ...visitors: Array<Rule.RuleL
       // @ts-expect-error
       if (visitor[key]) {
         // @ts-expect-error
-        const o: (...args: any[]) => void = visitor[key];
+        const o: (...args) => void = visitor[key];
         // @ts-expect-error
         visitor[key] = (...args) => {
           o(...args);
@@ -611,7 +611,7 @@ export function getRegisteredVueComponents(
  * @param token The start tag token to check.
  * @returns `true` if the token is a custom component.
  */
-export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<lex.Token>): boolean {
+export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<PugToken>): boolean {
   if (!isHtmlWellKnownElementName(tag.val) && !isSvgWellKnownElementName(tag.val)) {
     return true;
   }

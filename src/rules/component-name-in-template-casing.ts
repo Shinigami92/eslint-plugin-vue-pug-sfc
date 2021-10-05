@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import * as lex from 'pug-lexer';
+import type { Loc } from 'pug-lexer';
 import { checkIsVueFile, parsePugContent } from '../utils';
 import { getChecker, getExactConverter, isPascalCase, pascalCase } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
@@ -113,7 +113,7 @@ export default {
             }
 
             if (!getChecker(caseOption)(tagName)) {
-              const loc: lex.Loc = token.loc;
+              const loc: Loc = token.loc;
 
               // @ts-expect-error: Access range from token
               const range: [number, number] = token.range;
