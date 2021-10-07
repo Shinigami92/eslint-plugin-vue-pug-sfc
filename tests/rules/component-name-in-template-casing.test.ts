@@ -391,7 +391,7 @@ export default {
     },
     {
       code: `<template lang="pug">
-the-component
+the-component/
 </template>
 <script>
 export default {
@@ -401,7 +401,7 @@ export default {
       filename: 'test.vue',
       options: ['PascalCase'],
       output: `<template lang="pug">
-TheComponent
+TheComponent/
 </template>
 <script>
 export default {
@@ -524,69 +524,6 @@ Thecomponent
 thecomponent
 </template>`,
       errors: ['Component name "Thecomponent" is not kebab-case.']
-    },
-    {
-      code: `<template lang="pug">
-the-component
-</template>
-<script>
-export default {
-  components: {TheComponent}
-}
-</script>`,
-      filename: 'test.vue',
-      options: ['PascalCase'],
-      output: `<template lang="pug">
-TheComponent
-</template>
-<script>
-export default {
-  components: {TheComponent}
-}
-</script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
-    },
-    {
-      code: `<template lang="pug">
-the-component
-</template>
-<script>
-export default {
-  components: {TheComponent}
-}
-</script>`,
-      filename: 'test.vue',
-      options: ['PascalCase'],
-      output: `<template lang="pug">
-TheComponent
-</template>
-<script>
-export default {
-  components: {TheComponent}
-}
-</script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
-    },
-    {
-      code: `<template lang="pug">
-the-component
-</template>
-<script>
-export default {
-  components: {TheComponent}
-}
-</script>`,
-      filename: 'test.vue',
-      options: ['PascalCase'],
-      output: `<template lang="pug">
-TheComponent
-</template>
-<script>
-export default {
-  components: {TheComponent}
-}
-</script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
     },
 
     // ignores
