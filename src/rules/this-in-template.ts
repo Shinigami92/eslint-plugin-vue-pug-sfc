@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
 import type { AttributeToken, Loc, TagToken, TextToken } from 'pug-lexer';
-import type { TokenProcessorProperties } from '../utils';
+import type { TokenProcessorContext } from '../utils';
 import { processRule } from '../utils';
 import { previousTagToken } from '../utils/pug-utils';
 import { isVueBinding } from '../utils/vue';
@@ -24,7 +24,7 @@ export default {
     return processRule(context, () => {
       const option: 'always' | 'never' = context.options[0] !== 'always' ? 'never' : 'always';
 
-      function handle(token: AttributeToken | TextToken, { index, tokens }: TokenProcessorProperties): void {
+      function handle(token: AttributeToken | TextToken, { index, tokens }: TokenProcessorContext): void {
         if (
           typeof token.val === 'string' &&
           (token.type === 'text' || isVueBinding(token)) &&
