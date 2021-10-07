@@ -50,7 +50,7 @@ interface TokenProcessorsStateContainer {
   alreadyProcessed: boolean;
 }
 
-const CACHED_TOKEN_PROCESSORS_MAP: Record<string, TokenProcessorsStateContainer> = {};
+const CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP: Record<string, TokenProcessorsStateContainer> = {};
 
 /**
  * Process the current lint rule.
@@ -84,32 +84,35 @@ export function processRule(context: Rule.RuleContext, tokenProcessor: () => Tok
 
   const tokenProcessorReturn: TokenProcessor = tokenProcessor();
 
-  const tokenProcessors: TokenProcessorsStateContainer | undefined = CACHED_TOKEN_PROCESSORS_MAP[cacheKey];
+  const tokenProcessors: TokenProcessorsStateContainer | undefined =
+    CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey];
   if (!tokenProcessors) {
-    CACHED_TOKEN_PROCESSORS_MAP[cacheKey] = {
+    CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey] = {
       tokenProcessors: [],
       alreadyProcessed: false
     };
   }
-  CACHED_TOKEN_PROCESSORS_MAP[cacheKey]!.tokenProcessors.push(tokenProcessorReturn);
+  CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey]!.tokenProcessors.push(tokenProcessorReturn);
 
   return {
     'Program:exit'() {
       // Within this callback, we fetch the token processors from the cache
       // and process all registered token processors at once.
       // !> Keep attention of which variables are usable from above's scope.
-      const tokenProcessorObject: TokenProcessorsStateContainer = CACHED_TOKEN_PROCESSORS_MAP[cacheKey] ?? {
+      const tokenProcessorStateContainer: TokenProcessorsStateContainer = CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[
+        cacheKey
+      ] ?? {
         tokenProcessors: [],
         alreadyProcessed: true
       };
 
-      if (tokenProcessorObject.alreadyProcessed || tokenProcessorObject.tokenProcessors.length === 0) {
+      if (tokenProcessorStateContainer.alreadyProcessed || tokenProcessorStateContainer.tokenProcessors.length === 0) {
         return;
       }
 
       for (let index: number = 0; index < tokens.length; index++) {
         const token: lex.Token = tokens[index]!;
-        tokenProcessorObject.tokenProcessors.forEach((tokenProcessor) => {
+        tokenProcessorStateContainer.tokenProcessors.forEach((tokenProcessor) => {
           // @ts-expect-error: just call it
           tokenProcessor[token.type]?.(
             // This comment only exists so that the parameters are wrapped and not affected by the `@ts-expect-error` comment.
@@ -119,7 +122,7 @@ export function processRule(context: Rule.RuleContext, tokenProcessor: () => Tok
         });
       }
 
-      tokenProcessorObject.alreadyProcessed = true;
+      tokenProcessorStateContainer.alreadyProcessed = true;
 
       return;
     }
