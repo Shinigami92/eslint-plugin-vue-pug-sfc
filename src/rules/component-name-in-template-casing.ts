@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
 import type { Loc } from 'pug-lexer';
-import { checkIsVueFile, parsePugContent } from '../utils';
+import { processRule } from '../utils';
 import { getChecker, getExactConverter, isPascalCase, pascalCase } from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
 import { isMathMlWellKnownElementName } from '../utils/math-ml-element';
@@ -45,108 +45,102 @@ export default {
     ]
   },
   create(context) {
-    if (!checkIsVueFile(context)) {
-      return {};
-    }
-
-    const { tokens } = parsePugContent(context);
-
-    if (tokens.length === 0) {
-      return {};
-    }
-
-    const caseOption: AllowedCaseOptions = context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
-    const { registeredComponentsOnly = true, ignores = [] }: RuleOptions = context.options[1] ?? {};
-    const ignoresRE: RegExp[] = ignores.map(toRegExp);
-
     const registeredComponents: string[] = [];
+    const { registeredComponentsOnly = true, ignores = [] }: RuleOptions = context.options[1] ?? {};
 
-    /**
-     * Checks whether the given tag is the verification target.
-     *
-     * @param tagName Name of the tag.
-     * @returns `true` if the given node is the verification target node.
-     */
-    function isVerifyTarget(tagName: string): boolean {
-      if (ignoresRE.some((re) => re.test(tagName))) {
-        // ignore
+    const ruleListener: Rule.RuleListener = processRule(context, () => {
+      const caseOption: AllowedCaseOptions = context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
+      const ignoresRE: RegExp[] = ignores.map(toRegExp);
+
+      /**
+       * Checks whether the given tag is the verification target.
+       *
+       * @param tagName Name of the tag.
+       * @returns `true` if the given node is the verification target node.
+       */
+      function isVerifyTarget(tagName: string): boolean {
+        if (ignoresRE.some((re) => re.test(tagName))) {
+          // ignore
+          return false;
+        }
+
+        if (!registeredComponentsOnly) {
+          // Checks all component tags.
+          if (
+            isHtmlWellKnownElementName(tagName) ||
+            isSvgWellKnownElementName(tagName) ||
+            isMathMlWellKnownElementName(tagName)
+          ) {
+            return false;
+          }
+          return true;
+        }
+
+        // When defining a component with PascalCase, we can use either case.
+        if (registeredComponents.some((name) => tagName === name || pascalCase(tagName) === name)) {
+          return true;
+        }
+
         return false;
       }
 
-      if (!registeredComponentsOnly) {
-        // Checks all component tags.
-        if (
-          isHtmlWellKnownElementName(tagName) ||
-          isSvgWellKnownElementName(tagName) ||
-          isMathMlWellKnownElementName(tagName)
-        ) {
-          return false;
-        }
-        return true;
-      }
+      return {
+        tag(token) {
+          const tagName: string = token.val;
 
-      // When defining a component with PascalCase, we can use either case.
-      if (registeredComponents.some((name) => tagName === name || pascalCase(tagName) === name)) {
-        return true;
-      }
+          if (!isVerifyTarget(tagName)) {
+            return;
+          }
 
-      return false;
-    }
+          if (!getChecker(caseOption)(tagName)) {
+            const loc: Loc = token.loc;
 
-    return {
-      ...(registeredComponentsOnly
-        ? executeOnVue(context, (obj) => {
-            registeredComponents.push(
-              ...getRegisteredVueComponents(obj)
-                .map((n) => n!.name)
-                .filter(isPascalCase)
-            );
-          })
-        : {}),
-      'Program:exit'() {
-        for (const token of tokens) {
-          if (token.type === 'tag') {
-            const tagName: string = token.val;
+            // @ts-expect-error: Access range from token
+            const range: [number, number] = token.range;
+            const columnStart: number = loc.start.column - 1;
+            const columnEnd: number = columnStart + tagName.length;
 
-            if (!isVerifyTarget(tagName)) {
-              continue;
-            }
-
-            if (!getChecker(caseOption)(tagName)) {
-              const loc: Loc = token.loc;
-
-              // @ts-expect-error: Access range from token
-              const range: [number, number] = token.range;
-              const columnStart: number = loc.start.column - 1;
-              const columnEnd: number = columnStart + tagName.length;
-
-              context.report({
-                loc: {
+            context.report({
+              loc: {
+                line: loc.start.line,
+                column: loc.start.column - 1,
+                start: {
                   line: loc.start.line,
-                  column: loc.start.column - 1,
-                  start: {
-                    line: loc.start.line,
-                    column: columnStart
-                  },
-                  end: {
-                    line: loc.end.line,
-                    column: columnEnd
-                  }
+                  column: columnStart
                 },
-                message: 'Component name "{{name}}" is not {{caseType}}.',
-                data: {
-                  name: tagName,
-                  caseType: caseOption
-                },
-                fix(fixer) {
-                  const casingTagName: string = getExactConverter(caseOption)(tagName);
-                  return fixer.replaceTextRange(range, casingTagName);
+                end: {
+                  line: loc.end.line,
+                  column: columnEnd
                 }
-              });
-            }
+              },
+              message: 'Component name "{{name}}" is not {{caseType}}.',
+              data: {
+                name: tagName,
+                caseType: caseOption
+              },
+              fix(fixer) {
+                const casingTagName: string = getExactConverter(caseOption)(tagName);
+                return fixer.replaceTextRange(range, casingTagName);
+              }
+            });
           }
         }
-      }
-    };
+      };
+    });
+
+    return Object.keys(ruleListener).length > 0
+      ? {
+          ...(registeredComponentsOnly
+            ? executeOnVue(context, (obj) => {
+                registeredComponents.push(
+                  ...getRegisteredVueComponents(obj)
+                    .map((n) => n!.name)
+                    .filter(isPascalCase)
+                );
+              })
+            : {}),
+          ...ruleListener
+        }
+      : {};
   }
 } as Rule.RuleModule;
