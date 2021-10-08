@@ -4,6 +4,131 @@ import * as lex from 'pug-lexer';
 import type { VDocumentFragment, VElement } from '../util-types/ast/v-ast';
 import type { ParserServices } from '../util-types/parser-services';
 
+/**
+ * Context that contains information about the current loop cycle.
+ */
+export interface TokenProcessorContext {
+  /**
+   * The current index of the loop.
+   */
+  readonly index: number;
+  /**
+   * All tokens.
+   */
+  readonly tokens: ReadonlyArray<lex.Token>;
+}
+
+/**
+ * Object with registrable callback functions to listen for a token occurrence.
+ */
+export type TokenProcessor = {
+  /**
+   * Callback function that is called if the token with this function name was found.
+   *
+   * The first argument is the current token and it is equals to `tokens[index]` provided from the second argument.
+   *
+   * @param token The current token.
+   * @param context Contains the current index and all tokens.
+   */
+  [K in lex.LexTokenType]?: <Token extends Extract<lex.Token, lex.LexToken<K>>>(
+    token: Token,
+    context: TokenProcessorContext
+  ) => void;
+};
+
+/**
+ * A container with all registered token processors and a state if these processors were already called.
+ */
+interface TokenProcessorsStateContainer {
+  /**
+   * A list of registered token processors.
+   */
+  tokenProcessors: TokenProcessor[];
+  /**
+   * `true` if the container was already called, `false` otherwise.
+   */
+  alreadyProcessed: boolean;
+}
+
+const CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP: Record<string, TokenProcessorsStateContainer> = {};
+
+/**
+ * Process the current lint rule.
+ *
+ * It checks if the current file is a `.vue` file. If not it returns early with `{}`.
+ * Then it will parse the bug content with the pug-lexer and cache the result.
+ * If the current file was already processed by another rule, it will use the cached result.
+ *
+ * After that it will register the current rule with the given token processor
+ * and then it will later call all registered token processors for this file at once,
+ * so that only one for-loop for the tokens is needed to safe performance.
+ *
+ * @param context The eslint rule context.
+ * @param tokenProcessor A callback to register a token processor for the current lint rule.
+ * @returns The object that should be returned in the `create` function of the rule.
+ */
+export function processRule(context: Rule.RuleContext, tokenProcessor: () => TokenProcessor): Rule.RuleListener {
+  if (!checkIsVueFile(context)) {
+    return {};
+  }
+
+  const optionsHash: string = JSON.stringify(context.options);
+
+  const { tokens, text } = parsePugContent(context);
+
+  const cacheKey: string = `${optionsHash}\n${text}`;
+
+  if (tokens.length === 0) {
+    return {};
+  }
+
+  const tokenProcessorReturn: TokenProcessor = tokenProcessor();
+
+  const tokenProcessors: TokenProcessorsStateContainer | undefined =
+    CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey];
+  if (!tokenProcessors) {
+    CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey] = {
+      tokenProcessors: [],
+      alreadyProcessed: false
+    };
+  }
+  CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey]!.tokenProcessors.push(tokenProcessorReturn);
+
+  return {
+    'Program:exit'() {
+      // Within this callback, we fetch the token processors from the cache
+      // and process all registered token processors at once.
+      // !> Keep attention of which variables are usable from above's scope.
+      const tokenProcessorStateContainer: TokenProcessorsStateContainer = CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[
+        cacheKey
+      ] ?? {
+        tokenProcessors: [],
+        alreadyProcessed: true
+      };
+
+      if (tokenProcessorStateContainer.alreadyProcessed || tokenProcessorStateContainer.tokenProcessors.length === 0) {
+        return;
+      }
+
+      for (let index: number = 0; index < tokens.length; index++) {
+        const token: lex.Token = tokens[index]!;
+        tokenProcessorStateContainer.tokenProcessors.forEach((tokenProcessor) => {
+          // @ts-expect-error: just call it
+          tokenProcessor[token.type]?.(
+            // This comment only exists so that the parameters are wrapped and not affected by the `@ts-expect-error` comment.
+            token,
+            { index, tokens }
+          );
+        });
+      }
+
+      tokenProcessorStateContainer.alreadyProcessed = true;
+
+      return;
+    }
+  };
+}
+
 export function checkIsVueFile(context: Rule.RuleContext): boolean {
   const parserServices: ParserServices = context.parserServices;
   if (parserServices.defineTemplateBodyVisitor == null) {

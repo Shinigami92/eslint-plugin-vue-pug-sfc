@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
-import type { AttributeToken, Loc, Token } from 'pug-lexer';
-import { checkIsVueFile, parsePugContent } from '../utils';
+import type { AttributeToken, Loc } from 'pug-lexer';
+import { processRule } from '../utils';
 import { isCustomComponent } from '../utils/vue';
 
 const SYSTEM_MODIFIERS: ReadonlyArray<string> = ['ctrl', 'shift', 'alt', 'meta'];
@@ -130,85 +130,71 @@ export default {
     schema: []
   },
   create(context) {
-    if (!checkIsVueFile(context)) {
-      return {};
-    }
+    return processRule(context, () => {
+      let tagIsCustomComponent: boolean = false;
+      let eventAttributes: AttributeToken[] = [];
 
-    const { tokens } = parsePugContent(context);
-
-    if (tokens.length === 0) {
-      return {};
-    }
-
-    let tagIsCustomComponent: boolean = false;
-    let eventAttributes: AttributeToken[] = [];
-
-    for (let index: number = 0; index < tokens.length; index++) {
-      const token: Token = tokens[index]!;
-
-      // For components consider only events with `native` modifier
-      if (token.type === 'tag') {
-        tagIsCustomComponent = isCustomComponent(token, tokens);
-        continue;
-      }
-
-      // Reset attributes cache
-      if (token.type === 'start-attributes') {
-        eventAttributes = [];
-        continue;
-      }
-
-      // Add only event attributes
-      if (token.type === 'attribute' && (token.name.startsWith('v-on:') || token.name.startsWith('@'))) {
-        if (tagIsCustomComponent && !token.name.includes('.native')) {
+      return {
+        tag(token, { tokens }) {
           // For components consider only events with `native` modifier
-          continue;
-        }
+          tagIsCustomComponent = isCustomComponent(token, tokens);
+        },
+        'start-attributes'() {
+          // Reset attributes cache
+          eventAttributes = [];
+        },
+        attribute(token) {
+          // Add only event attributes
+          if (token.name.startsWith('v-on:') || token.name.startsWith('@')) {
+            if (tagIsCustomComponent && !token.name.includes('.native')) {
+              // For components consider only events with `native` modifier
+              return;
+            }
 
-        eventAttributes.push(token);
-        continue;
-      }
-
-      // Check if there are similar event attributes
-      if (token.type === 'end-attributes' && eventAttributes.length > 1) {
-        const groupedEvents: Record<string, AttributeToken[]> = groupEvents(eventAttributes);
-        for (const eventsInGroup of Object.values(groupedEvents)) {
-          const hasEventWithKeyModifiers: boolean = eventsInGroup.some((event) =>
-            hasSystemModifier(extractModifiers(event.name))
-          );
-
-          if (!hasEventWithKeyModifiers) {
-            continue;
+            eventAttributes.push(token);
           }
+        },
+        'end-attributes'() {
+          // Check if there are similar event attributes
+          if (eventAttributes.length > 1) {
+            const groupedEvents: Record<string, AttributeToken[]> = groupEvents(eventAttributes);
+            for (const eventsInGroup of Object.values(groupedEvents)) {
+              const hasEventWithKeyModifiers: boolean = eventsInGroup.some((event) =>
+                hasSystemModifier(extractModifiers(event.name))
+              );
 
-          const conflictedEvents: AttributeToken[] = findConflictedEvents(eventsInGroup);
-          for (const event of conflictedEvents) {
-            const loc: Loc = event.loc;
+              if (!hasEventWithKeyModifiers) {
+                continue;
+              }
 
-            const columnStart: number = loc.start.column - 1;
-            const columnEnd: number = columnStart + event.name.length;
+              const conflictedEvents: AttributeToken[] = findConflictedEvents(eventsInGroup);
+              for (const event of conflictedEvents) {
+                const loc: Loc = event.loc;
 
-            context.report({
-              node: {} as unknown as Rule.Node,
-              loc: {
-                line: loc.start.line,
-                column: loc.start.column - 1,
-                start: {
-                  line: loc.start.line,
-                  column: columnStart
-                },
-                end: {
-                  line: loc.end.line,
-                  column: columnEnd
-                }
-              },
-              message: "Consider to use '.exact' modifier."
-            });
+                const columnStart: number = loc.start.column - 1;
+                const columnEnd: number = columnStart + event.name.length;
+
+                context.report({
+                  node: {} as unknown as Rule.Node,
+                  loc: {
+                    line: loc.start.line,
+                    column: loc.start.column - 1,
+                    start: {
+                      line: loc.start.line,
+                      column: columnStart
+                    },
+                    end: {
+                      line: loc.end.line,
+                      column: columnEnd
+                    }
+                  },
+                  message: "Consider to use '.exact' modifier."
+                });
+              }
+            }
           }
         }
-      }
-    }
-
-    return {};
+      };
+    });
   }
 } as Rule.RuleModule;
