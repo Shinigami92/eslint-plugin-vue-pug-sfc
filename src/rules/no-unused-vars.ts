@@ -2,6 +2,8 @@ import type { AST, Rule } from 'eslint';
 import type { Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 
+const DECLARATION_DIRECTIVES: string[] = ['v-for', 'scope', 'slot-scope', 'v-slot'];
+
 export default {
   meta: {
     hasSuggestions: true,
@@ -28,8 +30,29 @@ export default {
     return processRule(context, () => {
       const { ignorePattern } = context.options[0] ?? {};
 
+      let ignoreRegEx: RegExp | null = null;
+      if (ignorePattern) {
+        ignoreRegEx = new RegExp(ignorePattern, 'u');
+      }
+
+      // TODO: Safe variables in a map and check if they were used
+      // If not, trigger the reporter
+      // Maybe we need to do this on `eos` tag or when the related outdent level was reached?
+
       return {
+        indent() {
+          // TODO: increase indentation level
+        },
+        outdent() {
+          // TODO: decrease indentation level
+        },
         attribute(token) {
+          if (DECLARATION_DIRECTIVES.includes(token.name) && typeof token.val === 'string') {
+            const match: RegExpExecArray | null = /(?<variableGroup>.+) (in|of) .+/.exec(token.val.slice(1, -1));
+            const variableGroup: string | undefined = match?.groups?.variableGroup;
+            console.log('variableGroup', variableGroup);
+          }
+
           const variableName: string = '';
 
           const loc: Loc = token.loc;
