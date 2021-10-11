@@ -7,6 +7,7 @@ import noDupeVElseIf from './no-dupe-v-else-if';
 import noDuplicateAttributes from './no-duplicate-attributes';
 import noTemplateKey from './no-template-key';
 import noTextareaMustache from './no-textarea-mustache';
+import noUnusedVars from './no-unused-vars';
 import noUseVIfWithVFor from './no-use-v-if-with-v-for';
 import requireComponentIs from './require-component-is';
 import requireVForKey from './require-v-for-key';
@@ -27,6 +28,7 @@ export default {
   'no-duplicate-attributes': noDuplicateAttributes,
   'no-template-key': noTemplateKey,
   'no-textarea-mustache': noTextareaMustache,
+  'no-unused-vars': noUnusedVars,
   'no-use-v-if-with-v-for': noUseVIfWithVFor,
   'require-component-is': requireComponentIs,
   'require-v-for-key': requireVForKey,
