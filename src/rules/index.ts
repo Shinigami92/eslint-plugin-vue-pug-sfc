@@ -10,6 +10,7 @@ import requireComponentIs from './require-component-is';
 import requireVForKey from './require-v-for-key';
 import thisInTemplate from './this-in-template';
 import useVOnExact from './use-v-on-exact';
+import validVIf from './valid-v-if';
 
 export default {
   'attribute-hyphenation': attributeHyphenation,
@@ -22,5 +23,6 @@ export default {
   'require-component-is': requireComponentIs,
   'require-v-for-key': requireVForKey,
   'this-in-template': thisInTemplate,
-  'use-v-on-exact': useVOnExact
+  'use-v-on-exact': useVOnExact,
+  'valid-v-if': validVIf
 } as Record<string, Rule.RuleModule>;
