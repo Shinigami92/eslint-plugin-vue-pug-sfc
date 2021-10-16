@@ -509,8 +509,10 @@ export function compositingVisitors<T>(visitor: T, ...visitors: Array<Rule.RuleL
         const o: (...args) => void = visitor[key];
         // @ts-expect-error
         visitor[key] = (...args) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           o(...args);
           // @ts-expect-error
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           v[key as keyof (Rule.RuleListener | Rule.NodeListener)](...args);
         };
       } else {
