@@ -1,6 +1,7 @@
 export = {
   extends: require.resolve('./base'),
   rules: {
+    'vue-pug-sfc/no-deprecated-filter': 'error',
     'vue-pug-sfc/no-dupe-v-else-if': 'error',
     'vue-pug-sfc/no-duplicate-attributes': 'error',
     'vue-pug-sfc/no-template-key': 'error',
