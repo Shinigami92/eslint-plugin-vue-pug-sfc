@@ -9,6 +9,7 @@
 - Migrated rules from [eslint-plugin-vue](https://github.com/vuejs/eslint-plugin-vue)
   - `attribute-hyphenation` ([#57])
   - `component-name-in-template-casing` ([#79])
+  - `no-deprecated-filter` ([#39])
   - `no-dupe-v-else-if` ([#9])
     - _only simply checked_
   - `no-duplicate-attributes` ([#10])
@@ -33,5 +34,6 @@
 [#19]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/19
 [#20]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/20
 [#28]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/28
+[#39]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/39
 [#57]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/57
 [#79]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/79
