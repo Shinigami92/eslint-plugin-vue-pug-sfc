@@ -17,9 +17,11 @@ export default {
     }
   },
   create(context) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const allowFilter: boolean = Boolean(context.parserOptions.vueFeatures?.filter ?? false);
-    if (allowFilter) {
+    const isFilterAllowed: boolean = !(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (context.parserOptions.vueFeatures?.filter ?? true)
+    );
+    if (isFilterAllowed) {
       return {};
     }
 
