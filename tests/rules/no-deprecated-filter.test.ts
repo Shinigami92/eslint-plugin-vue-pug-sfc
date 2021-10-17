@@ -77,17 +77,38 @@ ruleTester.run('no-deprecated-filter', rule, {
     {
       filename: 'test.vue',
       code: '<template lang="pug">div(v-bind:id="msg | filter")</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 15,
+          endColumn: 29
+        }
+      ]
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug">div(v-bind:id="msg | filter(aaa)")</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 15,
+          endColumn: 34
+        }
+      ]
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug">div(v-bind:id="msg | filterA | filterB")</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 15,
+          endColumn: 40
+        }
+      ]
     }
   ]
 });

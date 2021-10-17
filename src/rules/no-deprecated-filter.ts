@@ -31,8 +31,8 @@ export default {
           if (typeof token.val === 'string' && token.val.includes('|')) {
             const loc: Loc = token.loc;
 
-            const columnStart: number = loc.start.column - 1;
-            const columnEnd: number = columnStart;
+            const columnStart: number = loc.start.column - 1 + token.name.length + '='.length;
+            const columnEnd: number = token.loc.end.column - 1;
 
             context.report({
               node: {} as unknown as Rule.Node,
