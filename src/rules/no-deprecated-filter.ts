@@ -17,6 +17,12 @@ export default {
     }
   },
   create(context) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const allowFilter: boolean = Boolean(context.parserOptions.vueFeatures?.filter ?? false);
+    if (allowFilter) {
+      return {};
+    }
+
     return processRule(context, () => {
       return {
         attribute(token) {
