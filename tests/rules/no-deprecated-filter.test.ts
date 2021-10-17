@@ -29,22 +29,50 @@ ruleTester.run('no-deprecated-filter', rule, {
     {
       filename: 'test.vue',
       code: '<template lang="pug">| {{ msg | filter }}</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 3,
+          endColumn: 21
+        }
+      ]
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug">| {{ msg | filter(x) }}</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 3,
+          endColumn: 24
+        }
+      ]
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug">| {{ msg | filterA | filterB }}</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 3,
+          endColumn: 32
+        }
+      ]
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug">div(v-for="msg in messages") {{ msg | filter }}</template>',
-      errors: ['Filters are deprecated.']
+      errors: [
+        {
+          message: 'Filters are deprecated.',
+          line: 1,
+          column: 30,
+          endColumn: 48
+        }
+      ]
     },
     {
       filename: 'test.vue',

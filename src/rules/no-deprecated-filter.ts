@@ -57,7 +57,7 @@ export default {
             const loc: Loc = token.loc;
 
             const columnStart: number = loc.start.column - 1;
-            const columnEnd: number = columnStart;
+            const columnEnd: number = columnStart + token.val.length;
 
             context.report({
               node: {} as unknown as Rule.Node,
