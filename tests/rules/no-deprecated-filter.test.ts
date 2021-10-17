@@ -22,6 +22,24 @@ ruleTester.run('no-deprecated-filter', rule, {
       parserOptions: {
         vueFeatures: { filter: false }
       }
+    },
+    {
+      filename: 'test.vue',
+      code: `<template lang="pug">
+div
+  | msg | filter
+</template>`
+    },
+    {
+      filename: 'test.vue',
+      code: `<template lang="pug">
+div
+  | text =|> {{ msg }}
+</template>`
+    },
+    {
+      filename: 'test.vue',
+      code: '<template lang="pug">v-text-field(label="|my-label|")</template>'
     }
   ],
 

@@ -28,7 +28,7 @@ export default {
     return processRule(context, () => {
       return {
         attribute(token) {
-          if (typeof token.val === 'string' && token.val.includes('|')) {
+          if (typeof token.val === 'string' && /^(v-bind)?:/.test(token.name) && token.val.includes('|')) {
             const loc: Loc = token.loc;
 
             const columnStart: number = loc.start.column - 1 + token.name.length + '='.length;
@@ -53,7 +53,7 @@ export default {
           }
         },
         text(token) {
-          if (token.val.includes('|')) {
+          if (/\{\{.*\|.*\}\}/.test(token.val)) {
             const loc: Loc = token.loc;
 
             const columnStart: number = loc.start.column - 1;
