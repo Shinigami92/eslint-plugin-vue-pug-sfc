@@ -45,8 +45,6 @@ export default {
           if (vIfToken) {
             let messageId: string = '';
 
-            console.log(vIfToken);
-
             if (hasVElse) {
               messageId = 'withVElse';
             } else if (hasVElseIf) {
