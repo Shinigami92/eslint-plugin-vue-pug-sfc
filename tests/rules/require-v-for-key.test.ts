@@ -3,7 +3,7 @@ import rule from '../../src/rules/require-v-for-key';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2015 }
+  parserOptions: { ecmaVersion: 2019, sourceType: 'module' }
 });
 
 ruleTester.run('require-v-for-key', rule, {
@@ -99,6 +99,33 @@ ruleTester.run('require-v-for-key', rule, {
       filename: 'test.vue',
       code: '<template lang="pug">div: slot(v-for="x in list" :name="x"): div</template>',
       errors: ["Elements in iteration expect to have 'v-bind:key' directives."]
+    },
+    {
+      // https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/128
+      filename: 'test.vue',
+      code: `<script>
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  data: () => ({
+    list: ['a', 'b', 'c']
+  })
+});
+</script>
+
+<template lang="pug">
+div
+  span(v-for="item in list") {{ item }}
+</template>`,
+      errors: [
+        {
+          message: "Elements in iteration expect to have 'v-bind:key' directives.",
+          line: 13,
+          endLine: 13,
+          column: 8,
+          endColumn: 13
+        }
+      ]
     }
   ]
 });

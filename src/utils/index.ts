@@ -203,6 +203,9 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
 
   let end: number = start;
 
+  const startLineOffset: number = pugTemplateElement.startTag.loc.start.line - 1;
+  const endLineOffset: number = pugTemplateElement.startTag.loc.end.line - 1;
+
   for (let index: number = 0; index < pugTokens.length; index++) {
     const token: lex.Token = pugTokens[index]!;
     const previousToken: lex.Token | undefined = pugTokens[index - 1];
@@ -227,6 +230,9 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
     token.range = [start, end];
     //// @ts-expect-error: Access range
     // console.log(token.type, token.range, rawText.slice(start, end));
+
+    token.loc.start.line += startLineOffset;
+    token.loc.end.line += endLineOffset;
 
     start = end;
   }
