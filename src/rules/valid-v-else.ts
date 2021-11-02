@@ -31,8 +31,6 @@ export default {
       let indentLevel: number = 0;
       const ifs: boolean[] = [];
 
-      // TODO: On same indent level, the `v-else` must have a preceded tag with `v-if` or `v-else-if`
-
       return {
         indent() {
           indentLevel++;
@@ -62,8 +60,19 @@ export default {
 
             if (hasVIf) {
               messageId = 'withVIf';
+            } else if (hasVElseIf) {
+              messageId = 'withVElseIf';
             } else if (!ifs[indentLevel]) {
               messageId = 'missingVIf';
+            } else if (vElseToken.name.includes(':')) {
+              messageId = 'unexpectedArgument';
+            } else if (vElseToken.name !== 'v-else') {
+              messageId = 'unexpectedModifier';
+            } else if (
+              typeof vElseToken.val === 'string' ||
+              (typeof vElseToken.val === 'boolean' && vElseToken.val === false)
+            ) {
+              messageId = 'unexpectedValue';
             }
 
             if (!messageId) {
