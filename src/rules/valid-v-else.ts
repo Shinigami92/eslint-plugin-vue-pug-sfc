@@ -28,9 +28,19 @@ export default {
       let hasVElseIf: boolean = false;
       let vElseToken: AttributeToken | undefined;
 
+      let indentLevel: number = 0;
+      const ifs: boolean[] = [];
+
       // TODO: On same indent level, the `v-else` must have a preceded tag with `v-if` or `v-else-if`
 
       return {
+        indent() {
+          indentLevel++;
+        },
+        outdent() {
+          delete ifs[indentLevel];
+          indentLevel--;
+        },
         'start-attributes'() {
           hasVIf = false;
           hasVElseIf = false;
@@ -41,6 +51,7 @@ export default {
             vElseToken = token;
           } else if (token.name === 'v-if') {
             hasVIf = true;
+            ifs[indentLevel] = true;
           } else if (token.name === 'v-else-if') {
             hasVElseIf = true;
           }
@@ -49,7 +60,9 @@ export default {
           if (vElseToken) {
             let messageId: string = '';
 
-            if (!hasVIf) {
+            if (hasVIf) {
+              messageId = 'withVIf';
+            } else if (!ifs[indentLevel]) {
               messageId = 'missingVIf';
             }
 
