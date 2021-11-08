@@ -1,6 +1,7 @@
 import type { Rule } from 'eslint';
 import type { AttributeToken, Loc } from 'pug-lexer';
 import { processRule } from '../utils';
+import { hasAttributeTokens } from '../utils/pug-utils';
 
 export default {
   meta: {
@@ -38,6 +39,14 @@ export default {
         outdent() {
           delete ifs[indentLevel];
           indentLevel--;
+        },
+        tag(token, { tokens }) {
+          if (
+            ifs[indentLevel] &&
+            !hasAttributeTokens(token, tokens, (attr) => attr.name.includes('v-if') || attr.name.includes('v-else'))
+          ) {
+            delete ifs[indentLevel];
+          }
         },
         'start-attributes'() {
           hasVIf = false;
