@@ -13,6 +13,7 @@ import requireVForKey from './require-v-for-key';
 import thisInTemplate from './this-in-template';
 import useVOnExact from './use-v-on-exact';
 import validVElse from './valid-v-else';
+import validVElseIf from './valid-v-else-if';
 import validVIf from './valid-v-if';
 
 export default {
@@ -29,6 +30,7 @@ export default {
   'require-v-for-key': requireVForKey,
   'this-in-template': thisInTemplate,
   'use-v-on-exact': useVOnExact,
+  'valid-v-else.if': validVElseIf,
   'valid-v-else': validVElse,
   'valid-v-if': validVIf
 } as Record<string, Rule.RuleModule>;
