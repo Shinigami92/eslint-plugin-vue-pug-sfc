@@ -86,6 +86,14 @@ export function getAttributeTokens(tag: TagToken, tokens: ReadonlyArray<Token>):
   return tokens.slice(startAttributesIndex + 1, endAttributesIndex) as AttributeToken[];
 }
 
+export function hasAttributeTokens(
+  tag: TagToken,
+  tokens: ReadonlyArray<Token>,
+  condition: (attributeToken: AttributeToken) => boolean
+): boolean {
+  return getAttributeTokens(tag, tokens).some((attributeToken) => condition(attributeToken));
+}
+
 export function getChildTags(tag: TagToken, tokens: ReadonlyArray<Token>): TagToken[] {
   const tagIndex: number = tokens.indexOf(tag);
 

@@ -12,6 +12,7 @@ import requireComponentIs from './require-component-is';
 import requireVForKey from './require-v-for-key';
 import thisInTemplate from './this-in-template';
 import useVOnExact from './use-v-on-exact';
+import validVElse from './valid-v-else';
 import validVIf from './valid-v-if';
 
 export default {
@@ -28,5 +29,6 @@ export default {
   'require-v-for-key': requireVForKey,
   'this-in-template': thisInTemplate,
   'use-v-on-exact': useVOnExact,
+  'valid-v-else': validVElse,
   'valid-v-if': validVIf
 } as Record<string, Rule.RuleModule>;

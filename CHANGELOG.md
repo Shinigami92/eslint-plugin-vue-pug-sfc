@@ -23,6 +23,7 @@
   - `this-in-template` ([#6])
     - option `always` currently not supported
   - `use-v-on-exact` ([#20])
+  - `valid-v-else` ([#25])
   - `valid-v-if` ([#28])
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
@@ -34,6 +35,7 @@
 [#18]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/18
 [#19]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/19
 [#20]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/20
+[#25]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/25
 [#28]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/28
 [#37]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/37
 [#39]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/39
