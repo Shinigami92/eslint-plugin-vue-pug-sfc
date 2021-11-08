@@ -85,7 +85,7 @@ div
       filename: 'test.vue',
       code: `<template lang="pug">
 div
-  div(v-if="foo)
+  div(v-if="foo")
   div
   div(v-else)
 </template>`,
