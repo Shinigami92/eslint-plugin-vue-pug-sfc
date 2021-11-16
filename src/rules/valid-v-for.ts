@@ -38,6 +38,8 @@ export default {
             messageId = 'unexpectedArgument';
           } else if (token.name.includes('.')) {
             messageId = 'unexpectedModifier';
+          } else if (typeof token.val === 'boolean' || (typeof token.val === 'string' && token.val.length === 0)) {
+            messageId = 'expectedValue';
           }
 
           if (!messageId) {
