@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import type { Loc } from 'pug-lexer';
+import type { AttributeToken, Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 
 export default {
@@ -26,19 +26,36 @@ export default {
   },
   create(context) {
     return processRule(context, () => {
+      let vForToken: AttributeToken | undefined;
+      let keyToken: AttributeToken | undefined;
+
       return {
+        'start-attributes'() {
+          vForToken = undefined;
+          keyToken = undefined;
+        },
         attribute(token) {
-          if (!token.name.startsWith('v-for')) {
+          if (token.name.startsWith('v-for')) {
+            vForToken = token;
+          } else if (/^(v-bind)?:key$/.test(token.name)) {
+            keyToken = token;
+          }
+        },
+        'end-attributes'() {
+          if (!vForToken) {
             return;
           }
 
           let messageId: string = '';
 
-          if (token.name.includes(':')) {
+          if (vForToken.name.includes(':')) {
             messageId = 'unexpectedArgument';
-          } else if (token.name.includes('.')) {
+          } else if (vForToken.name.includes('.')) {
             messageId = 'unexpectedModifier';
-          } else if (typeof token.val === 'boolean' || (typeof token.val === 'string' && token.val.length === 0)) {
+          } else if (
+            typeof vForToken.val === 'boolean' ||
+            (typeof vForToken.val === 'string' && vForToken.val.slice(1, -1).trim().length === 0)
+          ) {
             messageId = 'expectedValue';
           }
 
@@ -46,10 +63,10 @@ export default {
             return;
           }
 
-          const loc: Loc = token.loc;
+          const loc: Loc = vForToken.loc;
 
           const columnStart: number = loc.start.column - 1;
-          const columnEnd: number = columnStart + token.name.length;
+          const columnEnd: number = columnStart + vForToken.name.length;
 
           context.report({
             node: {} as unknown as Rule.Node,
