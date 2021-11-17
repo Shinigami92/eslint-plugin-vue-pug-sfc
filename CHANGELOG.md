@@ -27,6 +27,7 @@
   - `valid-v-else-if` ([#24])
   - `valid-v-else` ([#25])
   - `valid-v-for` ([#26])
+    - _only simply checked_
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
 [#9]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/9
