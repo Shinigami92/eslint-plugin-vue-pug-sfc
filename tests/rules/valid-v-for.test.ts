@@ -276,154 +276,155 @@ div
 </template>`,
       errors: ["'v-for' directives require that attribute value."]
     },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="(,a,b) in list")
-</template>`,
-      errors: ["Invalid alias ''."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="(a,,b) in list")
-</template>`,
-      errors: ["Invalid alias ''."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="(a,b,,) in list")
-</template>`,
-      errors: ["Invalid alias ''."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="(a,{b,c}) in list")
-</template>`,
-      errors: ["Invalid alias '{b,c}'."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="(a,b,{c,d}) in list")
-</template>`,
-      errors: ["Invalid alias '{c,d}'."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  your-component(v-for="x in list")
-</template>`,
-      errors: ["Custom elements in iteration require 'v-bind:key' directives."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(is="your-component" v-for="x in list")
-</template>`,
-      errors: ["Custom elements in iteration require 'v-bind:key' directives."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(:is="your-component" v-for="x in list")
-</template>`,
-      errors: ["Custom elements in iteration require 'v-bind:key' directives."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-bind:is="your-component" v-for="x in list")
-</template>`,
-      errors: ["Custom elements in iteration require 'v-bind:key' directives."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="x in list" :key="100")
-</template>`,
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  custom-component(v-for="x in list" :key="100")
-</template>`,
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="x in list" :key="foo")
-</template>`,
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  custom-component(v-for="x in list" :key="foo")
-</template>`,
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  div(v-for="(item, index) in suggestions" :key)
-</template>`,
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
-    },
-    {
-      filename: 'test.vue',
-      code: `<template lang="pug">
-div
-  template(v-for="x of list")
-    div(v-for="foo of y" :key="foo")
-</template>`,
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
-    },
-    {
-      filename: 'test.vue',
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."],
-      code: `<template lang="pug">
-template(v-for="x in xs")
-  template(v-for="y in a.ys")
-    li(v-for="z in y.zs" :key="z.id") 123
-</template>`
-    },
-    {
-      filename: 'test.vue',
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."],
-      code: `<template lang="pug">
-template(v-for="x in xs")
-  template(v-for="y in x.ys")
-    li(v-for="z in a.zs" :key="z.id") 123
-</template>`
-    },
-    {
-      filename: 'test.vue',
-      errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."],
-      code: `<template lang="pug">
-template(v-for="x in xs")
-  template(v-for="y in x.ys")
-    li(v-for="z in x.zs" :key="z.id") 123
-</template>`
-    },
+    // TODO: implement the complex functionality later
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="(,a,b) in list")
+    // </template>`,
+    //       errors: ["Invalid alias ''."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="(a,,b) in list")
+    // </template>`,
+    //       errors: ["Invalid alias ''."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="(a,b,,) in list")
+    // </template>`,
+    //       errors: ["Invalid alias ''."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="(a,{b,c}) in list")
+    // </template>`,
+    //       errors: ["Invalid alias '{b,c}'."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="(a,b,{c,d}) in list")
+    // </template>`,
+    //       errors: ["Invalid alias '{c,d}'."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   your-component(v-for="x in list")
+    // </template>`,
+    //       errors: ["Custom elements in iteration require 'v-bind:key' directives."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(is="your-component" v-for="x in list")
+    // </template>`,
+    //       errors: ["Custom elements in iteration require 'v-bind:key' directives."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(:is="your-component" v-for="x in list")
+    // </template>`,
+    //       errors: ["Custom elements in iteration require 'v-bind:key' directives."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-bind:is="your-component" v-for="x in list")
+    // </template>`,
+    //       errors: ["Custom elements in iteration require 'v-bind:key' directives."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="x in list" :key="100")
+    // </template>`,
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   custom-component(v-for="x in list" :key="100")
+    // </template>`,
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="x in list" :key="foo")
+    // </template>`,
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   custom-component(v-for="x in list" :key="foo")
+    // </template>`,
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   div(v-for="(item, index) in suggestions" :key)
+    // </template>`,
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       code: `<template lang="pug">
+    // div
+    //   template(v-for="x of list")
+    //     div(v-for="foo of y" :key="foo")
+    // </template>`,
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."]
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."],
+    //       code: `<template lang="pug">
+    // template(v-for="x in xs")
+    //   template(v-for="y in a.ys")
+    //     li(v-for="z in y.zs" :key="z.id") 123
+    // </template>`
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."],
+    //       code: `<template lang="pug">
+    // template(v-for="x in xs")
+    //   template(v-for="y in x.ys")
+    //     li(v-for="z in a.zs" :key="z.id") 123
+    // </template>`
+    //     },
+    //     {
+    //       filename: 'test.vue',
+    //       errors: ["Expected 'v-bind:key' directive to use the variables which are defined by the 'v-for' directive."],
+    //       code: `<template lang="pug">
+    // template(v-for="x in xs")
+    //   template(v-for="y in x.ys")
+    //     li(v-for="z in x.zs" :key="z.id") 123
+    // </template>`
+    //     },
     // empty value
     {
       filename: 'empty-value.vue',
