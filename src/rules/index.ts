@@ -30,7 +30,7 @@ export default {
   'require-v-for-key': requireVForKey,
   'this-in-template': thisInTemplate,
   'use-v-on-exact': useVOnExact,
-  'valid-v-else.if': validVElseIf,
+  'valid-v-else-if': validVElseIf,
   'valid-v-else': validVElse,
   'valid-v-if': validVIf
 } as Record<string, Rule.RuleModule>;
