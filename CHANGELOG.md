@@ -26,6 +26,8 @@
   - `valid-v-if` ([#28])
   - `valid-v-else-if` ([#24])
   - `valid-v-else` ([#25])
+  - `valid-v-for` ([#26])
+    - _only simply checked_
 
 [#6]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/6
 [#9]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/9
@@ -38,6 +40,7 @@
 [#20]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/20
 [#24]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/24
 [#25]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/25
+[#26]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/26
 [#28]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/28
 [#37]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/37
 [#39]: https://github.com/Shinigami92/eslint-plugin-vue-pug-sfc/issues/39
