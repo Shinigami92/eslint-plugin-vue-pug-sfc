@@ -5,7 +5,6 @@ export = {
     'vue-pug-sfc/no-deprecated-filter': 'error',
     'vue-pug-sfc/no-dupe-v-else-if': 'error',
     'vue-pug-sfc/no-duplicate-attributes': 'error',
-    'vue-pug-sfc/no-multiple-template-root': 'error',
     'vue-pug-sfc/no-template-key': 'error',
     'vue-pug-sfc/no-textarea-mustache': 'error',
     'vue-pug-sfc/no-use-v-if-with-v-for': 'error',
