@@ -1,8 +1,3 @@
-<h1 align="center">
-:warning: THIS PROJECT IS CURRENTLY IN ALPHA :warning:<br>
-Use fixer at your own risk, could damage your code!
-</h1>
-
 <p align="center">
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://eslint.org" target="_blank">
@@ -43,7 +38,8 @@ Use fixer at your own risk, could damage your code!
 
 # Intro
 
-This plugin adds support for the Pug language to Eslint in `.vue` files.
+This plugin tries to support all the `template` related rules from [eslint-plugin-vue](https://github.com/vuejs/eslint-plugin-vue) for Pug in `.vue` files.  
+It does **NOT** replace [eslint-plugin-vue](https://github.com/vuejs/eslint-plugin-vue)!
 
 ---
 
@@ -61,13 +57,20 @@ yarn add --dev eslint-plugin-vue-pug-sfc
 pnpm add --save-dev eslint-plugin-vue-pug-sfc
 ```
 
+Make sure you also installed `eslint` and `eslint-plugin-vue`.
+
 ## Usage
 
 In `eslint` config:
 
 ```jsonc
 {
-  "plugins": ["vue-pug-sfc"],
+  "plugins": [
+    // Still configure eslint-plugin-vue, because you want also lint parts like `<script>`.
+    "vue",
+    // Now configure eslint-plugin-vue-pug-sfc.
+    "vue-pug-sfc"
+  ],
   "rules": {
     "vue-pug-sfc/this-in-template": "warn"
   }
@@ -78,9 +81,11 @@ or via `extends`:
 
 ```jsonc
 {
-  "extends": ["plugin:vue-pug-sfc/recommended"]
+  "extends": ["plugin:vue/recommended", "plugin:vue-pug-sfc/recommended"]
 }
 ```
+
+Please note that the `vue-pug-sfc` plugin has no access to `vue` configuration, so you need to configure it additionally.
 
 ## Motivation
 
