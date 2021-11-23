@@ -21,14 +21,14 @@ div abc
     {
       filename: 'test.vue',
       code: `<template lang="pug">
-<!-- comment -->
+//- comment
 div abc
 </template>`
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
-<!-- comment -->
+//- comment
 div(v-if="foo") abc
 div(v-else) abc
 </template>`
@@ -36,7 +36,7 @@ div(v-else) abc
     {
       filename: 'test.vue',
       code: `<template lang="pug">
-<!-- comment -->
+//- comment
 div(v-if="foo") abc
 div(v-else-if="bar") abc
 div(v-else) abc
@@ -87,7 +87,9 @@ div
     },
     {
       filename: 'test.vue',
-      code: `<template lang="pug">{{a b c}}</template>`,
+      code: `<template lang="pug">
+| {{a b c}}
+</template>`,
       errors: ['The template root requires an element rather than texts.']
     },
     {
