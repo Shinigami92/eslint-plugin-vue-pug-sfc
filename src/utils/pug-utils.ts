@@ -71,9 +71,12 @@ export function getAttributeTokens(tag: TagToken, tokens: ReadonlyArray<Token>):
   const tagIndex: number = tokens.indexOf(tag);
   const startAttributesIndex: number = findIndexFrom(tokens, ({ type }) => type === 'start-attributes', tagIndex);
 
-  // If there was another tag token between given tag and start-attributes token,
+  // If there was no start-attributes token, or another tag token between given tag and start-attributes token,
   // then there are no attributes for given tag token.
-  if (tokens.slice(tagIndex + 1, startAttributesIndex).some(({ type }) => type === 'tag')) {
+  if (
+    startAttributesIndex === -1 ||
+    tokens.slice(tagIndex + 1, startAttributesIndex).some(({ type }) => type === 'tag')
+  ) {
     return [];
   }
 
