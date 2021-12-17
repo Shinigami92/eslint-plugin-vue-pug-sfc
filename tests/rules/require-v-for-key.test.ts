@@ -69,6 +69,10 @@ ruleTester.run('require-v-for-key', rule, {
       filename: 'test.vue',
       code: '<template lang="pug">div: template(v-for="(x, i) in list" :key="i"): MyComp</template>'
     },
+    {
+      filename: 'test.vue',
+      code: '<template lang="pug">div: template(v-for="(x, i) in list"): slot</template>'
+    },
     // key on <slot> : In Vue.js 3.x, you can place key on <slot>.
     {
       filename: 'test.vue',
