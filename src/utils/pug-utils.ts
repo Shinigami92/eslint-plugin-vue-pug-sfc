@@ -114,10 +114,9 @@ export function getChildTags(tag: TagToken, tokens: ReadonlyArray<Token>): TagTo
       indentLevel++;
     } else if (token.type === 'outdent') {
       indentLevel--;
-    }
-
-    if (indentLevel < 0) {
-      break;
+      if (indentLevel <= 0) {
+        break;
+      }
     }
   }
 
