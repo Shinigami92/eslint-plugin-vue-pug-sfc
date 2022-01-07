@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint';
+import type { AST, Rule } from 'eslint';
 import type { AttributeToken, Loc, TagToken, TextToken } from 'pug-lexer';
 import type { TokenProcessorContext } from '../utils';
 import { processRule } from '../utils';
@@ -52,7 +52,7 @@ export default {
             const loc: Loc = token.loc;
 
             // @ts-expect-error: Access range from token
-            const range: [number, number] = token.range;
+            const range: AST.Range = token.range;
             const textSlice: string = context.getSourceCode().text.slice(range[0], range[1]);
             const columnOffset: number = textSlice.indexOf(`this${withOptionalChaining ? '?' : ''}.`);
 

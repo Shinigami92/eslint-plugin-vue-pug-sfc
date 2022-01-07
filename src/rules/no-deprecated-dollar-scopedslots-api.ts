@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint';
+import type { AST, Rule } from 'eslint';
 import type { Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 
@@ -49,7 +49,7 @@ export default {
               messageId: 'deprecated',
               fix(fixer) {
                 // @ts-expect-error: Access range from token
-                const range: [number, number] = token.range;
+                const range: AST.Range = token.range;
                 const textSlice: string = context.getSourceCode().text.slice(range[0], range[1]);
                 const columnOffset: number = textSlice.indexOf('$scopedSlots');
 

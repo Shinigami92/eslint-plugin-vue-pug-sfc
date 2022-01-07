@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint';
+import type { AST, Rule } from 'eslint';
 import type { Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 import { getChecker, getExactConverter, isPascalCase, pascalCase } from '../utils/casing';
@@ -96,7 +96,7 @@ export default {
             const loc: Loc = token.loc;
 
             // @ts-expect-error: Access range from token
-            const range: [number, number] = token.range;
+            const range: AST.Range = token.range;
             const columnStart: number = loc.start.column - 1;
             const columnEnd: number = columnStart + tagName.length;
 
