@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@types/eslint': ~8.2.1
+  '@types/eslint': ~8.2.2
   '@types/eslint-scope': ~3.7.2
   '@types/eslint-visitor-keys': ~1.0.0
   '@types/jest': ~27.4.0
@@ -25,7 +25,7 @@ dependencies:
   vue-eslint-parser: 8.0.1_eslint@8.6.0
 
 devDependencies:
-  '@types/eslint': 8.2.1
+  '@types/eslint': 8.2.2
   '@types/eslint-scope': 3.7.2
   '@types/eslint-visitor-keys': 1.0.0
   '@types/jest': 27.4.0
@@ -676,7 +676,7 @@ packages:
   /@types/eslint-scope/3.7.2:
     resolution: {integrity: sha512-TzgYCWoPiTeRg6RQYgtuW7iODtVoKu3RVL72k3WohqhjfaOLK5Mg2T4Tg1o2bSfu0vPkoI48wdQFv5b/Xe04wQ==}
     dependencies:
-      '@types/eslint': 8.2.1
+      '@types/eslint': 8.2.2
       '@types/estree': 0.0.50
     dev: true
 
@@ -684,8 +684,8 @@ packages:
     resolution: {integrity: sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==}
     dev: true
 
-  /@types/eslint/8.2.1:
-    resolution: {integrity: sha512-UP9rzNn/XyGwb5RQ2fok+DzcIRIYwc16qTXse5+Smsy8MOIccCChT15KAwnsgQx4PzJkaMq4myFyZ4CL5TjhIQ==}
+  /@types/eslint/8.2.2:
+    resolution: {integrity: sha512-nQxgB8/Sg+QKhnV8e0WzPpxjIGT3tuJDDzybkDi8ItE/IgTlHo07U0shaIjzhcvQxlq9SDRE42lsJ23uvEgJ2A==}
     dependencies:
       '@types/estree': 0.0.50
       '@types/json-schema': 7.0.9
@@ -1090,8 +1090,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001296
-      electron-to-chromium: 1.4.36
+      caniuse-lite: 1.0.30001297
+      electron-to-chromium: 1.4.38
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -1136,8 +1136,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite/1.0.30001296:
-    resolution: {integrity: sha512-WfrtPEoNSoeATDlf4y3QvkwiELl9GyPLISV5GejTbbQRtQx4LhsXmc9IQ6XCL2d7UxCyEzToEZNMeqR79OUw8Q==}
+  /caniuse-lite/1.0.30001297:
+    resolution: {integrity: sha512-6bbIbowYG8vFs/Lk4hU9jFt7NknGDleVAciK916tp6ft1j+D//ZwwL6LbF1wXMQ32DMSjeuUV8suhh6dlmFjcA==}
     dev: true
 
   /chalk/2.4.2:
@@ -1328,8 +1328,8 @@ packages:
       webidl-conversions: 5.0.0
     dev: true
 
-  /electron-to-chromium/1.4.36:
-    resolution: {integrity: sha512-MbLlbF39vKrXWlFEFpCgDHwdlz4O3LmHM5W4tiLRHjSmEUXjJjz8sZkMgWgvYxlZw3N1iDTmCEtOkkESb5TMCg==}
+  /electron-to-chromium/1.4.38:
+    resolution: {integrity: sha512-WhHt3sZazKj0KK/UpgsbGQnUUoFeAHVishzHFExMxagpZgjiGYSC9S0ZlbhCfSH2L2i+2A1yyqOIliTctMx7KQ==}
     dev: true
 
   /emittery/0.8.1:
@@ -1580,8 +1580,8 @@ packages:
     resolution: {integrity: sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==}
     dev: true
 
-  /fast-glob/3.2.7:
-    resolution: {integrity: sha512-rYGMRwip6lUMvYD3BTScMwT1HtAs2d71SMv66Vrxs0IekGZEjhM0pcMfjQPnknBt2zeCwQMEupiN02ZP4DiT1Q==}
+  /fast-glob/3.2.8:
+    resolution: {integrity: sha512-UsiHHXoDbC3iS7vBOFvld7Q9XqBu318xztdHiL10Fjov3AK5GI5bek2ZJkxZcjPguOYH39UL1W4A6w+l7tpNtw==}
     engines: {node: '>=8'}
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -1744,7 +1744,7 @@ packages:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.7
+      fast-glob: 3.2.8
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 3.0.0
