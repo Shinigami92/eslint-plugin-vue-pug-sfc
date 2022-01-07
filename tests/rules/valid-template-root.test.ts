@@ -140,17 +140,43 @@ template
     {
       filename: 'test.vue',
       code: '<template lang="pug"></template>',
-      errors: ['The template requires child element.']
+      errors: [
+        {
+          message: 'The template requires child element.',
+          line: 1,
+          column: 1,
+          endLine: 1,
+          endColumn: 33
+        }
+      ]
     },
     {
       filename: 'test.vue',
-      code: '<template lang="pug" src="foo.pug">abc</template>',
-      errors: ["The template root with 'src' attribute is required to be empty."]
+      code: `<template lang="pug" src="foo.pug">
+| abc
+</template>`,
+      errors: [
+        {
+          message: "The template root with 'src' attribute is required to be empty.",
+          line: 1,
+          column: 36,
+          endLine: 3,
+          endColumn: 1
+        }
+      ]
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug" src="foo.pug">div</template>',
-      errors: ["The template root with 'src' attribute is required to be empty."]
+      errors: [
+        {
+          message: "The template root with 'src' attribute is required to be empty.",
+          line: 1,
+          column: 36,
+          endLine: 1,
+          endColumn: 39
+        }
+      ]
     }
   ]
 });
