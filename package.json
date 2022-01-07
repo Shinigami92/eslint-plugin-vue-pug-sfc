@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -Rf dist pnpm-lock.yaml node_modules",
     "build": "tsc",
+    "add:rule": "esno ./scripts/add-rule.ts",
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "jest",
@@ -55,6 +56,7 @@
     "eslint-config-prettier": "~8.3.0",
     "eslint-define-config": "~1.2.2",
     "eslint-plugin-prettier": "~4.0.0",
+    "esno": "~0.13.0",
     "jest": "~27.4.7",
     "prettier": "2.5.1",
     "prettier-plugin-organize-imports": "~2.3.4",
