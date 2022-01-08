@@ -177,6 +177,25 @@ template
           endColumn: 39
         }
       ]
+    },
+    {
+      filename: 'test.vue',
+      code: `<script lang="ts">
+const count = ref(0);
+</script>
+
+<template lang="pug" src="foo.pug">
+div {{ count }}
+</template>`,
+      errors: [
+        {
+          message: "The template root with 'src' attribute is required to be empty.",
+          line: 5,
+          column: 36,
+          endLine: 7,
+          endColumn: 1
+        }
+      ]
     }
   ]
 });
