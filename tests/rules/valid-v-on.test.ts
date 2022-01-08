@@ -176,6 +176,13 @@ div(v-on:click)
     {
       filename: 'test.vue',
       code: `<template lang="pug">
+div(v-on)
+</template>`,
+      errors: ["'v-on' directives require a value or verb modifier (like 'stop' or 'prevent')."]
+    },
+    {
+      filename: 'test.vue',
+      code: `<template lang="pug">
 div(@click)
 </template>`,
       errors: [
