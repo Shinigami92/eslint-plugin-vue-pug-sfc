@@ -145,6 +145,13 @@ export function checkIsVueFile(context: Rule.RuleContext): boolean {
   return true;
 }
 
+export interface ExtractPugTemplateReturn {
+  df?: VDocumentFragment;
+  pugTemplateElement?: VElement;
+  rawText?: string;
+  pugText?: string;
+}
+
 export interface ParsePugContentReturn {
   text: string;
   tokens: lex.Token[];
@@ -152,22 +159,12 @@ export interface ParsePugContentReturn {
 
 const CACHED_PUG_CONTENT_RETURN_CONTENT_MAP: Map<string, ParsePugContentReturn> = new Map();
 
-export function parsePugContent(context: Rule.RuleContext): ParsePugContentReturn {
-  const cacheKey: string = context.getSourceCode().text;
-  const cachedValue: ParsePugContentReturn | undefined = CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.get(cacheKey);
-  if (cachedValue) {
-    return cachedValue;
-  }
-
-  const result: ParsePugContentReturn = { text: '', tokens: [] };
-
+export function extractPugTemplate(context: Rule.RuleContext): ExtractPugTemplateReturn {
   const parserServices: ParserServices = context.parserServices;
 
-  // Parse the pug content to tokens
   const df: VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
   if (!df) {
-    CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
-    return result;
+    return {};
   }
 
   const pugTemplateElement: VElement | undefined = df.children.find(
@@ -179,13 +176,37 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
       )
   ) as VElement | undefined;
 
+  const rawText: string = context.getSourceCode().text;
+
   if (!pugTemplateElement) {
+    return { df, rawText };
+  }
+
+  const pugText: string = rawText.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
+
+  return { df, pugTemplateElement, rawText, pugText };
+}
+
+export function parsePugContent(context: Rule.RuleContext): ParsePugContentReturn {
+  const { df, pugTemplateElement, rawText = '', pugText = '' } = extractPugTemplate(context);
+
+  const cacheKey: string = rawText;
+  const cachedValue: ParsePugContentReturn | undefined = CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.get(cacheKey);
+  if (cachedValue) {
+    return cachedValue;
+  }
+
+  const result: ParsePugContentReturn = { text: '', tokens: [] };
+
+  if (!df) {
     CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
     return result;
   }
 
-  const rawText: string = cacheKey; // Same as `context.getSourceCode().text`
-  const pugText: string = rawText.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
+  if (!pugTemplateElement) {
+    CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.set(cacheKey, result);
+    return result;
+  }
 
   const pugTokens: lex.Token[] = [];
   try {

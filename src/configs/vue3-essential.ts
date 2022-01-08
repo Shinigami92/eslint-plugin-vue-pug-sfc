@@ -11,6 +11,7 @@ export = {
     'vue-pug-sfc/require-component-is': 'error',
     'vue-pug-sfc/require-v-for-key': 'error',
     'vue-pug-sfc/use-v-on-exact': 'error',
+    'vue-pug-sfc/valid-template-root': 'error',
     'vue-pug-sfc/valid-v-else-if': 'error',
     'vue-pug-sfc/valid-v-else': 'error',
     'vue-pug-sfc/valid-v-for': 'error',
