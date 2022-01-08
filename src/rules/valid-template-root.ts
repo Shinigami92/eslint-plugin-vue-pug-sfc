@@ -1,6 +1,5 @@
 import type { Rule } from 'eslint';
-import type { VDocumentFragment, VElement } from '../util-types/ast';
-import type { ParserServices } from '../util-types/parser-services';
+import { extractPugTemplate } from '../utils';
 
 export default {
   meta: {
@@ -14,31 +13,14 @@ export default {
     schema: []
   },
   create(context) {
-    const parserServices: ParserServices = context.parserServices;
-
-    const df: VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
-    if (!df) {
-      return {};
-    }
-
-    const pugTemplateElement: VElement | undefined = df.children.find(
-      (node) =>
-        node.type === 'VElement' &&
-        node.name === 'template' &&
-        node.startTag.attributes.some(
-          (attr) => !attr.directive && attr.key.name === 'lang' && attr.value && attr.value.value === 'pug'
-        )
-    ) as VElement | undefined;
+    const { pugTemplateElement, pugText } = extractPugTemplate(context) ?? {};
 
     if (!pugTemplateElement) {
       return {};
     }
 
-    const rawText: string = context.getSourceCode().text;
-    const pugText: string = rawText.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
-
     const hasSrc: boolean = pugTemplateElement.startTag.attributes.some((node) => node.key.name === 'src');
-    const hasContent: boolean = pugText.length > 0;
+    const hasContent: boolean = (pugText ?? '').length > 0;
 
     if (!hasSrc && !hasContent) {
       context.report({
