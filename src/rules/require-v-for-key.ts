@@ -50,7 +50,7 @@ export default {
             return;
           }
 
-          const lastTagToken: TagToken = tokens[lastTagTokenIndex!] as TagToken;
+          const lastTagToken: TagToken | undefined = tokens[lastTagTokenIndex!] as TagToken | undefined;
 
           // `template` and `slot` doesn't need a key directly but a child of them
           if (lastTagToken && (lastTagToken.val === 'template' || lastTagToken.val === 'slot')) {
