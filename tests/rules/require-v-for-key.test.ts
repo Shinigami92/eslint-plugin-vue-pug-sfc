@@ -139,6 +139,26 @@ div
           endColumn: 13
         }
       ]
+    },
+    {
+      filename: 'test.vue',
+      code: `<template lang="pug">
+.component-test(v-on="$listeners")
+  .bar(
+    v-for="(value, index) in values"
+    :style="getStyle(value, index)"
+  )
+  slot
+</template>`,
+      errors: [
+        {
+          message: "Elements in iteration expect to have 'v-bind:key' directives.",
+          line: 4,
+          endLine: 4,
+          column: 5,
+          endColumn: 10
+        }
+      ]
     }
   ]
 });
