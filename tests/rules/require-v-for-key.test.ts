@@ -149,37 +149,7 @@ div
     :style="getStyle(value, index)"
   )
   slot
-</template>
-
-<script lang="ts">
-import Vue from 'vue';
-
-export default Vue.component({
-  data() {
-    return {
-      values: [],
-    };
-  },
-  methods: {
-    getStyle(value, index) {
-      return \`opacity: 0.3\`
-    }
-  }
-});
-</script>
-
-<style lang="scss">
-.component-test {
-  height: 22px;
-
-  .bar {
-    width: 2px;
-    height: 100%;
-    margin-right: 2px;
-  }
-}
-</style>
-`,
+</template>`,
       errors: [
         {
           message: "Elements in iteration expect to have 'v-bind:key' directives.",
