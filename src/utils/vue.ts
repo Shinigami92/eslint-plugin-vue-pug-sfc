@@ -26,10 +26,13 @@ import type {
   VDocumentFragment,
   VElement,
   VExpressionContainer,
-  VText
+  VText,
 } from '../util-types/ast';
 import type { Token } from '../util-types/node';
-import type { ParserServices, TemplateListener } from '../util-types/parser-services';
+import type {
+  ParserServices,
+  TemplateListener,
+} from '../util-types/parser-services';
 import type { VueObjectType } from '../util-types/utils';
 import { isHtmlWellKnownElementName } from './html-element';
 import { getAttributeTokens } from './pug-utils';
@@ -87,7 +90,9 @@ export function isVueEventBinding(name: string): boolean {
  * @returns `true` if `name` passes the vue expression check, otherwise `false`.
  */
 export function isVueExpression(name: string): boolean {
-  return /^((v-(bind|slot))?:|v-(model|slot|if|for|else-if|text|html)|#).*/.test(name);
+  return /^((v-(bind|slot))?:|v-(model|slot|if|for|else-if|text|html)|#).*/.test(
+    name
+  );
 }
 
 /**
@@ -202,7 +207,11 @@ export function isVueFile(path: string): boolean {
  * @param path File name with extension.
  */
 export function isVueComponentFile(node: ESNode, path: string): boolean {
-  return isVueFile(path) && node.type === 'ExportDefaultDeclaration' && node.declaration.type === 'ObjectExpression';
+  return (
+    isVueFile(path) &&
+    node.type === 'ExportDefaultDeclaration' &&
+    node.declaration.type === 'ObjectExpression'
+  );
 }
 
 /**
@@ -211,9 +220,9 @@ export function isVueComponentFile(node: ESNode, path: string): boolean {
  * @param node The node to address.
  * @returns The `TSAsExpression#expression` value if the node is a `TSAsExpression` node. Otherwise, the node.
  */
-export function skipTSAsExpression<T extends Expression | Super | SpreadElement | Declaration>(
-  node: T | TSAsExpression
-): T {
+export function skipTSAsExpression<
+  T extends Expression | Super | SpreadElement | Declaration
+>(node: T | TSAsExpression): T {
   if (!node) {
     return node;
   }
@@ -229,7 +238,9 @@ export function skipTSAsExpression<T extends Expression | Super | SpreadElement 
 /**
  * Checks whether the given node is VElement.
  */
-export function isVElement(node: VElement | VExpressionContainer | VText): node is VElement {
+export function isVElement(
+  node: VElement | VExpressionContainer | VText
+): node is VElement {
   return node.type === 'VElement';
 }
 
@@ -241,13 +252,18 @@ export function isVElement(node: VElement | VExpressionContainer | VText): node 
  * @param value The attribute value to check.
  * @returns The found attribute.
  */
-export function getAttribute(node: VElement, name: string, value?: string): VAttribute | VDirective | null {
+export function getAttribute(
+  node: VElement,
+  name: string,
+  value?: string
+): VAttribute | VDirective | null {
   return (
     node.startTag.attributes.find((node) => {
       return (
         !node.directive &&
         node.key.name === name &&
-        (value === undefined || (node.value != null && node.value.value === value))
+        (value === undefined ||
+          (node.value != null && node.value.value === value))
       );
     }) ?? null
   );
@@ -261,7 +277,11 @@ export function getAttribute(node: VElement, name: string, value?: string): VAtt
  * @param value The attribute value to check.
  * @returns `true` if the start tag has the attribute.
  */
-export function hasAttribute(node: VElement, name: string, value?: string): boolean {
+export function hasAttribute(
+  node: VElement,
+  name: string,
+  value?: string
+): boolean {
   return Boolean(getAttribute(node, name, value));
 }
 
@@ -271,19 +291,25 @@ export function hasAttribute(node: VElement, name: string, value?: string): bool
  * @param context The ESLint rule context object.
  * @returns The element of `<script setup>`.
  */
-export function getScriptSetupElement(context: Rule.RuleContext): VElement | null {
+export function getScriptSetupElement(
+  context: Rule.RuleContext
+): VElement | null {
   const parserServices: ParserServices = context.parserServices;
-  const df: VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
+  const df: VDocumentFragment | null | undefined =
+    parserServices.getDocumentFragment?.();
   if (!df) {
     return null;
   }
 
-  const scripts: VElement[] = df.children.filter(isVElement).filter((e) => e.name === 'script');
+  const scripts: VElement[] = df.children
+    .filter(isVElement)
+    .filter((e) => e.name === 'script');
 
   if (scripts.length === 2) {
     return scripts.find((e) => hasAttribute(e, 'setup')) ?? null;
   } else {
-    const script: VElement | VExpressionContainer | VText | undefined = scripts[0];
+    const script: VElement | VExpressionContainer | VText | undefined =
+      scripts[0];
     if (script && hasAttribute(script, 'setup')) {
       return script;
     }
@@ -299,7 +325,10 @@ export function getScriptSetupElement(context: Rule.RuleContext): VElement | nul
  * @param stringOnly
  * @return The string if static. Otherwise, `null`.
  */
-export function getStringLiteralValue(node: Literal | TemplateLiteral, stringOnly?: boolean): string | null {
+export function getStringLiteralValue(
+  node: Literal | TemplateLiteral,
+  stringOnly?: boolean
+): string | null {
   if (node.type === 'Literal') {
     if (node.value == null) {
       if (!stringOnly && node.bigint != null) {
@@ -371,26 +400,35 @@ function getVueComponentDefinitionType(
     const callee: Expression | Super = parent.callee;
 
     if (callee.type === 'MemberExpression') {
-      const calleeObject: Expression | Super = skipTSAsExpression(callee.object);
+      const calleeObject: Expression | Super = skipTSAsExpression(
+        callee.object
+      );
 
       if (calleeObject.type === 'Identifier') {
         const propName: string | null = getStaticPropertyName(callee);
         if (calleeObject.name === 'Vue') {
           // for Vue.js 2.x
           // Vue.component('xxx', {}) || Vue.mixin({}) || Vue.extend('xxx', {})
-          const maybeFullVueComponentForVue2: boolean | '' | null = propName && isObjectArgument(parent);
+          const maybeFullVueComponentForVue2: boolean | '' | null =
+            propName && isObjectArgument(parent);
 
           return maybeFullVueComponentForVue2 &&
-            (propName === 'component' || propName === 'mixin' || propName === 'extend')
+            (propName === 'component' ||
+              propName === 'mixin' ||
+              propName === 'extend')
             ? propName
             : null;
         }
 
         // for Vue.js 3.x
         // app.component('xxx', {}) || app.mixin({})
-        const maybeFullVueComponent: boolean | '' | null = propName && isObjectArgument(parent);
+        const maybeFullVueComponent: boolean | '' | null =
+          propName && isObjectArgument(parent);
 
-        return maybeFullVueComponent && (propName === 'component' || propName === 'mixin') ? propName : null;
+        return maybeFullVueComponent &&
+          (propName === 'component' || propName === 'mixin')
+          ? propName
+          : null;
       }
     }
 
@@ -419,7 +457,11 @@ function getVueComponentDefinitionType(
   return null;
 
   function isObjectArgument(node: CallExpression): boolean {
-    return node.arguments.length > 0 && skipTSAsExpression(node.arguments.slice(-1)[0]!).type === 'ObjectExpression';
+    return (
+      node.arguments.length > 0 &&
+      skipTSAsExpression(node.arguments.slice(-1)[0]!).type ===
+        'ObjectExpression'
+    );
   }
 }
 
@@ -449,13 +491,17 @@ const componentComments: WeakMap<Rule.RuleContext, Token[]> = new WeakMap();
  * @param context The ESLint rule context object.
  * @return The the component comments.
  */
-export function getComponentComments(context: Rule.RuleContext): Token[] | undefined {
+export function getComponentComments(
+  context: Rule.RuleContext
+): Token[] | undefined {
   let tokens: Token[] | undefined = componentComments.get(context);
   if (tokens) {
     return tokens;
   }
   const sourceCode: SourceCode = context.getSourceCode();
-  tokens = sourceCode.getAllComments().filter((comment) => /@vue\/component/g.test(comment.value)) as Token[];
+  tokens = sourceCode
+    .getAllComments()
+    .filter((comment) => /@vue\/component/g.test(comment.value)) as Token[];
   componentComments.set(context, tokens);
   return tokens;
 }
@@ -467,7 +513,10 @@ export function getComponentComments(context: Rule.RuleContext): Token[] | undef
  * @param node Node to check.
  * @returns The Vue definition type.
  */
-export function getVueObjectType(context: Rule.RuleContext, node: ObjectExpression): VueObjectType | null {
+export function getVueObjectType(
+  context: Rule.RuleContext,
+  node: ObjectExpression
+): VueObjectType | null {
   if (node.type !== 'ObjectExpression') {
     return null;
   }
@@ -475,9 +524,16 @@ export function getVueObjectType(context: Rule.RuleContext, node: ObjectExpressi
   if (parent.type === 'ExportDefaultDeclaration') {
     // export default {} in .vue || .jsx
     const filePath: string = context.getFilename();
-    if (isVueComponentFile(parent, filePath) && skipTSAsExpression(parent.declaration) === node) {
+    if (
+      isVueComponentFile(parent, filePath) &&
+      skipTSAsExpression(parent.declaration) === node
+    ) {
       const scriptSetup: VElement | null = getScriptSetupElement(context);
-      if (scriptSetup && scriptSetup.range[0] <= parent.range[0] && parent.range[1] <= scriptSetup.range[1]) {
+      if (
+        scriptSetup &&
+        scriptSetup.range[0] <= parent.range[0] &&
+        parent.range[1] <= scriptSetup.range[1]
+      ) {
         // `export default` in `<script setup>`
         return null;
       }
@@ -485,22 +541,35 @@ export function getVueObjectType(context: Rule.RuleContext, node: ObjectExpressi
     }
   } else if (parent.type === 'CallExpression') {
     // Vue.component('xxx', {}) || component('xxx', {})
-    if (getVueComponentDefinitionType(node) != null && skipTSAsExpression(parent.arguments.slice(-1)[0]!) === node) {
+    if (
+      getVueComponentDefinitionType(node) != null &&
+      skipTSAsExpression(parent.arguments.slice(-1)[0]!) === node
+    ) {
       return 'definition';
     }
   } else if (parent.type === 'NewExpression') {
     // new Vue({})
-    if (isVueInstance(parent) && skipTSAsExpression(parent.arguments[0]!) === node) {
+    if (
+      isVueInstance(parent) &&
+      skipTSAsExpression(parent.arguments[0]!) === node
+    ) {
       return 'instance';
     }
   }
-  if (getComponentComments(context)?.some((el) => el.loc.end.line === node.loc.start.line - 1)) {
+  if (
+    getComponentComments(context)?.some(
+      (el) => el.loc.end.line === node.loc.start.line - 1
+    )
+  ) {
     return 'mark';
   }
   return null;
 }
 
-export function compositingVisitors<T>(visitor: T, ...visitors: Array<Rule.RuleListener | Rule.NodeListener>): T {
+export function compositingVisitors<T>(
+  visitor: T,
+  ...visitors: Array<Rule.RuleListener | Rule.NodeListener>
+): T {
   for (const v of visitors) {
     for (const key in v) {
       // @ts-expect-error
@@ -531,11 +600,14 @@ export function executeOnVueComponent(
   return {
     'ObjectExpression:exit'(node: ObjectExpression): void {
       const type: VueObjectType | null = getVueObjectType(context, node);
-      if (!type || (type !== 'mark' && type !== 'export' && type !== 'definition')) {
+      if (
+        !type ||
+        (type !== 'mark' && type !== 'export' && type !== 'definition')
+      ) {
         return;
       }
       cb(node, type);
-    }
+    },
   };
 }
 
@@ -556,7 +628,7 @@ export function executeOnVueInstance(
         return;
       }
       cb(node, type);
-    }
+    },
   };
 }
 
@@ -564,13 +636,18 @@ export function executeOnVue(
   context: Rule.RuleContext,
   cb: (node: ObjectExpression, type: VueObjectType) => void
 ): TemplateListener {
-  return compositingVisitors(executeOnVueComponent(context, cb), executeOnVueInstance(context, cb));
+  return compositingVisitors(
+    executeOnVueComponent(context, cb),
+    executeOnVueInstance(context, cb)
+  );
 }
 
 /**
  * Checks whether the given node is Property.
  */
-export function isProperty(node: Property | SpreadElement | AssignmentProperty): node is Property {
+export function isProperty(
+  node: Property | SpreadElement | AssignmentProperty
+): node is Property {
   if (node.type !== 'Property') {
     return false;
   }
@@ -587,14 +664,19 @@ export function isDef<T>(v: T): v is T {
 export function getRegisteredVueComponents(
   componentObject: ObjectExpression
 ): Array<{ node: Property; name: string } | null> {
-  const componentsNode: Property | SpreadElement | undefined = componentObject.properties.find(
-    (property) =>
-      property.type === 'Property' &&
-      getStaticPropertyName(property) === 'components' &&
-      property.value.type === 'ObjectExpression'
-  );
+  const componentsNode: Property | SpreadElement | undefined =
+    componentObject.properties.find(
+      (property) =>
+        property.type === 'Property' &&
+        getStaticPropertyName(property) === 'components' &&
+        property.value.type === 'ObjectExpression'
+    );
 
-  if (!componentsNode || !('value' in componentsNode) || componentsNode.value.type !== 'ObjectExpression') {
+  if (
+    !componentsNode ||
+    !('value' in componentsNode) ||
+    componentsNode.value.type !== 'ObjectExpression'
+  ) {
     return [];
   }
 
@@ -612,14 +694,22 @@ export function getRegisteredVueComponents(
  * @param token The start tag token to check.
  * @returns `true` if the token is a custom component.
  */
-export function isCustomComponent(tag: TagToken, tokens: ReadonlyArray<PugToken>): boolean {
-  if (!isHtmlWellKnownElementName(tag.val) && !isSvgWellKnownElementName(tag.val)) {
+export function isCustomComponent(
+  tag: TagToken,
+  tokens: ReadonlyArray<PugToken>
+): boolean {
+  if (
+    !isHtmlWellKnownElementName(tag.val) &&
+    !isSvgWellKnownElementName(tag.val)
+  ) {
     return true;
   }
 
   // If the tag has an `is` attribute, it is also declared as a custom component.
   const attributeTokens: AttributeToken[] = getAttributeTokens(tag, tokens);
-  const hasIsAttribute: boolean = attributeTokens.some(({ name }) => /^(v-bind)?:?is$/.test(name));
+  const hasIsAttribute: boolean = attributeTokens.some(({ name }) =>
+    /^(v-bind)?:?is$/.test(name)
+  );
 
   return hasIsAttribute;
 }

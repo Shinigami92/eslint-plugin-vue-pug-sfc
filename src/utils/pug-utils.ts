@@ -10,7 +10,10 @@ import { findIndexFrom } from './index';
  * @param index The current index within the token array..
  * @returns Previous tag token if there was one.
  */
-export function previousTagToken(tokens: ReadonlyArray<Token>, index: number): TagToken | undefined {
+export function previousTagToken(
+  tokens: ReadonlyArray<Token>,
+  index: number
+): TagToken | undefined {
   for (let i: number = index - 1; i >= 0; i--) {
     const token: Token | undefined = tokens[i];
     if (!token) {
@@ -30,7 +33,10 @@ export function previousTagToken(tokens: ReadonlyArray<Token>, index: number): T
  * @param index The current index on which the cursor is in the token array.
  * @returns Previous attribute token if there was one.
  */
-export function previousNormalAttributeToken(tokens: ReadonlyArray<Token>, index: number): AttributeToken | undefined {
+export function previousNormalAttributeToken(
+  tokens: ReadonlyArray<Token>,
+  index: number
+): AttributeToken | undefined {
   for (let i: number = index - 1; i > 0; i--) {
     const token: Token | undefined = tokens[i];
     if (!token || token.type === 'start-attributes') {
@@ -52,7 +58,10 @@ export function previousNormalAttributeToken(tokens: ReadonlyArray<Token>, index
  * @param index The current index on which the cursor is in the token array.
  * @returns Previous attribute token if there was one.
  */
-export function previousTypeAttributeToken(tokens: ReadonlyArray<Token>, index: number): AttributeToken | undefined {
+export function previousTypeAttributeToken(
+  tokens: ReadonlyArray<Token>,
+  index: number
+): AttributeToken | undefined {
   for (let i: number = index - 1; i > 0; i--) {
     const token: Token | undefined = tokens[i];
     if (!token || token.type === 'start-attributes' || token.type === 'tag') {
@@ -67,15 +76,24 @@ export function previousTypeAttributeToken(tokens: ReadonlyArray<Token>, index: 
   return;
 }
 
-export function getAttributeTokens(tag: TagToken, tokens: ReadonlyArray<Token>): AttributeToken[] {
+export function getAttributeTokens(
+  tag: TagToken,
+  tokens: ReadonlyArray<Token>
+): AttributeToken[] {
   const tagIndex: number = tokens.indexOf(tag);
-  const startAttributesIndex: number = findIndexFrom(tokens, ({ type }) => type === 'start-attributes', tagIndex);
+  const startAttributesIndex: number = findIndexFrom(
+    tokens,
+    ({ type }) => type === 'start-attributes',
+    tagIndex
+  );
 
   // If there was no start-attributes token, or another tag token between given tag and start-attributes token,
   // then there are no attributes for given tag token.
   if (
     startAttributesIndex === -1 ||
-    tokens.slice(tagIndex + 1, startAttributesIndex).some(({ type }) => type === 'tag')
+    tokens
+      .slice(tagIndex + 1, startAttributesIndex)
+      .some(({ type }) => type === 'tag')
   ) {
     return [];
   }
@@ -86,7 +104,10 @@ export function getAttributeTokens(tag: TagToken, tokens: ReadonlyArray<Token>):
     startAttributesIndex
   );
 
-  return tokens.slice(startAttributesIndex + 1, endAttributesIndex) as AttributeToken[];
+  return tokens.slice(
+    startAttributesIndex + 1,
+    endAttributesIndex
+  ) as AttributeToken[];
 }
 
 export function hasAttributeTokens(
@@ -94,10 +115,15 @@ export function hasAttributeTokens(
   tokens: ReadonlyArray<Token>,
   condition: (attributeToken: AttributeToken) => boolean
 ): boolean {
-  return getAttributeTokens(tag, tokens).some((attributeToken) => condition(attributeToken));
+  return getAttributeTokens(tag, tokens).some((attributeToken) =>
+    condition(attributeToken)
+  );
 }
 
-export function getChildTags(tag: TagToken, tokens: ReadonlyArray<Token>): TagToken[] {
+export function getChildTags(
+  tag: TagToken,
+  tokens: ReadonlyArray<Token>
+): TagToken[] {
   const tagIndex: number = tokens.indexOf(tag);
 
   const children: TagToken[] = [];
@@ -154,8 +180,15 @@ export function isStyleAttribute(name: string, val: string): boolean {
  * @param offset The offset from left and right where to search from.
  * @returns Whether the value is wrapped wit start and end from the offset or not.
  */
-export function isWrappedWith(val: string, start: string, end: string, offset: number = 0): boolean {
-  return val.startsWith(start, offset) && val.endsWith(end, val.length - offset);
+export function isWrappedWith(
+  val: string,
+  start: string,
+  end: string,
+  offset: number = 0
+): boolean {
+  return (
+    val.startsWith(start, offset) && val.endsWith(end, val.length - offset)
+  );
 }
 
 /**

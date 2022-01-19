@@ -3,77 +3,77 @@ import rule from '../../src/rules/valid-v-for';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2015 }
+  parserOptions: { ecmaVersion: 2015 },
 });
 
 ruleTester.run('valid-v-for', rule, {
   valid: [
     {
       filename: 'test.vue',
-      code: ''
+      code: '',
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
  div(v-for="x in list")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(v-for="x of list")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(v-for="(x, i, k) in list")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(v-for="(x, i, k) of list")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(v-for="({id, name}, i, k) of list")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(v-for="([id, name], i, k) of list")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   your-component(v-for="x in list" :key="x.id")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(is="your-component" v-for="x in list" :key="x.id")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(:is="your-component" v-for="x in list" :key="x.id")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -81,7 +81,7 @@ div
 div
   template(v-for="x in list")
     custom-component(:key="x")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -89,7 +89,7 @@ div
 div
   template(v-for="x in list")
     div(:key="x")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -97,14 +97,14 @@ div
 div
   template(v-for="x in list")
     div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 template(v-for="x of list")
   slot(name="item")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -112,7 +112,7 @@ template(v-for="x of list")
 template(v-for="x of list")
   | foo
   div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -120,7 +120,7 @@ template(v-for="x of list")
 div
   template(v-for="x of list")
     div(v-for="foo of x" :key="foo")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -128,7 +128,7 @@ div
 template(v-for="x in xs")
   template(v-for="y in x.ys")
     li(v-for="z in y.zs" :key="z.id") 123
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -136,7 +136,7 @@ template(v-for="x in xs")
 template(v-for="x in xs")
   template(v-for="y in ys")
     li(v-for="z in zs" :key="x.id + y.id + z.id") 123
-</template>`
+</template>`,
     },
     // `key` on `template` : In Vue.js 3.x, you can place `key` on `template`.
     {
@@ -145,7 +145,7 @@ template(v-for="x in xs")
 div
   template(v-for="x in list" v-bind:key="x")
     div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -153,7 +153,7 @@ div
 div
   template(v-for="x in list" v-bind:key="x")
     MyComp
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -161,7 +161,7 @@ div
 div
   template(v-for="x in list" :key="x")
     div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -169,7 +169,7 @@ div
 div
   template(v-for="x in list" :key="x")
     MyComp
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -177,7 +177,7 @@ div
 div
   template(v-for="x in list" :key="x.id")
     div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -185,7 +185,7 @@ div
 div
   template(v-for="x in list" :key="x.id")
     MyComp
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -193,7 +193,7 @@ div
 div
   template(v-for="(x, i) in list" :key="i")
     div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -201,7 +201,7 @@ div
 div
   template(v-for="(x, i) in list" :key="i")
     MyComp
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -209,7 +209,7 @@ div
 div
   template(v-for="x in list" :key="x")
     custom-component
-</template>`
+</template>`,
     },
     // `key` on `slot` : In Vue.js 3.x, you can place `key` on `slot`.
     {
@@ -218,7 +218,7 @@ div
 div
   slot(v-for="x in list" :key="x")
     div
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -226,14 +226,14 @@ div
 div
   slot(v-for="x in list" :key="x")
     MyComp
-</template>`
+</template>`,
     },
     // parsing error
     {
       filename: 'parsing-error.vue',
       code: `<template lang="pug">
 div(v-for=".")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -241,15 +241,15 @@ div(v-for=".")
 div
   template(v-for="xin list")
     div
-</template>`
+</template>`,
     },
     // comment value (parsing error)
     {
       filename: 'comment-value.vue',
       code: `<template lang="pug">
 div(v-for="/**/")
-</template>`
-    }
+</template>`,
+    },
   ],
   invalid: [
     {
@@ -258,7 +258,7 @@ div(v-for="/**/")
 div
   div(v-for:aaa="x in list")
 </template>`,
-      errors: ["'v-for' directives require no argument."]
+      errors: ["'v-for' directives require no argument."],
     },
     {
       filename: 'test.vue',
@@ -266,7 +266,7 @@ div
 div
   div(v-for.aaa="x in list")
 </template>`,
-      errors: ["'v-for' directives require no modifier."]
+      errors: ["'v-for' directives require no modifier."],
     },
     {
       filename: 'test.vue',
@@ -274,7 +274,7 @@ div
 div
   div(v-for)
 </template>`,
-      errors: ["'v-for' directives require that attribute value."]
+      errors: ["'v-for' directives require that attribute value."],
     },
     // TODO: implement the complex functionality later
     //     {
@@ -431,7 +431,7 @@ div
       code: `<template lang="pug">
 div(v-for="")
 </template>`,
-      errors: ["'v-for' directives require that attribute value."]
-    }
-  ]
+      errors: ["'v-for' directives require that attribute value."],
+    },
+  ],
 });

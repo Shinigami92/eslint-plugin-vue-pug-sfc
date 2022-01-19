@@ -16,7 +16,10 @@ function usesVariable(variable: string, expression: string): boolean {
     return true;
   }
 
-  if ((variable.startsWith('{') && variable.endsWith('}')) || (variable.startsWith('(') && variable.endsWith(')'))) {
+  if (
+    (variable.startsWith('{') && variable.endsWith('}')) ||
+    (variable.startsWith('(') && variable.endsWith(')'))
+  ) {
     const variables: string[] = variable
       .slice(1, -1)
       .split(',')
@@ -33,7 +36,7 @@ export default {
     docs: {
       description: 'disallow use v-if on the same element as v-for',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/no-use-v-if-with-v-for.html'
+      url: 'https://eslint.vuejs.org/rules/no-use-v-if-with-v-for.html',
     },
     fixable: undefined,
     schema: [
@@ -41,12 +44,12 @@ export default {
         type: 'object',
         properties: {
           allowUsingIterationVar: {
-            type: 'boolean'
-          }
+            type: 'boolean',
+          },
         },
-        additionalProperties: false
-      }
-    ]
+        additionalProperties: false,
+      },
+    ],
   },
   create(context) {
     return processRule(context, () => {
@@ -77,7 +80,8 @@ export default {
             lastStartAttributesTokenIndex! + 1,
             endAttributesTokenIndex
           ) as AttributeToken[];
-          const vForAttribute: AttributeToken | undefined = attributeTokens.find((attr) => attr.name === 'v-for');
+          const vForAttribute: AttributeToken | undefined =
+            attributeTokens.find((attr) => attr.name === 'v-for');
           if (
             !vForAttribute ||
             // Ignore the rule if `val` is not a string
@@ -92,11 +96,18 @@ export default {
           iterationVariable = (iterationVariable ?? '').trim();
           iteratorName = (iteratorName ?? '').trim();
 
-          const kind: 'variable' | 'expression' = /^(?!\d)\w+$/.test(iteratorName) ? 'variable' : 'expression';
+          const kind: 'variable' | 'expression' = /^(?!\d)\w+$/.test(
+            iteratorName
+          )
+            ? 'variable'
+            : 'expression';
 
           let shouldMove: boolean = false;
 
-          const vIfValue: string = typeof token.val === 'string' ? token.val.slice(1, -1).trim() : String(token.val);
+          const vIfValue: string =
+            typeof token.val === 'string'
+              ? token.val.slice(1, -1).trim()
+              : String(token.val);
           if (allowUsingIterationVar) {
             // Check if `variable` in `v-for` is used in `v-if`
             if (usesVariable(iterationVariable, vIfValue)) {
@@ -121,20 +132,20 @@ export default {
               column: loc.start.column - 1,
               start: {
                 line: loc.start.line,
-                column: columnStart
+                column: columnStart,
               },
               end: {
                 line: loc.end.line,
-                column: columnEnd
-              }
+                column: columnEnd,
+              },
             },
             message: shouldMove
               ? "This 'v-if' should be moved to the wrapper element."
               : "The '{{iteratorName}}' {{kind}} inside 'v-for' directive should be replaced with a computed property that returns filtered array instead. You should not mix 'v-for' with 'v-if'.",
-            data: shouldMove ? undefined : { iteratorName, kind }
+            data: shouldMove ? undefined : { iteratorName, kind },
           });
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

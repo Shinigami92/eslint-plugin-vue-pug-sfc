@@ -6,5 +6,5 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js'],
   reporters: ['default'],
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.ts']
+  collectCoverageFrom: ['src/**/*.ts'],
 };

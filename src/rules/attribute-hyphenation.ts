@@ -12,14 +12,15 @@ export default {
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'enforce attribute naming style on custom components in template',
+      description:
+        'enforce attribute naming style on custom components in template',
       categories: ['vue3-strongly-recommended', 'strongly-recommended'],
-      url: 'https://eslint.vuejs.org/rules/attribute-hyphenation.html'
+      url: 'https://eslint.vuejs.org/rules/attribute-hyphenation.html',
     },
     fixable: 'code',
     schema: [
       {
-        enum: ['always', 'never']
+        enum: ['always', 'never'],
       },
       {
         type: 'object',
@@ -30,27 +31,37 @@ export default {
               allOf: [
                 { type: 'string' },
                 { not: { type: 'string', pattern: ':exit$' } },
-                { not: { type: 'string', pattern: '^\\s*$' } }
-              ]
+                { not: { type: 'string', pattern: '^\\s*$' } },
+              ],
             },
             uniqueItems: true,
-            additionalItems: false
-          }
+            additionalItems: false,
+          },
         },
-        additionalProperties: false
-      }
-    ]
+        additionalProperties: false,
+      },
+    ],
   },
   create(context) {
     return processRule(context, () => {
       const useHyphenated: boolean = context.options[0] !== 'never';
       const { ignore = [] } = context.options[1] ?? {};
-      const ignoredAttributes: string[] = ['data-', 'aria-', 'slot-scope', ...SVG_ATTRIBUTES_WEIRD_CASE, ...ignore];
+      const ignoredAttributes: string[] = [
+        'data-',
+        'aria-',
+        'slot-scope',
+        ...SVG_ATTRIBUTES_WEIRD_CASE,
+        ...ignore,
+      ];
 
-      const caseConverter: (str: string) => string = getExactConverter(useHyphenated ? 'kebab-case' : 'camelCase');
+      const caseConverter: (str: string) => string = getExactConverter(
+        useHyphenated ? 'kebab-case' : 'camelCase'
+      );
 
       function isIgnoredAttribute(value: string): boolean {
-        const isIgnored: boolean = ignoredAttributes.some((attr) => value.includes(attr));
+        const isIgnored: boolean = ignoredAttributes.some((attr) =>
+          value.includes(attr)
+        );
 
         if (isIgnored) {
           return true;
@@ -97,40 +108,48 @@ export default {
 
           context.report({
             node: {
-              type: /^(v-bind)?:/.test(attributeName) ? 'VDirectiveKey' : 'VIdentifier'
+              type: /^(v-bind)?:/.test(attributeName)
+                ? 'VDirectiveKey'
+                : 'VIdentifier',
             } as unknown as Rule.Node,
             loc: {
               line: loc.start.line,
               column: loc.start.column - 1,
               start: {
                 line: loc.start.line,
-                column: columnStart
+                column: columnStart,
               },
               end: {
                 line: loc.end.line,
-                column: columnEnd
-              }
+                column: columnEnd,
+              },
             },
             message: useHyphenated
               ? "Attribute '{{text}}' must be hyphenated."
               : "Attribute '{{text}}' can't be hyphenated.",
             data: {
-              text: attributeName
+              text: attributeName,
             },
             fix(fixer) {
               let converted: string;
               const parts: string[] = attributeName.split(':');
-              if (parts.length > 1 && (parts[0] === '' || parts[0] === 'v-bind')) {
+              if (
+                parts.length > 1 &&
+                (parts[0] === '' || parts[0] === 'v-bind')
+              ) {
                 const name: string = parts.slice(1).join('');
                 converted = `${parts[0]}:${caseConverter(name)}`;
               } else {
                 converted = caseConverter(attributeName);
               }
-              return fixer.replaceTextRange([range[0], range[0] + attributeName.length], converted);
-            }
+              return fixer.replaceTextRange(
+                [range[0], range[0] + attributeName.length],
+                converted
+              );
+            },
           });
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

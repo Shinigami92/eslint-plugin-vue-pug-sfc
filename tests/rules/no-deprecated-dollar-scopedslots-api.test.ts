@@ -3,7 +3,7 @@ import rule from '../../src/rules/no-deprecated-dollar-scopedslots-api';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2020, sourceType: 'module' }
+  parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
 });
 
 ruleTester.run('no-deprecated-dollar-scopedslots-api', rule, {
@@ -19,7 +19,7 @@ export default {
     this.$emit('start')
   }
 }
-</script>`
+</script>`,
     },
     {
       filename: 'test.vue',
@@ -31,7 +31,7 @@ export default {
     }
   }
 }
-</script>`
+</script>`,
     },
     {
       filename: 'test.vue',
@@ -41,7 +41,7 @@ export default {}
 const another = function () {
   console.log(this.$scopedSlots)
 }
-</script>`
+</script>`,
     },
     // Ignore these false positives for now
     //     {
@@ -81,8 +81,8 @@ export default {
     }
   }
 }
-</script>`
-    }
+</script>`,
+    },
   ],
 
   invalid: [
@@ -114,9 +114,9 @@ export default {
           column: 11,
           messageId: 'deprecated',
           endLine: 2,
-          endColumn: 23
-        }
-      ]
+          endColumn: 23,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -152,16 +152,16 @@ export default {
           column: 20,
           messageId: 'deprecated',
           endLine: 2,
-          endColumn: 32
+          endColumn: 32,
         },
         {
           line: 3,
           column: 11,
           messageId: 'deprecated',
           endLine: 3,
-          endColumn: 23
-        }
-      ]
-    }
-  ]
+          endColumn: 23,
+        },
+      ],
+    },
+  ],
 });

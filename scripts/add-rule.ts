@@ -7,7 +7,8 @@ const prettierConfig: Options = require('../.prettierrc.cjs');
 
 const ruleName: string = process.argv[2];
 
-const camelize: (str: string) => string = (str) => str.replace(/-./g, (x) => x[1].toUpperCase());
+const camelize: (str: string) => string = (str) =>
+  str.replace(/-./g, (x) => x[1].toUpperCase());
 
 // Write rule source code
 writeFileSync(
@@ -64,4 +65,6 @@ ${rules.map((rule) => `  '${rule}': ${camelize(rule)}`).join(',\n')}
   )
 );
 
-console.log(`Don't forget to add rule ${ruleName} to related src/configs file(s).`);
+console.log(
+  `Don't forget to add rule ${ruleName} to related src/configs file(s).`
+);

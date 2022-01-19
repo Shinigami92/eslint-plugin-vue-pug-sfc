@@ -8,10 +8,10 @@ export default {
     docs: {
       description: 'require `v-bind:is` of `<component>` elements',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/require-component-is.html'
+      url: 'https://eslint.vuejs.org/rules/require-component-is.html',
     },
     fixable: undefined,
-    schema: []
+    schema: [],
   },
   create(context) {
     return processRule(context, () => {
@@ -27,7 +27,10 @@ export default {
             const element: Token = tokens[subIndex]!;
 
             // Search for an attribute with `is` binding
-            if (element.type === 'attribute' && /^(v-bind)?:is$/.test(element.name)) {
+            if (
+              element.type === 'attribute' &&
+              /^(v-bind)?:is$/.test(element.name)
+            ) {
               foundIsBinding = true;
               break;
             }
@@ -51,21 +54,22 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              message: "Expected 'component' elements to have 'v-bind:is' attribute."
+              message:
+                "Expected 'component' elements to have 'v-bind:is' attribute.",
             });
           }
 
           // After looping we can skip forward to the new index.
           index = subIndex - 1;
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

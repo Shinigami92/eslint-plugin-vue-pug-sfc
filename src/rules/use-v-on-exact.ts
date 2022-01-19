@@ -3,14 +3,29 @@ import type { AttributeToken, Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 import { isCustomComponent } from '../utils/vue';
 
-const SYSTEM_MODIFIERS: ReadonlyArray<string> = ['ctrl', 'shift', 'alt', 'meta'];
-const GLOBAL_MODIFIERS: ReadonlyArray<string> = ['stop', 'prevent', 'capture', 'self', 'once', 'passive', 'native'];
+const SYSTEM_MODIFIERS: ReadonlyArray<string> = [
+  'ctrl',
+  'shift',
+  'alt',
+  'meta',
+];
+const GLOBAL_MODIFIERS: ReadonlyArray<string> = [
+  'stop',
+  'prevent',
+  'capture',
+  'self',
+  'once',
+  'passive',
+  'native',
+];
 
 /**
  * Checks whether given modifier is a key modifier.
  */
 function isKeyModifier(modifier: string): boolean {
-  return !GLOBAL_MODIFIERS.includes(modifier) && !SYSTEM_MODIFIERS.includes(modifier);
+  return (
+    !GLOBAL_MODIFIERS.includes(modifier) && !SYSTEM_MODIFIERS.includes(modifier)
+  );
 }
 
 /**
@@ -40,7 +55,9 @@ function extractModifiers(event: string): string[] {
  *
  * @returns e.g. `{ click: [], keypress: [] }`
  */
-function groupEvents(events: AttributeToken[]): Record<string, AttributeToken[]> {
+function groupEvents(
+  events: AttributeToken[]
+): Record<string, AttributeToken[]> {
   return events.reduce<Record<string, AttributeToken[]>>((acc, event) => {
     const name: string = extractName(event.name);
     if (acc[name]) {
@@ -73,7 +90,10 @@ function getKeyModifiersString(modifiers: string[]): string {
 /**
  * Compares two events based on their modifiers to detect possible event leakage.
  */
-function hasConflictedModifiers(baseEvent: AttributeToken, event: AttributeToken): boolean {
+function hasConflictedModifiers(
+  baseEvent: AttributeToken,
+  event: AttributeToken
+): boolean {
   if (event === baseEvent) {
     return false;
   }
@@ -86,14 +106,20 @@ function hasConflictedModifiers(baseEvent: AttributeToken, event: AttributeToken
   const baseEventModifiers: string[] = extractModifiers(baseEvent.name);
 
   const eventKeyModifiers: string = getKeyModifiersString(eventModifiers);
-  const baseEventKeyModifiers: string = getKeyModifiersString(baseEventModifiers);
+  const baseEventKeyModifiers: string =
+    getKeyModifiersString(baseEventModifiers);
 
-  if (eventKeyModifiers && baseEventKeyModifiers && eventKeyModifiers !== baseEventKeyModifiers) {
+  if (
+    eventKeyModifiers &&
+    baseEventKeyModifiers &&
+    eventKeyModifiers !== baseEventKeyModifiers
+  ) {
     return false;
   }
 
   const eventSystemModifiers: string = getSystemModifiersString(eventModifiers);
-  const baseEventSystemModifiers: string = getSystemModifiersString(baseEventModifiers);
+  const baseEventSystemModifiers: string =
+    getSystemModifiersString(baseEventModifiers);
 
   return (
     baseEventModifiers.length >= 1 &&
@@ -113,7 +139,7 @@ function findConflictedEvents(events: AttributeToken[]): AttributeToken[] {
       ...acc,
       ...events
         .filter((evt) => !acc.find((e) => evt === e)) // No duplicates
-        .filter(hasConflictedModifiers.bind(null, event))
+        .filter(hasConflictedModifiers.bind(null, event)),
     ];
   }, []);
 }
@@ -124,10 +150,10 @@ export default {
     docs: {
       description: 'enforce usage of `exact` modifier on `v-on`',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/use-v-on-exact.html'
+      url: 'https://eslint.vuejs.org/rules/use-v-on-exact.html',
     },
     fixable: undefined,
-    schema: []
+    schema: [],
   },
   create(context) {
     return processRule(context, () => {
@@ -157,17 +183,19 @@ export default {
         'end-attributes'() {
           // Check if there are similar event attributes
           if (eventAttributes.length > 1) {
-            const groupedEvents: Record<string, AttributeToken[]> = groupEvents(eventAttributes);
+            const groupedEvents: Record<string, AttributeToken[]> =
+              groupEvents(eventAttributes);
             for (const eventsInGroup of Object.values(groupedEvents)) {
-              const hasEventWithKeyModifiers: boolean = eventsInGroup.some((event) =>
-                hasSystemModifier(extractModifiers(event.name))
+              const hasEventWithKeyModifiers: boolean = eventsInGroup.some(
+                (event) => hasSystemModifier(extractModifiers(event.name))
               );
 
               if (!hasEventWithKeyModifiers) {
                 continue;
               }
 
-              const conflictedEvents: AttributeToken[] = findConflictedEvents(eventsInGroup);
+              const conflictedEvents: AttributeToken[] =
+                findConflictedEvents(eventsInGroup);
               for (const event of conflictedEvents) {
                 const loc: Loc = event.loc;
 
@@ -181,20 +209,20 @@ export default {
                     column: loc.start.column - 1,
                     start: {
                       line: loc.start.line,
-                      column: columnStart
+                      column: columnStart,
                     },
                     end: {
                       line: loc.end.line,
-                      column: columnEnd
-                    }
+                      column: columnEnd,
+                    },
                   },
-                  message: "Consider to use '.exact' modifier."
+                  message: "Consider to use '.exact' modifier.",
                 });
               }
             }
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

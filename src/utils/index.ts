@@ -50,7 +50,10 @@ interface TokenProcessorsStateContainer {
   alreadyProcessed: boolean;
 }
 
-const CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP: Record<string, TokenProcessorsStateContainer> = {};
+const CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP: Record<
+  string,
+  TokenProcessorsStateContainer
+> = {};
 
 /**
  * Process the current lint rule.
@@ -67,7 +70,10 @@ const CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP: Record<string, TokenProcessors
  * @param tokenProcessor A callback to register a token processor for the current lint rule.
  * @returns The object that should be returned in the `create` function of the rule.
  */
-export function processRule(context: Rule.RuleContext, tokenProcessor: () => TokenProcessor): Rule.RuleListener {
+export function processRule(
+  context: Rule.RuleContext,
+  tokenProcessor: () => TokenProcessor
+): Rule.RuleListener {
   if (!checkIsVueFile(context)) {
     return {};
   }
@@ -89,43 +95,49 @@ export function processRule(context: Rule.RuleContext, tokenProcessor: () => Tok
   if (!tokenProcessors) {
     CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey] = {
       tokenProcessors: [],
-      alreadyProcessed: false
+      alreadyProcessed: false,
     };
   }
-  CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey]!.tokenProcessors.push(tokenProcessorReturn);
+  CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey]!.tokenProcessors.push(
+    tokenProcessorReturn
+  );
 
   return {
     'Program:exit'() {
       // Within this callback, we fetch the token processors from the cache
       // and process all registered token processors at once.
       // !> Keep attention of which variables are usable from above's scope.
-      const tokenProcessorStateContainer: TokenProcessorsStateContainer = CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[
-        cacheKey
-      ] ?? {
-        tokenProcessors: [],
-        alreadyProcessed: true
-      };
+      const tokenProcessorStateContainer: TokenProcessorsStateContainer =
+        CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey] ?? {
+          tokenProcessors: [],
+          alreadyProcessed: true,
+        };
 
-      if (tokenProcessorStateContainer.alreadyProcessed || tokenProcessorStateContainer.tokenProcessors.length === 0) {
+      if (
+        tokenProcessorStateContainer.alreadyProcessed ||
+        tokenProcessorStateContainer.tokenProcessors.length === 0
+      ) {
         return;
       }
 
       for (let index: number = 0; index < tokens.length; index++) {
         const token: lex.Token = tokens[index]!;
-        tokenProcessorStateContainer.tokenProcessors.forEach((tokenProcessor) => {
-          // @ts-expect-error: just call it
-          tokenProcessor[token.type]?.(
-            // This comment only exists so that the parameters are wrapped and not affected by the `@ts-expect-error` comment.
-            token,
-            { index, tokens }
-          );
-        });
+        tokenProcessorStateContainer.tokenProcessors.forEach(
+          (tokenProcessor) => {
+            // @ts-expect-error: just call it
+            tokenProcessor[token.type]?.(
+              // This comment only exists so that the parameters are wrapped and not affected by the `@ts-expect-error` comment.
+              token,
+              { index, tokens }
+            );
+          }
+        );
       }
 
       tokenProcessorStateContainer.alreadyProcessed = true;
 
       return;
-    }
+    },
   };
 }
 
@@ -137,7 +149,7 @@ export function checkIsVueFile(context: Rule.RuleContext): boolean {
       context.report({
         loc: { line: 1, column: 0 },
         message:
-          'Use the latest vue-eslint-parser. See also https://eslint.vuejs.org/user-guide/#what-is-the-use-the-latest-vue-eslint-parser-error.'
+          'Use the latest vue-eslint-parser. See also https://eslint.vuejs.org/user-guide/#what-is-the-use-the-latest-vue-eslint-parser-error.',
       });
     }
     return false;
@@ -157,12 +169,18 @@ export interface ParsePugContentReturn {
   tokens: lex.Token[];
 }
 
-const CACHED_PUG_CONTENT_RETURN_CONTENT_MAP: Map<string, ParsePugContentReturn> = new Map();
+const CACHED_PUG_CONTENT_RETURN_CONTENT_MAP: Map<
+  string,
+  ParsePugContentReturn
+> = new Map();
 
-export function extractPugTemplate(context: Rule.RuleContext): ExtractPugTemplateReturn {
+export function extractPugTemplate(
+  context: Rule.RuleContext
+): ExtractPugTemplateReturn {
   const parserServices: ParserServices = context.parserServices;
 
-  const df: VDocumentFragment | null | undefined = parserServices.getDocumentFragment?.();
+  const df: VDocumentFragment | null | undefined =
+    parserServices.getDocumentFragment?.();
   if (!df) {
     return {};
   }
@@ -172,7 +190,11 @@ export function extractPugTemplate(context: Rule.RuleContext): ExtractPugTemplat
       node.type === 'VElement' &&
       node.name === 'template' &&
       node.startTag.attributes.some(
-        (attr) => !attr.directive && attr.key.name === 'lang' && attr.value && attr.value.value === 'pug'
+        (attr) =>
+          !attr.directive &&
+          attr.key.name === 'lang' &&
+          attr.value &&
+          attr.value.value === 'pug'
       )
   ) as VElement | undefined;
 
@@ -182,16 +204,27 @@ export function extractPugTemplate(context: Rule.RuleContext): ExtractPugTemplat
     return { df, rawText };
   }
 
-  const pugText: string = rawText.slice(pugTemplateElement.startTag.range[1], pugTemplateElement.endTag?.range[0]);
+  const pugText: string = rawText.slice(
+    pugTemplateElement.startTag.range[1],
+    pugTemplateElement.endTag?.range[0]
+  );
 
   return { df, pugTemplateElement, rawText, pugText };
 }
 
-export function parsePugContent(context: Rule.RuleContext): ParsePugContentReturn {
-  const { df, pugTemplateElement, rawText = '', pugText = '' } = extractPugTemplate(context);
+export function parsePugContent(
+  context: Rule.RuleContext
+): ParsePugContentReturn {
+  const {
+    df,
+    pugTemplateElement,
+    rawText = '',
+    pugText = '',
+  } = extractPugTemplate(context);
 
   const cacheKey: string = rawText;
-  const cachedValue: ParsePugContentReturn | undefined = CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.get(cacheKey);
+  const cachedValue: ParsePugContentReturn | undefined =
+    CACHED_PUG_CONTENT_RETURN_CONTENT_MAP.get(cacheKey);
   if (cachedValue) {
     return cachedValue;
   }
@@ -224,7 +257,8 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
 
   let end: number = start;
 
-  const startLineOffset: number = pugTemplateElement.startTag.loc.start.line - 1;
+  const startLineOffset: number =
+    pugTemplateElement.startTag.loc.start.line - 1;
   const endLineOffset: number = pugTemplateElement.startTag.loc.end.line - 1;
 
   for (let index: number = 0; index < pugTokens.length; index++) {
@@ -239,7 +273,8 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
           start++;
         }
       } else {
-        const diff: number = token.loc.start.column - previousToken.loc.end.column;
+        const diff: number =
+          token.loc.start.column - previousToken.loc.end.column;
 
         // Take attribute separators and such into account
         start += diff;
@@ -264,10 +299,14 @@ export function parsePugContent(context: Rule.RuleContext): ParsePugContentRetur
   return result;
 }
 
-export function tokenLength(token: lex.Token, previousToken?: lex.Token): number {
+export function tokenLength(
+  token: lex.Token,
+  previousToken?: lex.Token
+): number {
   if (token.type === 'newline') {
     const length: number = token.loc.end.column - token.loc.start.column;
-    const diff: number = token.loc.start.line - (previousToken?.loc.end.line ?? 1);
+    const diff: number =
+      token.loc.start.line - (previousToken?.loc.end.line ?? 1);
     return length + (diff - 1);
   }
 

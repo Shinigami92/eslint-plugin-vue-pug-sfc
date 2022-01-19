@@ -6,15 +6,16 @@ export default {
   meta: {
     type: 'problem',
     docs: {
-      description: 'disallow using deprecated filters syntax (in Vue.js 3.0.0+)',
+      description:
+        'disallow using deprecated filters syntax (in Vue.js 3.0.0+)',
       categories: ['vue3-essential'],
-      url: 'https://eslint.vuejs.org/rules/no-deprecated-filter.html'
+      url: 'https://eslint.vuejs.org/rules/no-deprecated-filter.html',
     },
     fixable: undefined,
     schema: [],
     messages: {
-      noDeprecatedFilter: 'Filters are deprecated.'
-    }
+      noDeprecatedFilter: 'Filters are deprecated.',
+    },
   },
   create(context) {
     const isFilterAllowed: boolean = !(
@@ -28,10 +29,15 @@ export default {
     return processRule(context, () => {
       return {
         attribute(token) {
-          if (typeof token.val === 'string' && /^(v-bind)?:/.test(token.name) && token.val.includes('|')) {
+          if (
+            typeof token.val === 'string' &&
+            /^(v-bind)?:/.test(token.name) &&
+            token.val.includes('|')
+          ) {
             const loc: Loc = token.loc;
 
-            const columnStart: number = loc.start.column - 1 + token.name.length + '='.length;
+            const columnStart: number =
+              loc.start.column - 1 + token.name.length + '='.length;
             const columnEnd: number = token.loc.end.column - 1;
 
             context.report({
@@ -41,14 +47,14 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              messageId: 'noDeprecatedFilter'
+              messageId: 'noDeprecatedFilter',
             });
           }
         },
@@ -66,18 +72,18 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              messageId: 'noDeprecatedFilter'
+              messageId: 'noDeprecatedFilter',
             });
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

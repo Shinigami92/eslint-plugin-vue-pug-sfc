@@ -5,8 +5,8 @@ const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
-  }
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('component-name-in-template-casing', rule, {
@@ -26,85 +26,91 @@ export default {
   }
 }
 </script>`,
-      filename: 'test.vue'
+      filename: 'test.vue',
     },
 
     // element types test
     {
       code: '<template lang="pug">div</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">img</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">TheComponent</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">svg: path</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">math: mspace</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">div: slot</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">h1 Title</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">h1(:is="customTitle") Title</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">svg: TheComponent</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">text</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">circle(cx="0" cy="0" :d="radius")</template>',
-      options: ['PascalCase', { registeredComponentsOnly: false }]
+      options: ['PascalCase', { registeredComponentsOnly: false }],
     },
 
     // kebab-case
     {
       code: '<template lang="pug">the-component</template>',
-      options: ['kebab-case', { registeredComponentsOnly: false }]
+      options: ['kebab-case', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">div</template>',
-      options: ['kebab-case', { registeredComponentsOnly: false }]
+      options: ['kebab-case', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">img</template>',
-      options: ['kebab-case', { registeredComponentsOnly: false }]
+      options: ['kebab-case', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">svg: path</template>',
-      options: ['kebab-case', { registeredComponentsOnly: false }]
+      options: ['kebab-case', { registeredComponentsOnly: false }],
     },
     {
       code: '<template lang="pug">math: mspace</template>',
-      options: ['kebab-case', { registeredComponentsOnly: false }]
+      options: ['kebab-case', { registeredComponentsOnly: false }],
     },
 
     // ignores
     {
       code: '<template lang="pug">custom-element</template>',
-      options: ['PascalCase', { ignores: ['custom-element'], registeredComponentsOnly: false }]
+      options: [
+        'PascalCase',
+        { ignores: ['custom-element'], registeredComponentsOnly: false },
+      ],
     },
     {
       code: '<template lang="pug">custom-element: TheComponent</template>',
-      options: ['PascalCase', { ignores: ['custom-element'], registeredComponentsOnly: false }]
+      options: [
+        'PascalCase',
+        { ignores: ['custom-element'], registeredComponentsOnly: false },
+      ],
     },
     // regexp ignores
     {
@@ -114,8 +120,11 @@ globalCard
 global-grid
 </template>`,
       filename: 'test.vue',
-      options: ['PascalCase', { registeredComponentsOnly: false, ignores: ['/^global/'] }]
-    }
+      options: [
+        'PascalCase',
+        { registeredComponentsOnly: false, ignores: ['/^global/'] },
+      ],
+    },
   ],
   invalid: [
     {
@@ -141,9 +150,9 @@ v-row(no-gutters)
           line: 3,
           column: 3,
           endLine: 3,
-          endColumn: 7
-        }
-      ]
+          endColumn: 7,
+        },
+      ],
     },
     {
       code: `<template lang="pug">
@@ -179,23 +188,23 @@ export default {
           line: 3,
           column: 1,
           endLine: 3,
-          endColumn: 15
+          endColumn: 15,
         },
         {
           message: 'Component name "coolComponent" is not PascalCase.',
           line: 4,
           column: 1,
           endLine: 4,
-          endColumn: 14
+          endColumn: 14,
         },
         {
           message: 'Component name "Cool-component" is not PascalCase.',
           line: 5,
           column: 1,
           endLine: 5,
-          endColumn: 15
-        }
-      ]
+          endColumn: 15,
+        },
+      ],
     },
     {
       code: `<template lang="pug">
@@ -229,17 +238,17 @@ export default {
       errors: [
         {
           message: 'Component name "CoolComponent" is not kebab-case.',
-          line: 3
+          line: 3,
         },
         {
           message: 'Component name "coolComponent" is not kebab-case.',
-          line: 4
+          line: 4,
         },
         {
           message: 'Component name "Cool-component" is not kebab-case.',
-          line: 5
-        }
-      ]
+          line: 5,
+        },
+      ],
     },
     {
       code: `<template lang="pug">
@@ -262,7 +271,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -285,7 +294,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -308,7 +317,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -329,7 +338,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -352,7 +361,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "TheComponent" is not kebab-case.']
+      errors: ['Component name "TheComponent" is not kebab-case.'],
     },
     {
       code: `<template lang="pug">
@@ -362,7 +371,7 @@ TheComponent(id="id")
       output: `<template lang="pug">
 the-component(id="id")
 </template>`,
-      errors: ['Component name "TheComponent" is not kebab-case.']
+      errors: ['Component name "TheComponent" is not kebab-case.'],
     },
     {
       code: `<template lang="pug">
@@ -387,7 +396,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -408,7 +417,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -429,7 +438,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "the-component" is not PascalCase.']
+      errors: ['Component name "the-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -450,7 +459,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "theComponent" is not PascalCase.']
+      errors: ['Component name "theComponent" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -471,7 +480,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "theComponent" is not kebab-case.']
+      errors: ['Component name "theComponent" is not kebab-case.'],
     },
     {
       code: `<template lang="pug">
@@ -492,7 +501,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "The-component" is not PascalCase.']
+      errors: ['Component name "The-component" is not PascalCase.'],
     },
     {
       code: `<template lang="pug">
@@ -513,7 +522,7 @@ export default {
   components: {TheComponent}
 }
 </script>`,
-      errors: ['Component name "The-component" is not kebab-case.']
+      errors: ['Component name "The-component" is not kebab-case.'],
     },
     {
       code: `<template lang="pug">
@@ -523,7 +532,7 @@ Thecomponent
       output: `<template lang="pug">
 thecomponent
 </template>`,
-      errors: ['Component name "Thecomponent" is not kebab-case.']
+      errors: ['Component name "Thecomponent" is not kebab-case.'],
     },
 
     // ignores
@@ -544,10 +553,13 @@ TheComponent
         'PascalCase',
         {
           ignores: ['custom-element1', 'custom-element2'],
-          registeredComponentsOnly: false
-        }
+          registeredComponentsOnly: false,
+        },
       ],
-      errors: ['Component name "the-component" is not PascalCase.', 'Component name "the-component" is not PascalCase.']
+      errors: [
+        'Component name "the-component" is not PascalCase.',
+        'Component name "the-component" is not PascalCase.',
+      ],
     },
     {
       code: `<template lang="pug">
@@ -566,10 +578,13 @@ TheComponent
         'PascalCase',
         {
           ignores: ['/^custom-element/'],
-          registeredComponentsOnly: false
-        }
+          registeredComponentsOnly: false,
+        },
       ],
-      errors: ['Component name "the-component" is not PascalCase.', 'Component name "the-component" is not PascalCase.']
+      errors: [
+        'Component name "the-component" is not PascalCase.',
+        'Component name "the-component" is not PascalCase.',
+      ],
     },
     {
       code: `<template lang="pug">
@@ -587,15 +602,15 @@ foo-bar-baz-qux
       options: [
         'kebab-case',
         {
-          registeredComponentsOnly: false
-        }
+          registeredComponentsOnly: false,
+        },
       ],
       errors: [
         'Component name "foo--bar" is not kebab-case.',
         'Component name "Foo--Bar" is not kebab-case.',
         'Component name "FooBar" is not kebab-case.',
-        'Component name "FooBar_Baz-qux" is not kebab-case.'
-      ]
-    }
-  ]
+        'Component name "FooBar_Baz-qux" is not kebab-case.',
+      ],
+    },
+  ],
 });

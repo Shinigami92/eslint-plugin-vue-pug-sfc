@@ -1,7 +1,12 @@
 import type { AST, Rule } from 'eslint';
 import type { Loc } from 'pug-lexer';
 import { processRule } from '../utils';
-import { getChecker, getExactConverter, isPascalCase, pascalCase } from '../utils/casing';
+import {
+  getChecker,
+  getExactConverter,
+  isPascalCase,
+  pascalCase,
+} from '../utils/casing';
 import { isHtmlWellKnownElementName } from '../utils/html-element';
 import { isMathMlWellKnownElementName } from '../utils/math-ml-element';
 import { toRegExp } from '../utils/regexp';
@@ -18,14 +23,15 @@ export default {
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'enforce specific casing for the component naming style in template',
+      description:
+        'enforce specific casing for the component naming style in template',
       categories: undefined,
-      url: 'https://eslint.vuejs.org/rules/component-name-in-template-casing.html'
+      url: 'https://eslint.vuejs.org/rules/component-name-in-template-casing.html',
     },
     fixable: 'code',
     schema: [
       {
-        enum: ['PascalCase', 'kebab-case']
+        enum: ['PascalCase', 'kebab-case'],
       },
       {
         type: 'object',
@@ -34,22 +40,24 @@ export default {
             type: 'array',
             items: { type: 'string' },
             uniqueItems: true,
-            additionalItems: false
+            additionalItems: false,
           },
           registeredComponentsOnly: {
-            type: 'boolean'
-          }
+            type: 'boolean',
+          },
         },
-        additionalProperties: false
-      }
-    ]
+        additionalProperties: false,
+      },
+    ],
   },
   create(context) {
     const registeredComponents: string[] = [];
-    const { registeredComponentsOnly = true, ignores = [] }: RuleOptions = context.options[1] ?? {};
+    const { registeredComponentsOnly = true, ignores = [] }: RuleOptions =
+      context.options[1] ?? {};
 
     const ruleListener: Rule.RuleListener = processRule(context, () => {
-      const caseOption: AllowedCaseOptions = context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
+      const caseOption: AllowedCaseOptions =
+        context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
       const ignoresRE: RegExp[] = ignores.map(toRegExp);
 
       /**
@@ -77,7 +85,11 @@ export default {
         }
 
         // When defining a component with PascalCase, we can use either case.
-        if (registeredComponents.some((name) => tagName === name || pascalCase(tagName) === name)) {
+        if (
+          registeredComponents.some(
+            (name) => tagName === name || pascalCase(tagName) === name
+          )
+        ) {
           return true;
         }
 
@@ -106,25 +118,26 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
               message: 'Component name "{{name}}" is not {{caseType}}.',
               data: {
                 name: tagName,
-                caseType: caseOption
+                caseType: caseOption,
               },
               fix(fixer) {
-                const casingTagName: string = getExactConverter(caseOption)(tagName);
+                const casingTagName: string =
+                  getExactConverter(caseOption)(tagName);
                 return fixer.replaceTextRange(range, casingTagName);
-              }
+              },
             });
           }
-        }
+        },
       };
     });
 
@@ -139,8 +152,8 @@ export default {
                 );
               })
             : {}),
-          ...ruleListener
+          ...ruleListener,
         }
       : {};
-  }
+  },
 } as Rule.RuleModule;

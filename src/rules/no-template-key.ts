@@ -8,13 +8,14 @@ export default {
     docs: {
       description: 'disallow `key` attribute on `<template>`',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/no-template-key.html'
+      url: 'https://eslint.vuejs.org/rules/no-template-key.html',
     },
     fixable: undefined,
     schema: [],
     messages: {
-      disallow: "'template' cannot be keyed. Place the key on real elements instead."
-    }
+      disallow:
+        "'template' cannot be keyed. Place the key on real elements instead.",
+    },
   },
   create(context) {
     return processRule(context, () => {
@@ -52,17 +53,17 @@ export default {
               column: loc.start.column - 1,
               start: {
                 line: loc.start.line,
-                column: columnStart
+                column: columnStart,
               },
               end: {
                 line: loc.end.line,
-                column: columnEnd
-              }
+                column: columnEnd,
+              },
             },
-            messageId: 'disallow'
+            messageId: 'disallow',
           });
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

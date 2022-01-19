@@ -4,8 +4,8 @@ export = {
     {
       files: ['*.vue'],
       rules: {
-        'vue-pug-sfc/this-in-template': 'warn'
-      }
-    }
-  ]
+        'vue-pug-sfc/this-in-template': 'warn',
+      },
+    },
+  ],
 };

@@ -118,7 +118,7 @@ export const HTML_ELEMENT_NAMES: string[] = [
   'blockquote',
   'iframe',
   'noframes',
-  'picture'
+  'picture',
 ];
 
 export function isHtmlWellKnownElementName(name: string): boolean {

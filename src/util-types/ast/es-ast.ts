@@ -159,7 +159,10 @@ export interface WithStatement extends HasParentNode {
 export interface DebuggerStatement extends HasParentNode {
   type: 'DebuggerStatement';
 }
-export type Declaration = FunctionDeclaration | VariableDeclaration | ClassDeclaration;
+export type Declaration =
+  | FunctionDeclaration
+  | VariableDeclaration
+  | ClassDeclaration;
 export interface FunctionDeclaration extends HasParentNode {
   type: 'FunctionDeclaration';
   async: boolean;
@@ -211,7 +214,10 @@ export interface MethodDefinitionPrivate extends BaseMethodDefinition {
   computed: false;
   key: PrivateIdentifier;
 }
-export type MethodDefinition = MethodDefinitionNonComputedName | MethodDefinitionComputedName | MethodDefinitionPrivate;
+export type MethodDefinition =
+  | MethodDefinitionNonComputedName
+  | MethodDefinitionComputedName
+  | MethodDefinitionPrivate;
 interface BasePropertyDefinition extends HasParentNode {
   type: 'PropertyDefinition';
   // key: Expression | PrivateIdentifier
@@ -220,7 +226,8 @@ interface BasePropertyDefinition extends HasParentNode {
   static: boolean;
   parent: ClassBody;
 }
-export interface PropertyDefinitionNonComputedName extends BasePropertyDefinition {
+export interface PropertyDefinitionNonComputedName
+  extends BasePropertyDefinition {
   computed: false;
   key: Identifier | Literal;
 }
@@ -247,10 +254,16 @@ export type ModuleDeclaration =
   | ExportNamedDeclaration
   | ExportDefaultDeclaration
   | ExportAllDeclaration;
-export type ModuleSpecifier = ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier | ExportSpecifier;
+export type ModuleSpecifier =
+  | ImportSpecifier
+  | ImportDefaultSpecifier
+  | ImportNamespaceSpecifier
+  | ExportSpecifier;
 export interface ImportDeclaration extends HasParentNode {
   type: 'ImportDeclaration';
-  specifiers: Array<ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier>;
+  specifiers: Array<
+    ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier
+  >;
   source: Literal;
 }
 export interface ImportSpecifier extends HasParentNode {
@@ -395,13 +408,22 @@ interface ArrowFunctionExpressionNoBlock extends HasParentNode {
   expression: true;
 }
 
-export type ArrowFunctionExpression = ArrowFunctionExpressionNoBlock | ArrowFunctionExpressionHasBlock;
+export type ArrowFunctionExpression =
+  | ArrowFunctionExpressionNoBlock
+  | ArrowFunctionExpressionHasBlock;
 
 export interface SequenceExpression extends HasParentNode {
   type: 'SequenceExpression';
   expressions: Expression[];
 }
-export type UnaryOperator = '-' | '+' | '!' | '~' | 'typeof' | 'void' | 'delete';
+export type UnaryOperator =
+  | '-'
+  | '+'
+  | '!'
+  | '~'
+  | 'typeof'
+  | 'void'
+  | 'delete';
 export interface UnaryExpression extends HasParentNode {
   type: 'UnaryExpression';
   operator: UnaryOperator;
@@ -443,7 +465,9 @@ interface BinaryExpressionWithIn extends HasParentNode {
   left: Expression | PrivateIdentifier;
   right: Expression;
 }
-export type BinaryExpression = BinaryExpressionWithoutIn | BinaryExpressionWithIn;
+export type BinaryExpression =
+  | BinaryExpressionWithoutIn
+  | BinaryExpressionWithIn;
 export type AssignmentOperator =
   | '='
   | '+='
@@ -524,7 +548,10 @@ export interface MemberExpressionPrivate extends BaseMemberExpression {
   object: Expression;
   property: PrivateIdentifier;
 }
-export type MemberExpression = MemberExpressionNonComputedName | MemberExpressionComputedName | MemberExpressionPrivate;
+export type MemberExpression =
+  | MemberExpressionNonComputedName
+  | MemberExpressionComputedName
+  | MemberExpressionPrivate;
 export interface ChainExpression extends HasParentNode {
   type: 'ChainExpression';
   expression: ChainElement;
@@ -569,7 +596,13 @@ export interface MetaProperty extends HasParentNode {
   meta: Identifier;
   property: Identifier;
 }
-export type Pattern = Identifier | ObjectPattern | ArrayPattern | RestElement | AssignmentPattern | MemberExpression;
+export type Pattern =
+  | Identifier
+  | ObjectPattern
+  | ArrayPattern
+  | RestElement
+  | AssignmentPattern
+  | MemberExpression;
 export interface ObjectPattern extends HasParentNode {
   type: 'ObjectPattern';
   properties: Array<AssignmentProperty | RestElement>;
@@ -584,7 +617,8 @@ interface BaseAssignmentProperty extends HasParentNode {
   value: Pattern;
   parent: ObjectPattern;
 }
-export interface AssignmentPropertyNonComputedName extends BaseAssignmentProperty {
+export interface AssignmentPropertyNonComputedName
+  extends BaseAssignmentProperty {
   computed: false;
   key: Identifier | Literal;
 }
@@ -592,7 +626,9 @@ export interface AssignmentPropertyComputedName extends BaseAssignmentProperty {
   computed: true;
   key: Expression;
 }
-export type AssignmentProperty = AssignmentPropertyNonComputedName | AssignmentPropertyComputedName;
+export type AssignmentProperty =
+  | AssignmentPropertyNonComputedName
+  | AssignmentPropertyComputedName;
 export interface ArrayPattern extends HasParentNode {
   type: 'ArrayPattern';
   elements: Pattern[];
@@ -611,5 +647,10 @@ export interface AssignmentPattern extends HasParentNode {
   right: Expression;
 }
 
-export type _FunctionParameter = AssignmentPattern | RestElement | ArrayPattern | ObjectPattern | Identifier;
+export type _FunctionParameter =
+  | AssignmentPattern
+  | RestElement
+  | ArrayPattern
+  | ObjectPattern
+  | Identifier;
 // | TSParameterProperty;

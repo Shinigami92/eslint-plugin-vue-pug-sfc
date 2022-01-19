@@ -15,7 +15,7 @@ import type {
   TSFunctionType,
   TSLiteralType,
   TSMethodSignature,
-  TSPropertySignature
+  TSPropertySignature,
 } from './ast';
 export type VueObjectType = 'mark' | 'export' | 'definition' | 'instance';
 export type VueObjectData = {
@@ -25,7 +25,10 @@ export type VueObjectData = {
   functional: boolean;
 };
 type VueVisitorBase = {
-  [T in keyof NodeListenerMap]?: (node: NodeListenerMap[T], obj: VueObjectData) => void;
+  [T in keyof NodeListenerMap]?: (
+    node: NodeListenerMap[T],
+    obj: VueObjectData
+  ) => void;
 };
 export interface VueVisitor extends VueVisitorBase {
   [query: string]: ((node: ParamNode, obj: VueObjectData) => void) | undefined;
@@ -51,8 +54,18 @@ type ScriptSetupVisitorBase = {
 export interface ScriptSetupVisitor extends ScriptSetupVisitorBase {
   [query: string]:
     | ((node: ParamNode) => void)
-    | ((node: CallExpression, props: Array<ComponentArrayProp | ComponentObjectProp | ComponentTypeProp>) => void)
-    | ((node: CallExpression, props: Array<ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit>) => void)
+    | ((
+        node: CallExpression,
+        props: Array<
+          ComponentArrayProp | ComponentObjectProp | ComponentTypeProp
+        >
+      ) => void)
+    | ((
+        node: CallExpression,
+        props: Array<
+          ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit
+        >
+      ) => void)
     | undefined;
   onDefinePropsEnter?(
     node: CallExpression,
@@ -86,7 +99,9 @@ type ComponentArrayPropUnknownName = {
   value: null;
   node: Expression | SpreadElement;
 };
-export type ComponentArrayProp = ComponentArrayPropDetectName | ComponentArrayPropUnknownName;
+export type ComponentArrayProp =
+  | ComponentArrayPropDetectName
+  | ComponentArrayPropUnknownName;
 
 type ComponentObjectPropDetectName = {
   type: 'object';
@@ -102,7 +117,9 @@ type ComponentObjectPropUnknownName = {
   value: Expression;
   node: Property;
 };
-export type ComponentObjectProp = ComponentObjectPropDetectName | ComponentObjectPropUnknownName;
+export type ComponentObjectProp =
+  | ComponentObjectPropDetectName
+  | ComponentObjectPropUnknownName;
 
 export type ComponentTypeProp = {
   type: 'type';
@@ -129,7 +146,9 @@ type ComponentArrayEmitUnknownName = {
   value: null;
   node: Expression | SpreadElement;
 };
-export type ComponentArrayEmit = ComponentArrayEmitDetectName | ComponentArrayEmitUnknownName;
+export type ComponentArrayEmit =
+  | ComponentArrayEmitDetectName
+  | ComponentArrayEmitUnknownName;
 type ComponentObjectEmitDetectName = {
   type: 'object';
   key: Expression;
@@ -144,7 +163,9 @@ type ComponentObjectEmitUnknownName = {
   value: Expression;
   node: Property;
 };
-export type ComponentObjectEmit = ComponentObjectEmitDetectName | ComponentObjectEmitUnknownName;
+export type ComponentObjectEmit =
+  | ComponentObjectEmitDetectName
+  | ComponentObjectEmitUnknownName;
 
 export type ComponentTypeEmit = {
   type: 'type';

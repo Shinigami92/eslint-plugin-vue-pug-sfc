@@ -8,17 +8,19 @@ export default {
     docs: {
       description: 'enforce valid `v-if` directives',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/valid-v-if.html'
+      url: 'https://eslint.vuejs.org/rules/valid-v-if.html',
     },
     fixable: undefined,
     schema: [],
     messages: {
-      withVElse: "'v-if' and 'v-else' directives can't exist on the same element. You may want 'v-else-if' directives.",
-      withVElseIf: "'v-if' and 'v-else-if' directives can't exist on the same element.",
+      withVElse:
+        "'v-if' and 'v-else' directives can't exist on the same element. You may want 'v-else-if' directives.",
+      withVElseIf:
+        "'v-if' and 'v-else-if' directives can't exist on the same element.",
       unexpectedArgument: "'v-if' directives require no argument.",
       unexpectedModifier: "'v-if' directives require no modifier.",
-      expectedValue: "'v-if' directives require that attribute value."
-    }
+      expectedValue: "'v-if' directives require that attribute value.",
+    },
   },
   create(context) {
     return processRule(context, () => {
@@ -53,9 +55,15 @@ export default {
               messageId = 'unexpectedArgument';
             } else if (vIfToken.name !== 'v-if') {
               messageId = 'unexpectedModifier';
-            } else if (typeof vIfToken.val === 'string' && vIfToken.val.slice(1, -1).trim() === '') {
+            } else if (
+              typeof vIfToken.val === 'string' &&
+              vIfToken.val.slice(1, -1).trim() === ''
+            ) {
               messageId = 'expectedValue';
-            } else if (typeof vIfToken.val === 'boolean' && vIfToken.val === true) {
+            } else if (
+              typeof vIfToken.val === 'boolean' &&
+              vIfToken.val === true
+            ) {
               messageId = 'expectedValue';
             }
 
@@ -75,18 +83,18 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              messageId
+              messageId,
             });
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

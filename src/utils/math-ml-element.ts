@@ -189,7 +189,7 @@ export const MATH_ML_ELEMENT_NAMES: string[] = [
   'variance',
   'vector',
   'vectorproduct',
-  'xor'
+  'xor',
 ];
 
 export function isMathMlWellKnownElementName(name: string): boolean {

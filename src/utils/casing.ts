@@ -92,7 +92,9 @@ export function camelCase(str: string): string {
   if (isPascalCase(str)) {
     return str.charAt(0).toLowerCase() + str.slice(1);
   }
-  return str.replace(/[-_](\w)/gu, (_, c: string) => (c ? c.toUpperCase() : ''));
+  return str.replace(/[-_](\w)/gu, (_, c: string) =>
+    c ? c.toUpperCase() : ''
+  );
 }
 
 /**
@@ -143,7 +145,7 @@ export const checkersMap: Record<CaseType, (str: string) => boolean> = {
   'kebab-case': isKebabCase,
   snake_case: isSnakeCase,
   camelCase: isCamelCase,
-  PascalCase: isPascalCase
+  PascalCase: isPascalCase,
 };
 
 /**
@@ -160,7 +162,7 @@ export const convertersMap: Record<CaseType, (str: string) => string> = {
   'kebab-case': kebabCase,
   snake_case: snakeCase,
   camelCase,
-  PascalCase: pascalCase
+  PascalCase: pascalCase,
 };
 
 /**
@@ -173,7 +175,11 @@ export function getConverter(name: CaseType): (str: string) => string {
   return convertersMap[name] || pascalCase;
 }
 
-export const allowedCaseOptions: ['camelCase', 'kebab-case', 'PascalCase'] = ['camelCase', 'kebab-case', 'PascalCase'];
+export const allowedCaseOptions: ['camelCase', 'kebab-case', 'PascalCase'] = [
+  'camelCase',
+  'kebab-case',
+  'PascalCase',
+];
 
 /**
  * Return case exact converter.

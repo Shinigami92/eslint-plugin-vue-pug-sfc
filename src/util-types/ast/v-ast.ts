@@ -2,7 +2,14 @@
  * @see https://github.com/vuejs/vue-eslint-parser/blob/master/docs/ast.md
  */
 import type { ParseError } from '../errors';
-import type { BaseNode, Comment, HasParentNode, HTMLBogusComment, HTMLComment, Token } from '../node';
+import type {
+  BaseNode,
+  Comment,
+  HasParentNode,
+  HTMLBogusComment,
+  HTMLComment,
+  Token,
+} from '../node';
 import type * as ES from './es-ast';
 
 export type NS = {
@@ -13,7 +20,13 @@ export type NS = {
   XML: 'http://www.w3.org/XML/1998/namespace';
   XMLNS: 'http://www.w3.org/2000/xmlns/';
 };
-export type Namespace = NS['HTML'] | NS['MathML'] | NS['SVG'] | NS['XLink'] | NS['XML'] | NS['XMLNS'];
+export type Namespace =
+  | NS['HTML']
+  | NS['MathML']
+  | NS['SVG']
+  | NS['XLink']
+  | NS['XML']
+  | NS['XMLNS'];
 export interface VVariable {
   id: ES.Identifier;
   kind: 'v-for' | 'scope';
@@ -78,7 +91,13 @@ export interface VText extends HasParentNode {
 export interface VExpressionContainer extends HasParentNode {
   type: 'VExpressionContainer';
   parent: VDocumentFragment | VElement | VDirective | VDirectiveKey;
-  expression: ES.Expression | VFilterSequenceExpression | VForExpression | VOnExpression | VSlotScopeExpression | null;
+  expression:
+    | ES.Expression
+    | VFilterSequenceExpression
+    | VForExpression
+    | VOnExpression
+    | VSlotScopeExpression
+    | null;
   references: VReference[];
 }
 export interface VIdentifier extends HasParentNode {

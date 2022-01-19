@@ -134,5 +134,5 @@ export const SVG_ATTRIBUTES_WEIRD_CASE: string[] = [
   'x-height',
   'xChannelSelector',
   'yChannelSelector',
-  'zoomAndPan'
+  'zoomAndPan',
 ];

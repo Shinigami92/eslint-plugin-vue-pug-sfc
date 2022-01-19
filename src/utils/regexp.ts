@@ -13,7 +13,9 @@ const RE_REGEXP_STR: RegExp = /^\/(.+)\/(.*)$/u;
  * @returns Returns the escaped string.
  */
 export function escape(str: string): string {
-  return str && RE_HAS_REGEXP_CHAR.test(str) ? str.replace(RE_REGEXP_CHAR, '\\$&') : str;
+  return str && RE_HAS_REGEXP_CHAR.test(str)
+    ? str.replace(RE_REGEXP_CHAR, '\\$&')
+    : str;
 }
 
 /**

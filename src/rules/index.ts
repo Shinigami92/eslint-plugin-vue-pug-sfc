@@ -36,5 +36,5 @@ export default {
   'valid-v-else-if': validVElseIf,
   'valid-v-else': validVElse,
   'valid-v-for': validVFor,
-  'valid-v-if': validVIf
+  'valid-v-if': validVIf,
 } as Record<string, Rule.RuleModule>;

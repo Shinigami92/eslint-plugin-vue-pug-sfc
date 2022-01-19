@@ -3,36 +3,36 @@ import rule from '../../src/rules/valid-v-if';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2015 }
+  parserOptions: { ecmaVersion: 2015 },
 });
 
 ruleTester.run('valid-v-if', rule, {
   valid: [
     {
       filename: 'test.vue',
-      code: ''
+      code: '',
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   div(v-if="foo")
-</template>`
+</template>`,
     },
     // parsing error
     {
       filename: 'parsing-error.vue',
       code: `<template lang="pug">
 div(v-if=".")
-</template>`
+</template>`,
     },
     // comment value (parsing error)
     {
       filename: 'comment-value.vue',
       code: `<template lang="pug">
 div(v-if="/**/")
-</template>`
-    }
+</template>`,
+    },
   ],
   invalid: [
     {
@@ -41,7 +41,9 @@ div(v-if="/**/")
 div
   div(v-if="foo" v-else)
 </template>`,
-      errors: ["'v-if' and 'v-else' directives can't exist on the same element. You may want 'v-else-if' directives."]
+      errors: [
+        "'v-if' and 'v-else' directives can't exist on the same element. You may want 'v-else-if' directives.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -49,7 +51,9 @@ div
 div
   div(v-if="foo" v-else-if="bar")
 </template>`,
-      errors: ["'v-if' and 'v-else-if' directives can't exist on the same element."]
+      errors: [
+        "'v-if' and 'v-else-if' directives can't exist on the same element.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -57,7 +61,7 @@ div
 div
   div(v-if:aaa="foo")
 </template>`,
-      errors: ["'v-if' directives require no argument."]
+      errors: ["'v-if' directives require no argument."],
     },
     {
       filename: 'test.vue',
@@ -65,7 +69,7 @@ div
 div
   div(v-if.aaa="foo")
 </template>`,
-      errors: ["'v-if' directives require no modifier."]
+      errors: ["'v-if' directives require no modifier."],
     },
     {
       filename: 'test.vue',
@@ -73,7 +77,7 @@ div
 div
   div(v-if)
 </template>`,
-      errors: ["'v-if' directives require that attribute value."]
+      errors: ["'v-if' directives require that attribute value."],
     },
     // empty value
     {
@@ -82,7 +86,7 @@ div
 div
   div(v-if="")
 </template>`,
-      errors: ["'v-if' directives require that attribute value."]
-    }
-  ]
+      errors: ["'v-if' directives require that attribute value."],
+    },
+  ],
 });

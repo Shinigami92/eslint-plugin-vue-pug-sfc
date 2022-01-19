@@ -9,19 +9,21 @@ export default {
     docs: {
       description: 'enforce valid `v-else-if` directives',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/valid-v-else-if.html'
+      url: 'https://eslint.vuejs.org/rules/valid-v-else-if.html',
     },
     fixable: undefined,
     schema: [],
     messages: {
       missingVIf:
         "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
-      withVIf: "'v-else-if' and 'v-if' directives can't exist on the same element.",
-      withVElse: "'v-else-if' and 'v-else' directives can't exist on the same element.",
+      withVIf:
+        "'v-else-if' and 'v-if' directives can't exist on the same element.",
+      withVElse:
+        "'v-else-if' and 'v-else' directives can't exist on the same element.",
       unexpectedArgument: "'v-else-if' directives require no argument.",
       unexpectedModifier: "'v-else-if' directives require no modifier.",
-      expectedValue: "'v-else-if' directives require that attribute value."
-    }
+      expectedValue: "'v-else-if' directives require that attribute value.",
+    },
   },
   create(context) {
     return processRule(context, () => {
@@ -43,7 +45,12 @@ export default {
         tag(token, { tokens }) {
           if (
             ifs[indentLevel] &&
-            !hasAttributeTokens(token, tokens, (attr) => attr.name.includes('v-if') || attr.name.includes('v-else'))
+            !hasAttributeTokens(
+              token,
+              tokens,
+              (attr) =>
+                attr.name.includes('v-if') || attr.name.includes('v-else')
+            )
           ) {
             delete ifs[indentLevel];
           }
@@ -78,8 +85,10 @@ export default {
             } else if (vElseIfToken.name !== 'v-else-if') {
               messageId = 'unexpectedModifier';
             } else if (
-              (typeof vElseIfToken.val === 'string' && vElseIfToken.val.slice(1, -1).trim() === '') ||
-              (typeof vElseIfToken.val === 'boolean' && vElseIfToken.val === true)
+              (typeof vElseIfToken.val === 'string' &&
+                vElseIfToken.val.slice(1, -1).trim() === '') ||
+              (typeof vElseIfToken.val === 'boolean' &&
+                vElseIfToken.val === true)
             ) {
               messageId = 'expectedValue';
             }
@@ -100,18 +109,18 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              messageId
+              messageId,
             });
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

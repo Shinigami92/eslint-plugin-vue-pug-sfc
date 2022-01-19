@@ -10,10 +10,10 @@ export default {
     docs: {
       description: 'require `v-bind:key` with `v-for` directives',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/require-v-for-key.html'
+      url: 'https://eslint.vuejs.org/rules/require-v-for-key.html',
     },
     fixable: undefined,
-    schema: []
+    schema: [],
   },
   create(context) {
     return processRule(context, () => {
@@ -46,23 +46,44 @@ export default {
             lastStartAttributesTokenIndex! + 1,
             endAttributesTokenIndex
           ) as AttributeToken[];
-          if (attributeTokens.some((attr) => /^(v-bind)?:key$/.test(attr.name))) {
+          if (
+            attributeTokens.some((attr) => /^(v-bind)?:key$/.test(attr.name))
+          ) {
             return;
           }
 
-          const lastTagToken: TagToken | undefined = tokens[lastTagTokenIndex!] as TagToken | undefined;
+          const lastTagToken: TagToken | undefined = tokens[
+            lastTagTokenIndex!
+          ] as TagToken | undefined;
 
           // `template` and `slot` doesn't need a key directly but a child of them
-          if (lastTagToken && (lastTagToken.val === 'template' || lastTagToken.val === 'slot')) {
-            const childTagTokens: TagToken[] = getChildTags(lastTagToken, tokens);
-            if (childTagTokens.every((tag) => tag.val === 'template' || tag.val === 'slot')) {
+          if (
+            lastTagToken &&
+            (lastTagToken.val === 'template' || lastTagToken.val === 'slot')
+          ) {
+            const childTagTokens: TagToken[] = getChildTags(
+              lastTagToken,
+              tokens
+            );
+            if (
+              childTagTokens.every(
+                (tag) => tag.val === 'template' || tag.val === 'slot'
+              )
+            ) {
               return;
             }
 
             let foundChildTagWithKey: boolean = false;
             for (const childTag of childTagTokens) {
-              const attributeTokens: AttributeToken[] = getAttributeTokens(childTag, tokens);
-              if (attributeTokens.some((attr) => /^(v-bind)?:key$/.test(attr.name))) {
+              const attributeTokens: AttributeToken[] = getAttributeTokens(
+                childTag,
+                tokens
+              );
+              if (
+                attributeTokens.some((attr) =>
+                  /^(v-bind)?:key$/.test(attr.name)
+                )
+              ) {
                 foundChildTagWithKey = true;
                 break;
               }
@@ -89,17 +110,18 @@ export default {
               column: loc.start.column - 1,
               start: {
                 line: loc.start.line,
-                column: columnStart
+                column: columnStart,
               },
               end: {
                 line: loc.end.line,
-                column: columnEnd
-              }
+                column: columnEnd,
+              },
             },
-            message: "Elements in iteration expect to have 'v-bind:key' directives."
+            message:
+              "Elements in iteration expect to have 'v-bind:key' directives.",
           });
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

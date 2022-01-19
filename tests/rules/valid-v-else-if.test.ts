@@ -3,14 +3,14 @@ import rule from '../../src/rules/valid-v-else-if';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2015 }
+  parserOptions: { ecmaVersion: 2015 },
 });
 
 ruleTester.run('valid-v-else-if', rule, {
   valid: [
     {
       filename: 'test.vue',
-      code: ''
+      code: '',
     },
     {
       filename: 'test.vue',
@@ -18,7 +18,7 @@ ruleTester.run('valid-v-else-if', rule, {
 div
   div(v-if="foo")
   div(v-else-if="foo")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -27,7 +27,7 @@ div
   div(v-if="foo")
   div(v-else-if="foo")
   div(v-else-if="foo")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -35,7 +35,7 @@ div
 c1(v-if="1")
 c2(v-else-if="1")
 c3(v-else)
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -43,7 +43,7 @@ c3(v-else)
 div
   div(v-if="foo")
   slot
-</template>`
+</template>`,
     },
     // parsing error
     {
@@ -51,7 +51,7 @@ div
       code: `<template lang="pug">
 div(v-if="foo")
 div(v-else-if=".")
-</template>`
+</template>`,
     },
     // comment value (parsing error)
     {
@@ -59,8 +59,8 @@ div(v-else-if=".")
       code: `<template lang="pug">
 div(v-if="foo")
 div(v-else-if="/**/")
-</template>`
-    }
+</template>`,
+    },
   ],
   invalid: [
     {
@@ -70,8 +70,8 @@ template(v-else-if="foo")
   div
 </template>`,
       errors: [
-        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive."
-      ]
+        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -79,8 +79,8 @@ template(v-else-if="foo")
 div(v-else-if="foo")
 </template>`,
       errors: [
-        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive."
-      ]
+        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -89,8 +89,8 @@ div
   div(v-else-if="foo")
 </template>`,
       errors: [
-        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive."
-      ]
+        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -100,8 +100,8 @@ div
   div(v-else-if="foo")
 </template>`,
       errors: [
-        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive."
-      ]
+        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -111,8 +111,8 @@ div
   div(v-else-if="foo")
 </template>`,
       errors: [
-        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive."
-      ]
+        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -123,8 +123,8 @@ div
   div(v-else-if="foo")
 </template>`,
       errors: [
-        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive."
-      ]
+        "'v-else-if' directives require being preceded by the element which has a 'v-if' or 'v-else-if' directive.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -133,7 +133,9 @@ div
   div(v-if="foo")
   div(v-else-if="foo" v-if="bar")
 </template>`,
-      errors: ["'v-else-if' and 'v-if' directives can't exist on the same element."]
+      errors: [
+        "'v-else-if' and 'v-if' directives can't exist on the same element.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -142,7 +144,9 @@ div
   div(v-if="foo")
   div(v-else-if="foo" v-else)
 </template>`,
-      errors: ["'v-else-if' and 'v-else' directives can't exist on the same element."]
+      errors: [
+        "'v-else-if' and 'v-else' directives can't exist on the same element.",
+      ],
     },
     {
       filename: 'test.vue',
@@ -151,7 +155,7 @@ div
   div(v-if="foo")
   div(v-else-if:aaa="foo")
 </template>`,
-      errors: ["'v-else-if' directives require no argument."]
+      errors: ["'v-else-if' directives require no argument."],
     },
     {
       filename: 'test.vue',
@@ -160,7 +164,7 @@ div
   div(v-if="foo")
   div(v-else-if.aaa="foo")
 </template>`,
-      errors: ["'v-else-if' directives require no modifier."]
+      errors: ["'v-else-if' directives require no modifier."],
     },
     {
       filename: 'test.vue',
@@ -169,7 +173,7 @@ div
   div(v-if="foo")
   div(v-else-if)
 </template>`,
-      errors: ["'v-else-if' directives require that attribute value."]
+      errors: ["'v-else-if' directives require that attribute value."],
     },
     // empty value
     {
@@ -178,7 +182,7 @@ div
 div(v-if="foo")
 div(v-else-if="")
 </template>`,
-      errors: ["'v-else-if' directives require that attribute value."]
-    }
-  ]
+      errors: ["'v-else-if' directives require that attribute value."],
+    },
+  ],
 });

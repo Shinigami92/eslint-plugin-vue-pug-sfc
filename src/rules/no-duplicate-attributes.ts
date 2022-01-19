@@ -8,7 +8,7 @@ export default {
     docs: {
       description: 'disallow duplication of attributes',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/no-duplicate-attributes.html'
+      url: 'https://eslint.vuejs.org/rules/no-duplicate-attributes.html',
     },
     fixable: undefined,
     schema: [
@@ -16,19 +16,20 @@ export default {
         type: 'object',
         properties: {
           allowCoexistClass: {
-            type: 'boolean'
+            type: 'boolean',
           },
           allowCoexistStyle: {
-            type: 'boolean'
-          }
+            type: 'boolean',
+          },
         },
-        additionalProperties: false
-      }
-    ]
+        additionalProperties: false,
+      },
+    ],
   },
   create(context) {
     return processRule(context, () => {
-      const { allowCoexistStyle = true, allowCoexistClass = true } = context.options[0] ?? {};
+      const { allowCoexistStyle = true, allowCoexistClass = true } =
+        context.options[0] ?? {};
 
       let currentAttributeNames: string[] = [];
 
@@ -53,9 +54,13 @@ export default {
             return;
           }
 
-          const cleanedAttributeName: string = attributeName.replace(/^(v-bind)?:/, '');
+          const cleanedAttributeName: string = attributeName.replace(
+            /^(v-bind)?:/,
+            ''
+          );
 
-          const duplicateAttributeName: string | undefined = findDuplicate(cleanedAttributeName);
+          const duplicateAttributeName: string | undefined =
+            findDuplicate(cleanedAttributeName);
           if (duplicateAttributeName) {
             const loc: Loc = token.loc;
 
@@ -69,21 +74,21 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
               message: "Duplicate attribute '{{name}}'.",
-              data: { name: duplicateAttributeName }
+              data: { name: duplicateAttributeName },
             });
           }
 
           currentAttributeNames.push(cleanedAttributeName);
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

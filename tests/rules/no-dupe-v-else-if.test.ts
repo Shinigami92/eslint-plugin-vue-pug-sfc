@@ -3,7 +3,7 @@ import rule from '../../src/rules/no-dupe-v-else-if';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2019, sourceType: 'module' }
+  parserOptions: { ecmaVersion: 2019, sourceType: 'module' },
 });
 
 ruleTester.run('no-dupe-v-else-if', rule, {
@@ -14,14 +14,14 @@ ruleTester.run('no-dupe-v-else-if', rule, {
 div(v-if="foo")
 div(v-else-if="bar")
 div(v-else-if="baz")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div(v-if="foo")
   div(v-else-if="foo")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -30,7 +30,7 @@ div(v-if="foo")
 div(v-else-if="bar")
 div(v-if="bar")
 div(v-else-if="foo")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -48,7 +48,7 @@ div(v-else-if="n === 2")
 div(v-else-if="n === 3")
 div(v-else-if="n === 4")
 div(v-else-if="n === 5")
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
@@ -56,7 +56,7 @@ div(v-else-if="n === 5")
 div(v-if="foo")
 div
 div(v-else-if="foo")
-</template>`
+</template>`,
     },
     // We don't care about this case (at this point)
     //     {
@@ -81,7 +81,7 @@ div(v-else-if="foo")
       code: `<template lang="pug">
 div(v-else-if="foo.")
 div(v-else-if="foo")
-</template>`
+</template>`,
     },
 
     // Referred to the ESLint core rule.
@@ -189,7 +189,7 @@ div(v-else-if="b && (c || d && a)")
     `<template lang="pug">
 div(v-if="a && b && c")
 div(v-else-if="a && b && (c || d)")
-</template>`
+</template>`,
   ],
   invalid: [
     {
@@ -205,9 +205,9 @@ div(v-else-if="foo")
           line: 3,
           column: 16,
           endLine: 3,
-          endColumn: 19
-        }
-      ]
+          endColumn: 19,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -218,9 +218,9 @@ div(v-else-if="isSomething(x)")
       errors: [
         {
           messageId: 'unexpected',
-          line: 3
-        }
-      ]
+          line: 3,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -233,9 +233,9 @@ div(v-else-if="c && d")
       errors: [
         {
           messageId: 'unexpected',
-          line: 5
-        }
-      ]
+          line: 5,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -249,9 +249,9 @@ div(v-else-if="n === 5")
       errors: [
         {
           messageId: 'unexpected',
-          line: 5
-        }
-      ]
+          line: 5,
+        },
+      ],
     },
     // TODO: We currently don't inspect the condition itself
     //     {
@@ -389,7 +389,7 @@ div(v-if      ="((f && e) || d) && c || (b && a)")
 div(v-else-if ="(a && b) || (c && (d || (e && f)))")
 div(v-else-if ="(a && b) || (c && (d || (e && f)))")
 </template>`,
-      errors: [/*{ messageId: 'unexpected' }, */ { messageId: 'unexpected' }]
+      errors: [/*{ messageId: 'unexpected' }, */ { messageId: 'unexpected' }],
     },
 
     // Referred to the ESLint core rule.
@@ -399,7 +399,7 @@ div(v-else-if ="(a && b) || (c && (d || (e && f)))")
 div(v-if="a")
 div(v-else-if="a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -409,7 +409,7 @@ div(v-else-if="b")
 div(v-else-if="a")
 div(v-else-if="c")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -418,7 +418,7 @@ div(v-if="a")
 div(v-else-if="b")
 div(v-else-if="a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -428,7 +428,7 @@ div(v-else-if="b")
 div(v-else-if="c")
 div(v-else-if="a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -437,7 +437,7 @@ div(v-if="a")
 div(v-else-if="b")
 div(v-else-if="b")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -447,7 +447,7 @@ div(v-else-if="b")
 div(v-else-if="c")
 div(v-else-if="b")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -458,7 +458,7 @@ div(v-else-if="c")
 div(v-else-if="b")
 div(v-else-if="d")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -470,7 +470,7 @@ div(v-else-if="d")
 div(v-else-if="b")
 div(v-else-if="e")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -479,7 +479,7 @@ div(v-if="a")
 div(v-else-if="a")
 div(v-else-if="a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }, { messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }, { messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -490,7 +490,11 @@ div(v-else-if="a")
 div(v-else-if="b")
 div(v-else-if="a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }, { messageId: 'unexpected' }, { messageId: 'unexpected' }]
+      errors: [
+        { messageId: 'unexpected' },
+        { messageId: 'unexpected' },
+        { messageId: 'unexpected' },
+      ],
     },
     {
       filename: 'test.vue',
@@ -499,7 +503,7 @@ div(v-if="a")
   div(v-if="b")
 div(v-else-if="a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -507,7 +511,7 @@ div(v-else-if="a")
 div(v-if="a === 1")
 div(v-else-if="a === 1")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -515,7 +519,7 @@ div(v-else-if="a === 1")
 div(v-if="1 < a")
 div(v-else-if="1 < a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -523,7 +527,7 @@ div(v-else-if="1 < a")
 div(v-if="true")
 div(v-else-if="true")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -531,7 +535,7 @@ div(v-else-if="true")
 div(v-if="a && b")
 div(v-else-if="a && b")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -539,7 +543,7 @@ div(v-else-if="a && b")
 div(v-if="a && b || c")
 div(v-else-if="a && b || c")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     {
       filename: 'test.vue',
@@ -547,7 +551,7 @@ div(v-else-if="a && b || c")
 div(v-if="f(a)")
 div(v-else-if="f(a)")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
+      errors: [{ messageId: 'unexpected' }],
     },
     // TODO: We currently don't inspect the condition itself
     //     {
@@ -793,8 +797,8 @@ div(v-else-if="f(a)")
 div(v-if="a || a")
 div(v-else-if="a || a")
 </template>`,
-      errors: [{ messageId: 'unexpected' }]
-    }
+      errors: [{ messageId: 'unexpected' }],
+    },
     // TODO: We currently don't inspect the condition itself
     //     {
     //       filename: 'test.vue',
@@ -828,5 +832,5 @@ div(v-else-if="a || a")
     // </template>`,
     //       errors: [{ messageId: 'unexpected' }]
     //     }
-  ]
+  ],
 });

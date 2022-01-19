@@ -68,20 +68,20 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
-              }
+                  column: columnEnd,
+                },
+              },
               // Message related stuff from the rule
               // Maybe also the `fixer`
             });
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;
 ```

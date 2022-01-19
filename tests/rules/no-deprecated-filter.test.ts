@@ -3,44 +3,44 @@ import rule from '../../src/rules/no-deprecated-filter';
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
-  parserOptions: { ecmaVersion: 2015 }
+  parserOptions: { ecmaVersion: 2015 },
 });
 
 ruleTester.run('no-deprecated-filter', rule, {
   valid: [
     {
       filename: 'test.vue',
-      code: '<template lang="pug">| {{ msg }}</template>'
+      code: '<template lang="pug">| {{ msg }}</template>',
     },
     {
       filename: 'test.vue',
-      code: '<template lang="pug">| {{ method(msg) }}</template>'
+      code: '<template lang="pug">| {{ method(msg) }}</template>',
     },
     {
       filename: 'test.vue',
       code: '<template lang="pug">| {{ msg | filter }}</template>',
       parserOptions: {
-        vueFeatures: { filter: false }
-      }
+        vueFeatures: { filter: false },
+      },
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   | msg | filter
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
       code: `<template lang="pug">
 div
   | text =|> {{ msg }}
-</template>`
+</template>`,
     },
     {
       filename: 'test.vue',
-      code: '<template lang="pug">v-text-field(label="|my-label|")</template>'
-    }
+      code: '<template lang="pug">v-text-field(label="|my-label|")</template>',
+    },
   ],
 
   invalid: [
@@ -52,9 +52,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 3,
-          endColumn: 21
-        }
-      ]
+          endColumn: 21,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -64,9 +64,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 3,
-          endColumn: 24
-        }
-      ]
+          endColumn: 24,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -76,9 +76,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 3,
-          endColumn: 32
-        }
-      ]
+          endColumn: 32,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -88,9 +88,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 30,
-          endColumn: 48
-        }
-      ]
+          endColumn: 48,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -100,9 +100,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 15,
-          endColumn: 29
-        }
-      ]
+          endColumn: 29,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -112,9 +112,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 15,
-          endColumn: 34
-        }
-      ]
+          endColumn: 34,
+        },
+      ],
     },
     {
       filename: 'test.vue',
@@ -124,9 +124,9 @@ div
           message: 'Filters are deprecated.',
           line: 1,
           column: 15,
-          endColumn: 40
-        }
-      ]
-    }
-  ]
+          endColumn: 40,
+        },
+      ],
+    },
+  ],
 });

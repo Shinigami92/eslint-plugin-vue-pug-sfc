@@ -4,8 +4,8 @@ export = {
     {
       files: ['*.vue'],
       rules: {
-        'vue-pug-sfc/attribute-hyphenation': 'warn'
-      }
-    }
-  ]
+        'vue-pug-sfc/attribute-hyphenation': 'warn',
+      },
+    },
+  ],
 };

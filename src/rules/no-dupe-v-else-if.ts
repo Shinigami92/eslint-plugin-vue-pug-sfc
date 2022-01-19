@@ -2,7 +2,10 @@ import type { Rule } from 'eslint';
 import type { AttributeToken, Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 
-function isSubset(operandsA: string | boolean, operandsB: string | boolean): boolean {
+function isSubset(
+  operandsA: string | boolean,
+  operandsB: string | boolean
+): boolean {
   // TODO: Check conditions more deeply
   return operandsA === operandsB;
 }
@@ -11,16 +14,17 @@ export default {
   meta: {
     type: 'problem',
     docs: {
-      description: 'disallow duplicate conditions in `v-if` / `v-else-if` chains',
+      description:
+        'disallow duplicate conditions in `v-if` / `v-else-if` chains',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/no-dupe-v-else-if.html'
+      url: 'https://eslint.vuejs.org/rules/no-dupe-v-else-if.html',
     },
     fixable: undefined,
     schema: [],
     messages: {
       unexpected:
-        'This branch can never execute. Its condition is a duplicate or covered by previous conditions in the `v-if` / `v-else-if` chain.'
-    }
+        'This branch can never execute. Its condition is a duplicate or covered by previous conditions in the `v-if` / `v-else-if` chain.',
+    },
   },
   create(context) {
     return processRule(context, () => {
@@ -48,7 +52,8 @@ export default {
             currentTagHasIf[indentLevel] = true;
           } else if (
             token.name === 'v-else-if' &&
-            ((typeof token.val === 'string' && token.val) || typeof token.val !== 'string')
+            ((typeof token.val === 'string' && token.val) ||
+              typeof token.val !== 'string')
           ) {
             currentTagHasIf[indentLevel] = true;
             if (!Array.isArray(ifs[indentLevel])) {
@@ -58,8 +63,10 @@ export default {
             if (ifs[indentLevel]!.some((tok) => isSubset(tok.val, token.val))) {
               const loc: Loc = token.loc;
 
-              const columnStart: number = loc.start.column - 1 + 'v-else-if="'.length;
-              const columnEnd: number = columnStart - 1 + String(token.val).length - '"'.length;
+              const columnStart: number =
+                loc.start.column - 1 + 'v-else-if="'.length;
+              const columnEnd: number =
+                columnStart - 1 + String(token.val).length - '"'.length;
 
               context.report({
                 node: {} as unknown as Rule.Node,
@@ -68,21 +75,21 @@ export default {
                   column: loc.start.column - 1,
                   start: {
                     line: loc.start.line,
-                    column: columnStart
+                    column: columnStart,
                   },
                   end: {
                     line: loc.end.line,
-                    column: columnEnd
-                  }
+                    column: columnEnd,
+                  },
                 },
-                messageId: 'unexpected'
+                messageId: 'unexpected',
               });
             }
 
             ifs[indentLevel]!.push(token);
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;

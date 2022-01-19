@@ -69,7 +69,7 @@ export const SVG_ELEMENT_NAMES: string[] = [
   'unknown',
   'use',
   'video',
-  'view'
+  'view',
 ];
 
 export function isSvgWellKnownElementName(name: string): boolean {
