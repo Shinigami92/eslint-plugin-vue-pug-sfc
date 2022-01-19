@@ -8,10 +8,10 @@ export default {
     docs: {
       description: 'disallow adding multiple root nodes to the template',
       categories: ['essential'],
-      url: 'https://eslint.vuejs.org/rules/no-multiple-template-root.html'
+      url: 'https://eslint.vuejs.org/rules/no-multiple-template-root.html',
     },
     fixable: undefined,
-    schema: []
+    schema: [],
   },
   create(context) {
     return processRule(context, () => {
@@ -60,14 +60,14 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              message
+              message,
             });
           }
         },
@@ -92,14 +92,14 @@ export default {
               column: loc.start.column - 1,
               start: {
                 line: loc.start.line,
-                column: columnStart
+                column: columnStart,
               },
               end: {
                 line: loc.end.line,
-                column: columnEnd
-              }
+                column: columnEnd,
+              },
             },
-            message: 'The template root requires an element rather than texts.'
+            message: 'The template root requires an element rather than texts.',
           });
         },
         attribute(token) {
@@ -120,18 +120,18 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
-              message: "The template root disallows 'v-for' directives."
+              message: "The template root disallows 'v-for' directives.",
             });
           }
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;
