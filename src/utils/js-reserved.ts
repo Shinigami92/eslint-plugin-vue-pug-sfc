@@ -64,5 +64,5 @@ export const JS_RESERVED: string[] = [
   'volatile',
   'while',
   'with',
-  'yield'
+  'yield',
 ];

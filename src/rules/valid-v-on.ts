@@ -45,8 +45,14 @@ export default {
           let messageId: string = '';
 
           let val: string = '';
-          if (token.name.startsWith('v-on') && !token.name.startsWith('v-on:')) {
-            if (typeof token.val === 'string' && token.val.slice(1, -1).trim().length === 0) {
+          if (
+            token.name.startsWith('v-on') &&
+            !token.name.startsWith('v-on:')
+          ) {
+            if (
+              typeof token.val === 'string' &&
+              token.val.slice(1, -1).trim().length === 0
+            ) {
               messageId = 'expectedValueOrVerb';
             } else if (typeof token.val === 'boolean') {
               messageId = 'expectedValueOrVerb';
@@ -58,7 +64,10 @@ export default {
             } else if (JS_RESERVED.includes(val)) {
               messageId = 'avoidKeyword';
             }
-          } else if (/^(v-on:|@)/.test(token.name) && typeof token.val === 'boolean') {
+          } else if (
+            /^(v-on:|@)/.test(token.name) &&
+            typeof token.val === 'boolean'
+          ) {
             messageId = 'expectedValueOrVerb';
           }
 
@@ -68,7 +77,9 @@ export default {
           const columnEnd: number = columnStart + token.name.length;
 
           if (!messageId) {
-            const result: RegExpExecArray | null = /^(v-on:|@)\w+\.(.*)/.exec(token.name);
+            const result: RegExpExecArray | null = /^(v-on:|@)\w+\.(.*)/.exec(
+              token.name
+            );
             if (result?.[2]) {
               const eventModifiers: string[] = result[2].split('.');
               const VALID_MODIFIERS: string[] = [
@@ -95,10 +106,12 @@ export default {
                 'right',
                 'down',
                 'delete',
-                'exact'
+                'exact',
               ];
               for (const eventModifier of eventModifiers) {
-                if (![...VALID_MODIFIERS, ...modifiers].includes(eventModifier)) {
+                if (
+                  ![...VALID_MODIFIERS, ...modifiers].includes(eventModifier)
+                ) {
                   context.report({
                     node: {} as unknown as Rule.Node,
                     loc: {
@@ -106,15 +119,15 @@ export default {
                       column: loc.start.column - 1,
                       start: {
                         line: loc.start.line,
-                        column: columnStart
+                        column: columnStart,
                       },
                       end: {
                         line: loc.end.line,
-                        column: columnEnd
-                      }
+                        column: columnEnd,
+                      },
                     },
                     messageId: 'unsupportedModifier',
-                    data: { modifier: eventModifier }
+                    data: { modifier: eventModifier },
                   });
                 }
               }
@@ -133,18 +146,21 @@ export default {
                 column: loc.start.column - 1,
                 start: {
                   line: loc.start.line,
-                  column: columnStart
+                  column: columnStart,
                 },
                 end: {
                   line: loc.end.line,
-                  column: columnEnd
-                }
+                  column: columnEnd,
+                },
               },
               messageId,
-              data: messageId === 'avoidKeyword' ? { value: `"${val}"` } : undefined
+              data:
+                messageId === 'avoidKeyword'
+                  ? { value: `"${val}"` }
+                  : undefined,
             });
           }
-        }
+        },
       };
     });
   },
