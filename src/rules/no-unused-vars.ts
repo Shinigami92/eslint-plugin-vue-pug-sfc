@@ -2,16 +2,22 @@ import type { AST, Rule } from 'eslint';
 import type { Loc } from 'pug-lexer';
 import { processRule } from '../utils';
 
-const DECLARATION_DIRECTIVES: string[] = ['v-for', 'scope', 'slot-scope', 'v-slot'];
+const DECLARATION_DIRECTIVES: string[] = [
+  'v-for',
+  'scope',
+  'slot-scope',
+  'v-slot',
+];
 
 export default {
   meta: {
     hasSuggestions: true,
     type: 'suggestion',
     docs: {
-      description: 'disallow unused variable definitions of v-for directives or scope attributes',
+      description:
+        'disallow unused variable definitions of v-for directives or scope attributes',
       categories: ['vue3-essential', 'essential'],
-      url: 'https://eslint.vuejs.org/rules/no-unused-vars.html'
+      url: 'https://eslint.vuejs.org/rules/no-unused-vars.html',
     },
     fixable: undefined,
     schema: [
@@ -19,12 +25,12 @@ export default {
         type: 'object',
         properties: {
           ignorePattern: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        additionalProperties: false
-      }
-    ]
+        additionalProperties: false,
+      },
+    ],
   },
   create(context) {
     return processRule(context, () => {
@@ -47,9 +53,14 @@ export default {
           // TODO: decrease indentation level
         },
         attribute(token) {
-          if (DECLARATION_DIRECTIVES.includes(token.name) && typeof token.val === 'string') {
-            const match: RegExpExecArray | null = /(?<variableGroup>.+) (in|of) .+/.exec(token.val.slice(1, -1));
-            const variableGroup: string | undefined = match?.groups?.variableGroup;
+          if (
+            DECLARATION_DIRECTIVES.includes(token.name) &&
+            typeof token.val === 'string'
+          ) {
+            const match: RegExpExecArray | null =
+              /(?<variableGroup>.+) (in|of) .+/.exec(token.val.slice(1, -1));
+            const variableGroup: string | undefined =
+              match?.groups?.variableGroup;
             console.log('variableGroup', variableGroup);
           }
 
@@ -67,16 +78,16 @@ export default {
               column: loc.start.column - 1,
               start: {
                 line: loc.start.line,
-                column: columnStart
+                column: columnStart,
               },
               end: {
                 line: loc.end.line,
-                column: columnEnd
-              }
+                column: columnEnd,
+              },
             },
             message: "'{{name}}' is defined but never used.",
             data: {
-              name: variableName
+              name: variableName,
             },
             suggest:
               ignorePattern === '^_'
@@ -87,13 +98,13 @@ export default {
                         // @ts-expect-error: Access token range
                         const range: AST.Range = token.range;
                         return fixer.insertTextBeforeRange(range, '_');
-                      }
-                    }
+                      },
+                    },
                   ]
-                : []
+                : [],
           });
-        }
+        },
       };
     });
-  }
+  },
 } as Rule.RuleModule;
