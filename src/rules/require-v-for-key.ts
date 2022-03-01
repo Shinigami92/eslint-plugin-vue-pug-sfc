@@ -44,7 +44,7 @@ export default {
           // Find key attribute in attributes
           const attributeTokens: AttributeToken[] = tokens.slice(
             lastStartAttributesTokenIndex! + 1,
-            endAttributesTokenIndex
+            endAttributesTokenIndex,
           ) as AttributeToken[];
           if (
             attributeTokens.some((attr) => /^(v-bind)?:key$/.test(attr.name))
@@ -63,11 +63,11 @@ export default {
           ) {
             const childTagTokens: TagToken[] = getChildTags(
               lastTagToken,
-              tokens
+              tokens,
             );
             if (
               childTagTokens.every(
-                (tag) => tag.val === 'template' || tag.val === 'slot'
+                (tag) => tag.val === 'template' || tag.val === 'slot',
               )
             ) {
               return;
@@ -77,11 +77,11 @@ export default {
             for (const childTag of childTagTokens) {
               const attributeTokens: AttributeToken[] = getAttributeTokens(
                 childTag,
-                tokens
+                tokens,
               );
               if (
                 attributeTokens.some((attr) =>
-                  /^(v-bind)?:key$/.test(attr.name)
+                  /^(v-bind)?:key$/.test(attr.name),
                 )
               ) {
                 foundChildTagWithKey = true;

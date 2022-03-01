@@ -9,7 +9,7 @@ export default {
     // TODO: This filters messages for all plugins :(
     const filteredMessages: Linter.LintMessage[] =
       messages[0]?.filter(
-        (message) => message.ruleId !== 'vue/comment-directive'
+        (message) => message.ruleId !== 'vue/comment-directive',
       ) ?? [];
 
     return [...filteredMessages];

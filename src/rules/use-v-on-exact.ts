@@ -56,7 +56,7 @@ function extractModifiers(event: string): string[] {
  * @returns e.g. `{ click: [], keypress: [] }`
  */
 function groupEvents(
-  events: AttributeToken[]
+  events: AttributeToken[],
 ): Record<string, AttributeToken[]> {
   return events.reduce<Record<string, AttributeToken[]>>((acc, event) => {
     const name: string = extractName(event.name);
@@ -92,7 +92,7 @@ function getKeyModifiersString(modifiers: string[]): string {
  */
 function hasConflictedModifiers(
   baseEvent: AttributeToken,
-  event: AttributeToken
+  event: AttributeToken,
 ): boolean {
   if (event === baseEvent) {
     return false;
@@ -187,7 +187,7 @@ export default {
               groupEvents(eventAttributes);
             for (const eventsInGroup of Object.values(groupedEvents)) {
               const hasEventWithKeyModifiers: boolean = eventsInGroup.some(
-                (event) => hasSystemModifier(extractModifiers(event.name))
+                (event) => hasSystemModifier(extractModifiers(event.name)),
               );
 
               if (!hasEventWithKeyModifiers) {

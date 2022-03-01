@@ -32,7 +32,7 @@ export type TokenProcessor = {
    */
   [K in lex.LexTokenType]?: <Token extends Extract<lex.Token, lex.LexToken<K>>>(
     token: Token,
-    context: TokenProcessorContext
+    context: TokenProcessorContext,
   ) => void;
 };
 
@@ -72,7 +72,7 @@ const CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP: Record<
  */
 export function processRule(
   context: Rule.RuleContext,
-  tokenProcessor: () => TokenProcessor
+  tokenProcessor: () => TokenProcessor,
 ): Rule.RuleListener {
   if (!checkIsVueFile(context)) {
     return {};
@@ -99,7 +99,7 @@ export function processRule(
     };
   }
   CACHED_TOKEN_PROCESSOR_STATE_CONTAINER_MAP[cacheKey]!.tokenProcessors.push(
-    tokenProcessorReturn
+    tokenProcessorReturn,
   );
 
   return {
@@ -128,9 +128,9 @@ export function processRule(
             tokenProcessor[token.type]?.(
               // This comment only exists so that the parameters are wrapped and not affected by the `@ts-expect-error` comment.
               token,
-              { index, tokens }
+              { index, tokens },
             );
-          }
+          },
         );
       }
 
@@ -175,7 +175,7 @@ const CACHED_PUG_CONTENT_RETURN_CONTENT_MAP: Map<
 > = new Map();
 
 export function extractPugTemplate(
-  context: Rule.RuleContext
+  context: Rule.RuleContext,
 ): ExtractPugTemplateReturn {
   const parserServices: ParserServices = context.parserServices;
 
@@ -194,8 +194,8 @@ export function extractPugTemplate(
           !attr.directive &&
           attr.key.name === 'lang' &&
           attr.value &&
-          attr.value.value === 'pug'
-      )
+          attr.value.value === 'pug',
+      ),
   ) as VElement | undefined;
 
   const rawText: string = context.getSourceCode().text;
@@ -206,14 +206,14 @@ export function extractPugTemplate(
 
   const pugText: string = rawText.slice(
     pugTemplateElement.startTag.range[1],
-    pugTemplateElement.endTag?.range[0]
+    pugTemplateElement.endTag?.range[0],
   );
 
   return { df, pugTemplateElement, rawText, pugText };
 }
 
 export function parsePugContent(
-  context: Rule.RuleContext
+  context: Rule.RuleContext,
 ): ParsePugContentReturn {
   const {
     df,
@@ -301,7 +301,7 @@ export function parsePugContent(
 
 export function tokenLength(
   token: lex.Token,
-  previousToken?: lex.Token
+  previousToken?: lex.Token,
 ): number {
   if (token.type === 'newline') {
     const length: number = token.loc.end.column - token.loc.start.column;
@@ -339,7 +339,7 @@ export function tokenLength(
 export function findIndexFrom<T>(
   arr: ReadonlyArray<T>,
   predicate: (value: T, index: number, obj: ReadonlyArray<T>) => unknown,
-  fromIndex: number
+  fromIndex: number,
 ): number {
   const index: number = arr.slice(fromIndex).findIndex(predicate);
   return index === -1 ? -1 : index + fromIndex;

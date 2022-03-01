@@ -55,12 +55,12 @@ export default {
       ];
 
       const caseConverter: (str: string) => string = getExactConverter(
-        useHyphenated ? 'kebab-case' : 'camelCase'
+        useHyphenated ? 'kebab-case' : 'camelCase',
       );
 
       function isIgnoredAttribute(value: string): boolean {
         const isIgnored: boolean = ignoredAttributes.some((attr) =>
-          value.includes(attr)
+          value.includes(attr),
         );
 
         if (isIgnored) {
@@ -144,7 +144,7 @@ export default {
               }
               return fixer.replaceTextRange(
                 [range[0], range[0] + attributeName.length],
-                converted
+                converted,
               );
             },
           });

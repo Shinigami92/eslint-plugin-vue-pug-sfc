@@ -27,7 +27,7 @@ export type VueObjectData = {
 type VueVisitorBase = {
   [T in keyof NodeListenerMap]?: (
     node: NodeListenerMap[T],
-    obj: VueObjectData
+    obj: VueObjectData,
   ) => void;
 };
 export interface VueVisitor extends VueVisitorBase {
@@ -36,15 +36,15 @@ export interface VueVisitor extends VueVisitorBase {
   onVueObjectExit?(node: ObjectExpression, obj: VueObjectData): void;
   onSetupFunctionEnter?(
     node: (FunctionExpression | ArrowFunctionExpression) & { parent: Property },
-    obj: VueObjectData
+    obj: VueObjectData,
   ): void;
   onSetupFunctionExit?(
     node: (FunctionExpression | ArrowFunctionExpression) & { parent: Property },
-    obj: VueObjectData
+    obj: VueObjectData,
   ): void;
   onRenderFunctionEnter?(
     node: (FunctionExpression | ArrowFunctionExpression) & { parent: Property },
-    obj: VueObjectData
+    obj: VueObjectData,
   ): void;
 }
 
@@ -58,30 +58,30 @@ export interface ScriptSetupVisitor extends ScriptSetupVisitorBase {
         node: CallExpression,
         props: Array<
           ComponentArrayProp | ComponentObjectProp | ComponentTypeProp
-        >
+        >,
       ) => void)
     | ((
         node: CallExpression,
         props: Array<
           ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit
-        >
+        >,
       ) => void)
     | undefined;
   onDefinePropsEnter?(
     node: CallExpression,
-    props: Array<ComponentArrayProp | ComponentObjectProp | ComponentTypeProp>
+    props: Array<ComponentArrayProp | ComponentObjectProp | ComponentTypeProp>,
   ): void;
   onDefinePropsExit?(
     node: CallExpression,
-    props: Array<ComponentArrayProp | ComponentObjectProp | ComponentTypeProp>
+    props: Array<ComponentArrayProp | ComponentObjectProp | ComponentTypeProp>,
   ): void;
   onDefineEmitsEnter?(
     node: CallExpression,
-    props: Array<ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit>
+    props: Array<ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit>,
   ): void;
   onDefineEmitsExit?(
     node: CallExpression,
-    props: Array<ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit>
+    props: Array<ComponentArrayEmit | ComponentObjectEmit | ComponentTypeEmit>,
   ): void;
 }
 

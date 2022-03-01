@@ -93,7 +93,7 @@ export function camelCase(str: string): string {
     return str.charAt(0).toLowerCase() + str.slice(1);
   }
   return str.replace(/[-_](\w)/gu, (_, c: string) =>
-    c ? c.toUpperCase() : ''
+    c ? c.toUpperCase() : '',
   );
 }
 

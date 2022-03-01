@@ -78,7 +78,7 @@ export default {
           // Find `v-for` attribute in attributes
           const attributeTokens: AttributeToken[] = tokens.slice(
             lastStartAttributesTokenIndex! + 1,
-            endAttributesTokenIndex
+            endAttributesTokenIndex,
           ) as AttributeToken[];
           const vForAttribute: AttributeToken | undefined =
             attributeTokens.find((attr) => attr.name === 'v-for');
@@ -97,7 +97,7 @@ export default {
           iteratorName = (iteratorName ?? '').trim();
 
           const kind: 'variable' | 'expression' = /^(?!\d)\w+$/.test(
-            iteratorName
+            iteratorName,
           )
             ? 'variable'
             : 'expression';

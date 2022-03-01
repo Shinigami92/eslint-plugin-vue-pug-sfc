@@ -91,7 +91,7 @@ export function isVueEventBinding(name: string): boolean {
  */
 export function isVueExpression(name: string): boolean {
   return /^((v-(bind|slot))?:|v-(model|slot|if|for|else-if|text|html)|#).*/.test(
-    name
+    name,
   );
 }
 
@@ -221,7 +221,7 @@ export function isVueComponentFile(node: ESNode, path: string): boolean {
  * @returns The `TSAsExpression#expression` value if the node is a `TSAsExpression` node. Otherwise, the node.
  */
 export function skipTSAsExpression<
-  T extends Expression | Super | SpreadElement | Declaration
+  T extends Expression | Super | SpreadElement | Declaration,
 >(node: T | TSAsExpression): T {
   if (!node) {
     return node;
@@ -239,7 +239,7 @@ export function skipTSAsExpression<
  * Checks whether the given node is VElement.
  */
 export function isVElement(
-  node: VElement | VExpressionContainer | VText
+  node: VElement | VExpressionContainer | VText,
 ): node is VElement {
   return node.type === 'VElement';
 }
@@ -255,7 +255,7 @@ export function isVElement(
 export function getAttribute(
   node: VElement,
   name: string,
-  value?: string
+  value?: string,
 ): VAttribute | VDirective | null {
   return (
     node.startTag.attributes.find((node) => {
@@ -280,7 +280,7 @@ export function getAttribute(
 export function hasAttribute(
   node: VElement,
   name: string,
-  value?: string
+  value?: string,
 ): boolean {
   return Boolean(getAttribute(node, name, value));
 }
@@ -292,7 +292,7 @@ export function hasAttribute(
  * @returns The element of `<script setup>`.
  */
 export function getScriptSetupElement(
-  context: Rule.RuleContext
+  context: Rule.RuleContext,
 ): VElement | null {
   const parserServices: ParserServices = context.parserServices;
   const df: VDocumentFragment | null | undefined =
@@ -327,7 +327,7 @@ export function getScriptSetupElement(
  */
 export function getStringLiteralValue(
   node: Literal | TemplateLiteral,
-  stringOnly?: boolean
+  stringOnly?: boolean,
 ): string | null {
   if (node.type === 'Literal') {
     if (node.value == null) {
@@ -359,7 +359,7 @@ export function getStringLiteralValue(
  * @return The property name if static. Otherwise, `null`.
  */
 export function getStaticPropertyName(
-  node: Property | AssignmentProperty | MethodDefinition | MemberExpression
+  node: Property | AssignmentProperty | MethodDefinition | MemberExpression,
 ): string | null {
   if (node.type === 'Property' || node.type === 'MethodDefinition') {
     if (!node.computed) {
@@ -393,7 +393,7 @@ export function getStaticPropertyName(
  * @param node Node to check.
  */
 function getVueComponentDefinitionType(
-  node: ObjectExpression
+  node: ObjectExpression,
 ): 'component' | 'mixin' | 'extend' | 'createApp' | 'defineComponent' | null {
   const parent: ASTNode = getParent(node);
   if (parent.type === 'CallExpression') {
@@ -401,7 +401,7 @@ function getVueComponentDefinitionType(
 
     if (callee.type === 'MemberExpression') {
       const calleeObject: Expression | Super = skipTSAsExpression(
-        callee.object
+        callee.object,
       );
 
       if (calleeObject.type === 'Identifier') {
@@ -479,7 +479,7 @@ export function isVueInstance(node: NewExpression): boolean {
       callee.type === 'Identifier' &&
       callee.name === 'Vue' &&
       node.arguments.length &&
-      skipTSAsExpression(node.arguments[0]!).type === 'ObjectExpression'
+      skipTSAsExpression(node.arguments[0]!).type === 'ObjectExpression',
   );
 }
 
@@ -492,7 +492,7 @@ const componentComments: WeakMap<Rule.RuleContext, Token[]> = new WeakMap();
  * @return The the component comments.
  */
 export function getComponentComments(
-  context: Rule.RuleContext
+  context: Rule.RuleContext,
 ): Token[] | undefined {
   let tokens: Token[] | undefined = componentComments.get(context);
   if (tokens) {
@@ -515,7 +515,7 @@ export function getComponentComments(
  */
 export function getVueObjectType(
   context: Rule.RuleContext,
-  node: ObjectExpression
+  node: ObjectExpression,
 ): VueObjectType | null {
   if (node.type !== 'ObjectExpression') {
     return null;
@@ -558,7 +558,7 @@ export function getVueObjectType(
   }
   if (
     getComponentComments(context)?.some(
-      (el) => el.loc.end.line === node.loc.start.line - 1
+      (el) => el.loc.end.line === node.loc.start.line - 1,
     )
   ) {
     return 'mark';
@@ -595,7 +595,7 @@ export function compositingVisitors<T>(
 
 export function executeOnVueComponent(
   context: Rule.RuleContext,
-  cb: (node: ObjectExpression, type: VueObjectType) => void
+  cb: (node: ObjectExpression, type: VueObjectType) => void,
 ): TemplateListener {
   return {
     'ObjectExpression:exit'(node: ObjectExpression): void {
@@ -619,7 +619,7 @@ export function executeOnVueComponent(
  */
 export function executeOnVueInstance(
   context: Rule.RuleContext,
-  cb: (node: ObjectExpression, type: VueObjectType) => void
+  cb: (node: ObjectExpression, type: VueObjectType) => void,
 ): TemplateListener {
   return {
     'ObjectExpression:exit'(node: ObjectExpression) {
@@ -634,11 +634,11 @@ export function executeOnVueInstance(
 
 export function executeOnVue(
   context: Rule.RuleContext,
-  cb: (node: ObjectExpression, type: VueObjectType) => void
+  cb: (node: ObjectExpression, type: VueObjectType) => void,
 ): TemplateListener {
   return compositingVisitors(
     executeOnVueComponent(context, cb),
-    executeOnVueInstance(context, cb)
+    executeOnVueInstance(context, cb),
   );
 }
 
@@ -646,7 +646,7 @@ export function executeOnVue(
  * Checks whether the given node is Property.
  */
 export function isProperty(
-  node: Property | SpreadElement | AssignmentProperty
+  node: Property | SpreadElement | AssignmentProperty,
 ): node is Property {
   if (node.type !== 'Property') {
     return false;
@@ -662,14 +662,14 @@ export function isDef<T>(v: T): v is T {
 }
 
 export function getRegisteredVueComponents(
-  componentObject: ObjectExpression
+  componentObject: ObjectExpression,
 ): Array<{ node: Property; name: string } | null> {
   const componentsNode: Property | SpreadElement | undefined =
     componentObject.properties.find(
       (property) =>
         property.type === 'Property' &&
         getStaticPropertyName(property) === 'components' &&
-        property.value.type === 'ObjectExpression'
+        property.value.type === 'ObjectExpression',
     );
 
   if (
@@ -696,7 +696,7 @@ export function getRegisteredVueComponents(
  */
 export function isCustomComponent(
   tag: TagToken,
-  tokens: ReadonlyArray<PugToken>
+  tokens: ReadonlyArray<PugToken>,
 ): boolean {
   if (
     !isHtmlWellKnownElementName(tag.val) &&
@@ -708,7 +708,7 @@ export function isCustomComponent(
   // If the tag has an `is` attribute, it is also declared as a custom component.
   const attributeTokens: AttributeToken[] = getAttributeTokens(tag, tokens);
   const hasIsAttribute: boolean = attributeTokens.some(({ name }) =>
-    /^(v-bind)?:?is$/.test(name)
+    /^(v-bind)?:?is$/.test(name),
   );
 
   return hasIsAttribute;

@@ -17,13 +17,13 @@ export interface ParserServices {
     scriptVisitor?: Rule.RuleListener,
     options?: {
       templateBodyTriggerSelector: 'Program' | 'Program:exit';
-    }
+    },
   ) => Rule.RuleListener;
   defineDocumentVisitor?: (
     documentVisitor: TemplateListener,
     options?: {
       triggerSelector: 'Program' | 'Program:exit';
-    }
+    },
   ) => Rule.RuleListener;
   getDocumentFragment?: () => VDocumentFragment | null;
 }
@@ -33,87 +33,87 @@ export namespace ParserServices {
   export interface TokenStore {
     getTokenByRangeStart(
       offset: number,
-      options?: { includeComments: boolean }
+      options?: { includeComments: boolean },
     ): Token | null;
     getFirstToken(node: HasLocation): Token;
     getFirstToken(node: HasLocation, options: number): Token;
     getFirstToken(
       node: HasLocation,
-      options: SourceCode.UnaryNodeCursorWithSkipOptions
+      options: SourceCode.UnaryNodeCursorWithSkipOptions,
     ): Token | null;
     getLastToken(node: HasLocation): Token;
     getLastToken(node: HasLocation, options: number): Token;
     getLastToken(
       node: HasLocation,
-      options: SourceCode.UnaryNodeCursorWithSkipOptions
+      options: SourceCode.UnaryNodeCursorWithSkipOptions,
     ): Token | null;
     getTokenBefore(node: HasLocation): Token;
     getTokenBefore(node: HasLocation, options: number): Token;
     getTokenBefore(
       node: HasLocation,
-      options: { includeComments: boolean }
+      options: { includeComments: boolean },
     ): Token;
     getTokenBefore(
       node: HasLocation,
-      options: SourceCode.UnaryCursorWithSkipOptions
+      options: SourceCode.UnaryCursorWithSkipOptions,
     ): Token | null;
     getTokenAfter(node: HasLocation): Token;
     getTokenAfter(node: HasLocation, options: number): Token;
     getTokenAfter(
       node: HasLocation,
-      options: { includeComments: boolean }
+      options: { includeComments: boolean },
     ): Token;
     getTokenAfter(
       node: HasLocation,
-      options: SourceCode.UnaryCursorWithSkipOptions
+      options: SourceCode.UnaryCursorWithSkipOptions,
     ): Token | null;
     getFirstTokenBetween(
       left: HasLocation,
       right: HasLocation,
-      options?: SourceCode.BinaryCursorWithSkipOptions
+      options?: SourceCode.BinaryCursorWithSkipOptions,
     ): Token | null;
     getLastTokenBetween(
       left: HasLocation,
       right: HasLocation,
-      options?: SourceCode.BinaryCursorWithSkipOptions
+      options?: SourceCode.BinaryCursorWithSkipOptions,
     ): Token | null;
     getTokenOrCommentBefore(node: HasLocation, skip?: number): Token | null;
     getTokenOrCommentAfter(node: HasLocation, skip?: number): Token | null;
     getFirstTokens(
       node: HasLocation,
-      options?: SourceCode.UnaryNodeCursorWithCountOptions
+      options?: SourceCode.UnaryNodeCursorWithCountOptions,
     ): Token[];
     getLastTokens(
       node: HasLocation,
-      options?: SourceCode.UnaryNodeCursorWithCountOptions
+      options?: SourceCode.UnaryNodeCursorWithCountOptions,
     ): Token[];
     getTokensBefore(
       node: HasLocation,
-      options?: SourceCode.UnaryCursorWithCountOptions
+      options?: SourceCode.UnaryCursorWithCountOptions,
     ): Token[];
     getTokensAfter(
       node: HasLocation,
-      options?: SourceCode.UnaryCursorWithCountOptions
+      options?: SourceCode.UnaryCursorWithCountOptions,
     ): Token[];
     getFirstTokensBetween(
       left: HasLocation,
       right: HasLocation,
-      options?: SourceCode.BinaryCursorWithCountOptions
+      options?: SourceCode.BinaryCursorWithCountOptions,
     ): Token[];
     getLastTokensBetween(
       left: HasLocation,
       right: HasLocation,
-      options?: SourceCode.BinaryCursorWithCountOptions
+      options?: SourceCode.BinaryCursorWithCountOptions,
     ): Token[];
     getTokens(
       node: HasLocation,
       beforeCount?: SourceCode.UnaryNodeCursorWithCountOptions,
-      afterCount?: number
+      afterCount?: number,
     ): Token[];
     getTokensBetween(
       left: HasLocation,
       right: HasLocation,
-      padding?: SourceCode.BinaryCursorWithCountOptions
+      padding?: SourceCode.BinaryCursorWithCountOptions,
     ): Token[];
     commentsExistBetween(left: HasLocation, right: HasLocation): boolean;
     getCommentsBefore(nodeOrToken: HasLocation): Token[];

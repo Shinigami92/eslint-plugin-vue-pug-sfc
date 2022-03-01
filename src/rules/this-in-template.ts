@@ -27,7 +27,7 @@ export default {
 
       function handle(
         token: AttributeToken | TextToken,
-        { index, tokens }: TokenProcessorContext
+        { index, tokens }: TokenProcessorContext,
       ): void {
         if (
           typeof token.val === 'string' &&
@@ -37,7 +37,7 @@ export default {
           if (option === 'never') {
             const lastTagToken: TagToken | undefined = previousTagToken(
               tokens,
-              index
+              index,
             );
             if (lastTagToken) {
               const lastTagTokenIndex: number = tokens.indexOf(lastTagToken);
@@ -70,7 +70,7 @@ export default {
               .getSourceCode()
               .text.slice(range[0], range[1]);
             const columnOffset: number = textSlice.indexOf(
-              `this${withOptionalChaining ? '?' : ''}.`
+              `this${withOptionalChaining ? '?' : ''}.`,
             );
 
             const columnStart: number = loc.start.column - 1 + columnOffset;

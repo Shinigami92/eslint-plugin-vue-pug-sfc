@@ -22,25 +22,25 @@ div
       'this.',
       [],
       "Unexpected usage of 'this'.",
-      'ThisExpression'
+      'ThisExpression',
     ),
     ...createInvalidTests(
       'this?.',
       [],
       "Unexpected usage of 'this'.",
-      'ThisExpression'
+      'ThisExpression',
     ),
     ...createInvalidTests(
       'this.',
       ['never'],
       "Unexpected usage of 'this'.",
-      'ThisExpression'
+      'ThisExpression',
     ),
     ...createInvalidTests(
       'this?.',
       ['never'],
       "Unexpected usage of 'this'.",
-      'ThisExpression'
+      'ThisExpression',
     ),
     // TODO: Add support for option `always`
     // ...createInvalidTests('', ['always'], "Expected 'this'.", 'Identifier'),
@@ -69,7 +69,7 @@ div(:class="{ foo: $foo }")
 
 function createValidTests(
   prefix: string,
-  options: string[]
+  options: string[],
 ): RuleTester.ValidTestCase[] {
   const comment: string = options.join('');
   return [
@@ -205,7 +205,7 @@ function createInvalidTests(
   prefix: string,
   options: string[],
   message: RuleTester.TestCaseError['message'],
-  type: RuleTester.TestCaseError['type']
+  type: RuleTester.TestCaseError['type'],
 ): RuleTester.InvalidTestCase[] {
   const comment: string = options.join('');
   return [
@@ -322,7 +322,7 @@ div(v-for="foo in ${suggestionPrefix(prefix, options)}bar")
           //             errors: [{ message, type }],
           //             options
           //           }
-        ]
+        ],
     /* eslint-enable @typescript-eslint/indent */
   );
 }

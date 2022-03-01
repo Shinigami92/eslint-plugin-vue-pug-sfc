@@ -56,7 +56,7 @@ export default {
 
           const cleanedAttributeName: string = attributeName.replace(
             /^(v-bind)?:/,
-            ''
+            '',
           );
 
           const duplicateAttributeName: string | undefined =

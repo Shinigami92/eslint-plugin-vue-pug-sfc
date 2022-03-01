@@ -1,8 +1,13 @@
 // @ts-check
 const { defineConfig } = require('eslint-define-config');
+const { readGitignoreFiles } = require('eslint-gitignore');
 
 module.exports = defineConfig({
-  ignorePatterns: ['.eslintrc.js', 'dist/', 'benchmark/'],
+  ignorePatterns: [
+    ...readGitignoreFiles(),
+    '.eslintrc.js', // Skip self linting
+  ],
+  root: true,
   env: {
     es6: true,
     jest: true,
@@ -27,31 +32,30 @@ module.exports = defineConfig({
     quotes: ['error', 'single', { avoidEscape: true }],
     semi: ['error', 'always'],
 
-    '@typescript-eslint/array-type': [
-      'warn',
-      { default: 'array-simple', readonly: 'generic' },
-    ],
     '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/explicit-function-return-type': [
       'error',
       { allowExpressions: true },
     ],
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/member-ordering': 'off',
+    '@typescript-eslint/consistent-type-imports': [
+      'error',
+      { prefer: 'type-imports' },
+    ],
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-parameter-properties': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/prefer-nullish-coalescing': 'warn',
     '@typescript-eslint/prefer-optional-chain': 'warn',
-    '@typescript-eslint/prefer-readonly': 'warn',
-    '@typescript-eslint/prefer-reduce-type-parameter': 'warn',
+    '@typescript-eslint/prefer-readonly': ['warn'],
+    '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/typedef': [
       'warn',
-      {
-        memberVariableDeclaration: true,
-        propertyDeclaration: true,
-        variableDeclaration: true,
-      },
+      { memberVariableDeclaration: true, variableDeclaration: true },
     ],
   },
 });

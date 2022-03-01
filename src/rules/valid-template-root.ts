@@ -20,7 +20,7 @@ export default {
     }
 
     const hasSrc: boolean = pugTemplateElement.startTag.attributes.some(
-      (node) => node.key.name === 'src'
+      (node) => node.key.name === 'src',
     );
     const hasContent: boolean = (pugText ?? '').length > 0;
 

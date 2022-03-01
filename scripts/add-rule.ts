@@ -25,7 +25,7 @@ export default {
     });
   }
 } as Rule.RuleModule;
-`
+`,
 );
 
 // Write rule test code
@@ -43,7 +43,7 @@ ruleTester.run('${ruleName}', rule, {
   valid: [],
   invalid: []
 });
-`
+`,
 );
 
 // Add rule to src/rules/index.ts
@@ -61,10 +61,10 @@ export default {
 ${rules.map((rule) => `  '${rule}': ${camelize(rule)}`).join(',\n')}
 } as Record<string, Rule.RuleModule>;
 `,
-    { parser: 'typescript', ...prettierConfig }
-  )
+    { parser: 'typescript', ...prettierConfig },
+  ),
 );
 
 console.log(
-  `Don't forget to add rule ${ruleName} to related src/configs file(s).`
+  `Don't forget to add rule ${ruleName} to related src/configs file(s).`,
 );

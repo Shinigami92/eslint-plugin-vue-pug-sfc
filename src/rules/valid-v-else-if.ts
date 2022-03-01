@@ -49,7 +49,7 @@ export default {
               token,
               tokens,
               (attr) =>
-                attr.name.includes('v-if') || attr.name.includes('v-else')
+                attr.name.includes('v-if') || attr.name.includes('v-else'),
             )
           ) {
             delete ifs[indentLevel];

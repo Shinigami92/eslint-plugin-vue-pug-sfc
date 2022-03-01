@@ -4,7 +4,7 @@ import { processRule } from '../utils';
 
 function isSubset(
   operandsA: string | boolean,
-  operandsB: string | boolean
+  operandsB: string | boolean,
 ): boolean {
   // TODO: Check conditions more deeply
   return operandsA === operandsB;

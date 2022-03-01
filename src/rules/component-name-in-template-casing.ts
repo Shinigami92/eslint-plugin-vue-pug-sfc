@@ -87,7 +87,7 @@ export default {
         // When defining a component with PascalCase, we can use either case.
         if (
           registeredComponents.some(
-            (name) => tagName === name || pascalCase(tagName) === name
+            (name) => tagName === name || pascalCase(tagName) === name,
           )
         ) {
           return true;
@@ -148,7 +148,7 @@ export default {
                 registeredComponents.push(
                   ...getRegisteredVueComponents(obj)
                     .map((n) => n!.name)
-                    .filter(isPascalCase)
+                    .filter(isPascalCase),
                 );
               })
             : {}),

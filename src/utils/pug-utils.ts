@@ -12,7 +12,7 @@ import { findIndexFrom } from './index';
  */
 export function previousTagToken(
   tokens: ReadonlyArray<Token>,
-  index: number
+  index: number,
 ): TagToken | undefined {
   for (let i: number = index - 1; i >= 0; i--) {
     const token: Token | undefined = tokens[i];
@@ -35,7 +35,7 @@ export function previousTagToken(
  */
 export function previousNormalAttributeToken(
   tokens: ReadonlyArray<Token>,
-  index: number
+  index: number,
 ): AttributeToken | undefined {
   for (let i: number = index - 1; i > 0; i--) {
     const token: Token | undefined = tokens[i];
@@ -60,7 +60,7 @@ export function previousNormalAttributeToken(
  */
 export function previousTypeAttributeToken(
   tokens: ReadonlyArray<Token>,
-  index: number
+  index: number,
 ): AttributeToken | undefined {
   for (let i: number = index - 1; i > 0; i--) {
     const token: Token | undefined = tokens[i];
@@ -78,13 +78,13 @@ export function previousTypeAttributeToken(
 
 export function getAttributeTokens(
   tag: TagToken,
-  tokens: ReadonlyArray<Token>
+  tokens: ReadonlyArray<Token>,
 ): AttributeToken[] {
   const tagIndex: number = tokens.indexOf(tag);
   const startAttributesIndex: number = findIndexFrom(
     tokens,
     ({ type }) => type === 'start-attributes',
-    tagIndex
+    tagIndex,
   );
 
   // If there was no start-attributes token, or another tag token between given tag and start-attributes token,
@@ -101,28 +101,28 @@ export function getAttributeTokens(
   const endAttributesIndex: number = findIndexFrom(
     tokens,
     ({ type }) => type === 'end-attributes',
-    startAttributesIndex
+    startAttributesIndex,
   );
 
   return tokens.slice(
     startAttributesIndex + 1,
-    endAttributesIndex
+    endAttributesIndex,
   ) as AttributeToken[];
 }
 
 export function hasAttributeTokens(
   tag: TagToken,
   tokens: ReadonlyArray<Token>,
-  condition: (attributeToken: AttributeToken) => boolean
+  condition: (attributeToken: AttributeToken) => boolean,
 ): boolean {
   return getAttributeTokens(tag, tokens).some((attributeToken) =>
-    condition(attributeToken)
+    condition(attributeToken),
   );
 }
 
 export function getChildTags(
   tag: TagToken,
-  tokens: ReadonlyArray<Token>
+  tokens: ReadonlyArray<Token>,
 ): TagToken[] {
   const tagIndex: number = tokens.indexOf(tag);
 
@@ -184,7 +184,7 @@ export function isWrappedWith(
   val: string,
   start: string,
   end: string,
-  offset: number = 0
+  offset: number = 0,
 ): boolean {
   return (
     val.startsWith(start, offset) && val.endsWith(end, val.length - offset)
