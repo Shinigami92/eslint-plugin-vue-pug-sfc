@@ -286,6 +286,14 @@ export function hasAttribute(
 }
 
 /**
+ * Checks whether the current file is uses `<script setup>`
+ * @param {RuleContext} context The ESLint rule context object.
+ */
+export function isScriptSetup(context: Rule.RuleContext): boolean {
+  return Boolean(getScriptSetupElement(context));
+}
+
+/**
  * Gets the element of `<script setup>`.
  *
  * @param context The ESLint rule context object.

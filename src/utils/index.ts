@@ -103,7 +103,7 @@ export function processRule(
   );
 
   return {
-    'Program:exit'() {
+    'Program'() {
       // Within this callback, we fetch the token processors from the cache
       // and process all registered token processors at once.
       // !> Keep attention of which variables are usable from above's scope.
