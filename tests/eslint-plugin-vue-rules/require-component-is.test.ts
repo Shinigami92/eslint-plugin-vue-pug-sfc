@@ -10,13 +10,15 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-const rule = require('eslint-plugin-vue/lib/rules/require-component-is');
+import * as vuePlugin from 'eslint-plugin-vue';
+
+const rule = vuePlugin.rules['require-component-is'];
 
 // ------------------------------------------------------------------------------
 // Tests
 // ------------------------------------------------------------------------------
 
-const tester = new RuleTester({
+const tester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
   parserOptions: {
     ecmaVersion: 2015,

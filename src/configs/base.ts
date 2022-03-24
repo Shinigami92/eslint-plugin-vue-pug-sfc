@@ -4,7 +4,7 @@ export = {
     ecmaVersion: 2020,
     sourceType: 'module',
     templateTokenizer: {
-      pug: 'vue-eslint-parser-template-tokenizer-pug'
+      pug: 'vue-eslint-parser-template-tokenizer-pug',
     },
   },
   env: {
