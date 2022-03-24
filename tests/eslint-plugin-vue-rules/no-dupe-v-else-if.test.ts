@@ -7,7 +7,7 @@
 import { RuleTester } from 'eslint';
 import * as vuePlugin from 'eslint-plugin-vue';
 
-const rule = vuePlugin.rules['no-dupe-v-else-if'];
+const rule = vuePlugin.rules['no-dupe-v-else-if']!;
 
 const tester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),

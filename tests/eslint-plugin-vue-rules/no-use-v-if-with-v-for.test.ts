@@ -11,7 +11,7 @@
 import { RuleTester } from 'eslint';
 import * as vuePlugin from 'eslint-plugin-vue';
 
-const rule = vuePlugin.rules['no-use-v-if-with-v-for'];
+const rule = vuePlugin.rules['no-use-v-if-with-v-for']!;
 
 // ------------------------------------------------------------------------------
 // Tests

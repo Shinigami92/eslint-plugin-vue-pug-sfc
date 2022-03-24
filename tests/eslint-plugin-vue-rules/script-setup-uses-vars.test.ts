@@ -12,7 +12,7 @@
 import { Linter, RuleTester } from 'eslint';
 import * as vuePlugin from 'eslint-plugin-vue';
 
-const rule = vuePlugin.rules['script-setup-uses-vars'];
+const rule = vuePlugin.rules['script-setup-uses-vars']!;
 const ruleNoUnusedVars = new Linter().getRules().get('no-unused-vars');
 
 const ruleTester: RuleTester = new RuleTester({

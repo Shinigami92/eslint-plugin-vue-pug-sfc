@@ -12,7 +12,7 @@
 import { RuleTester } from 'eslint';
 import * as vuePlugin from 'eslint-plugin-vue';
 
-const rule = vuePlugin.rules['require-v-for-key'];
+const rule = vuePlugin.rules['require-v-for-key']!;
 
 // ------------------------------------------------------------------------------
 // Tests
