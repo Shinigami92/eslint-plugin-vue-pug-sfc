@@ -3,7 +3,6 @@ import attributeHyphenation from './attribute-hyphenation';
 import componentNameInTemplateCasing from './component-name-in-template-casing';
 import noDeprecatedDollarScopedslotsApi from './no-deprecated-dollar-scopedslots-api';
 import noDeprecatedFilter from './no-deprecated-filter';
-import noTextareaMustache from './no-textarea-mustache';
 import noUseVIfWithVFor from './no-use-v-if-with-v-for';
 import requireComponentIs from './require-component-is';
 import requireVForKey from './require-v-for-key';
@@ -20,7 +19,6 @@ export default {
   'component-name-in-template-casing': componentNameInTemplateCasing,
   'no-deprecated-dollar-scopedslots-api': noDeprecatedDollarScopedslotsApi,
   'no-deprecated-filter': noDeprecatedFilter,
-  'no-textarea-mustache': noTextareaMustache,
   'no-use-v-if-with-v-for': noUseVIfWithVFor,
   'require-component-is': requireComponentIs,
   'require-v-for-key': requireVForKey,
