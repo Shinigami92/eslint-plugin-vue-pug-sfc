@@ -1,7 +1,6 @@
 export = {
   extends: require.resolve('./base'),
   rules: {
-    'vue-pug-sfc/no-template-key': 'error',
     'vue-pug-sfc/no-textarea-mustache': 'error',
     'vue-pug-sfc/no-use-v-if-with-v-for': 'error',
     'vue-pug-sfc/require-component-is': 'error',
