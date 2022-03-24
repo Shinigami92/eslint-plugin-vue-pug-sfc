@@ -3,7 +3,6 @@ import attributeHyphenation from './attribute-hyphenation';
 import componentNameInTemplateCasing from './component-name-in-template-casing';
 import noDeprecatedDollarScopedslotsApi from './no-deprecated-dollar-scopedslots-api';
 import noDeprecatedFilter from './no-deprecated-filter';
-import requireComponentIs from './require-component-is';
 import requireVForKey from './require-v-for-key';
 import thisInTemplate from './this-in-template';
 import useVOnExact from './use-v-on-exact';
@@ -18,7 +17,6 @@ export default {
   'component-name-in-template-casing': componentNameInTemplateCasing,
   'no-deprecated-dollar-scopedslots-api': noDeprecatedDollarScopedslotsApi,
   'no-deprecated-filter': noDeprecatedFilter,
-  'require-component-is': requireComponentIs,
   'require-v-for-key': requireVForKey,
   'this-in-template': thisInTemplate,
   'use-v-on-exact': useVOnExact,
