@@ -1,7 +1,6 @@
 export = {
   extends: require.resolve('./base'),
   rules: {
-    'vue-pug-sfc/no-dupe-v-else-if': 'error',
     'vue-pug-sfc/no-duplicate-attributes': 'error',
     'vue-pug-sfc/no-template-key': 'error',
     'vue-pug-sfc/no-textarea-mustache': 'error',

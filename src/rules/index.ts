@@ -3,7 +3,6 @@ import attributeHyphenation from './attribute-hyphenation';
 import componentNameInTemplateCasing from './component-name-in-template-casing';
 import noDeprecatedDollarScopedslotsApi from './no-deprecated-dollar-scopedslots-api';
 import noDeprecatedFilter from './no-deprecated-filter';
-import noDupeVElseIf from './no-dupe-v-else-if';
 import noDuplicateAttributes from './no-duplicate-attributes';
 import noTemplateKey from './no-template-key';
 import noTextareaMustache from './no-textarea-mustache';
@@ -23,7 +22,6 @@ export default {
   'component-name-in-template-casing': componentNameInTemplateCasing,
   'no-deprecated-dollar-scopedslots-api': noDeprecatedDollarScopedslotsApi,
   'no-deprecated-filter': noDeprecatedFilter,
-  'no-dupe-v-else-if': noDupeVElseIf,
   'no-duplicate-attributes': noDuplicateAttributes,
   'no-template-key': noTemplateKey,
   'no-textarea-mustache': noTextareaMustache,
