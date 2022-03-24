@@ -10,10 +10,10 @@
 // ------------------------------------------------------------------------------
 
 import { Linter, RuleTester } from 'eslint';
-const rule = require('eslint-plugin-vue/lib/rules/script-setup-uses-vars');
-const ruleNoUnusedVars = new Linter()
-  .getRules()
-  .get('no-unused-vars');
+import * as vuePlugin from 'eslint-plugin-vue';
+
+const rule = vuePlugin.rules['script-setup-uses-vars'];
+const ruleNoUnusedVars = new Linter().getRules().get('no-unused-vars');
 
 const ruleTester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),

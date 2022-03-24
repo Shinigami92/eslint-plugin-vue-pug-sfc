@@ -10,7 +10,9 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-const rule = require('eslint-plugin-vue/lib/rules/no-textarea-mustache');
+import * as vuePlugin from 'eslint-plugin-vue';
+
+const rule = vuePlugin.rules['no-textarea-mustache'];
 
 // ------------------------------------------------------------------------------
 // Tests

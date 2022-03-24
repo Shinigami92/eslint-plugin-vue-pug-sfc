@@ -5,9 +5,11 @@
  */
 
 import { RuleTester } from 'eslint';
-const rule = require('eslint-plugin-vue/lib/rules/no-dupe-v-else-if');
+import * as vuePlugin from 'eslint-plugin-vue';
 
-const tester = new RuleTester({
+const rule = vuePlugin.rules['no-dupe-v-else-if'];
+
+const tester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
   parserOptions: {
     ecmaVersion: 2019,

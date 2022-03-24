@@ -9,13 +9,15 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-const rule = require('eslint-plugin-vue/lib/rules/no-use-v-if-with-v-for');
+import * as vuePlugin from 'eslint-plugin-vue';
+
+const rule = vuePlugin.rules['no-use-v-if-with-v-for'];
 
 // ------------------------------------------------------------------------------
 // Tests
 // ------------------------------------------------------------------------------
 
-const tester = new RuleTester({
+const tester: RuleTester = new RuleTester({
   parser: require.resolve('vue-eslint-parser'),
   parserOptions: {
     ecmaVersion: 2015,

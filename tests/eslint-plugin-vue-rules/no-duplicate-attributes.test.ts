@@ -10,7 +10,9 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-const rule = require('eslint-plugin-vue/lib/rules/no-duplicate-attributes');
+import * as vuePlugin from 'eslint-plugin-vue';
+
+const rule = vuePlugin.rules['no-duplicate-attributes'];
 
 // ------------------------------------------------------------------------------
 // Tests
