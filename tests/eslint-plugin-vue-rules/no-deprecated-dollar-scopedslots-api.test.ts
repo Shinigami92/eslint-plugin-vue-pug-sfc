@@ -73,12 +73,7 @@ ruleTester.run('no-deprecated-dollar-scopedslots-api', rule, {
     {
       filename: 'test.vue',
       code: `<template lang="pug">
-div v-on=\`() => {
-  function click ($scopedSlots) {
-    fn(foo.$scopedSlots)
-    fn($scopedSlots)
-  }
-}\`)
+div v-on=\`() => {function click ($scopedSlots) {fn(foo.$scopedSlots);fn($scopedSlots)}}\`)
 div(v-for="$scopedSlots in list")
   div(v-on="$scopedSlots")
 VueComp
