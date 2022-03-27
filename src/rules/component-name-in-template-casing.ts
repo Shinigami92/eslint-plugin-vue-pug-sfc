@@ -18,7 +18,7 @@ const defaultCase = 'PascalCase';
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-module.exports = {
+export default {
   meta: {
     type: 'suggestion',
     docs: {
