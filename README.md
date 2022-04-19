@@ -1,3 +1,11 @@
+<h1 align="center" style="color: red">This package is not maintained anymore!</h1>
+
+<h2 align="center" style="color: green">
+    Please use <a href="https://github.com/rashfael">@rashfael</a> new package <a href="https://github.com/rashfael/eslint-plugin-vue-pug">eslint-plugin-vue-pug</a> instead.
+</h2>
+
+---
+
 <p align="center">
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://eslint.org" target="_blank">
