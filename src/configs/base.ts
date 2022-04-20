@@ -3,6 +3,9 @@ export = {
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
+    templateTokenizer: {
+      pug: 'vue-eslint-parser-template-tokenizer-pug',
+    },
   },
   env: {
     browser: true,

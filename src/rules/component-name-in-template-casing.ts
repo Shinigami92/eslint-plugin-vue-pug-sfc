@@ -1,23 +1,22 @@
-import type { AST, Rule } from 'eslint';
-import type { Loc } from 'pug-lexer';
-import { processRule } from '../utils';
-import {
-  getChecker,
-  getExactConverter,
-  isPascalCase,
-  pascalCase,
-} from '../utils/casing';
-import { isHtmlWellKnownElementName } from '../utils/html-element';
-import { isMathMlWellKnownElementName } from '../utils/math-ml-element';
-import { toRegExp } from '../utils/regexp';
-import { isSvgWellKnownElementName } from '../utils/svg-element';
-import { executeOnVue, getRegisteredVueComponents } from '../utils/vue';
+// ------------------------------------------------------------------------------
+// Requirements
+// ------------------------------------------------------------------------------
 
-type AllowedCaseOptions = 'PascalCase' | 'kebab-case';
-interface RuleOptions {
-  registeredComponentsOnly: boolean;
-  ignores: string[];
-}
+import type { Rule } from 'eslint';
+import utils from 'eslint-plugin-vue/lib/utils';
+import casing from 'eslint-plugin-vue/lib/utils/casing';
+import { toRegExp } from 'eslint-plugin-vue/lib/utils/regexp';
+
+// -----------------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------------
+
+const allowedCaseOptions = ['PascalCase', 'kebab-case'];
+const defaultCase = 'PascalCase';
+
+// ------------------------------------------------------------------------------
+// Rule Definition
+// ------------------------------------------------------------------------------
 
 export default {
   meta: {
@@ -27,11 +26,12 @@ export default {
         'enforce specific casing for the component naming style in template',
       categories: undefined,
       url: 'https://eslint.vuejs.org/rules/component-name-in-template-casing.html',
+      dropIn: true,
     },
     fixable: 'code',
     schema: [
       {
-        enum: ['PascalCase', 'kebab-case'],
+        enum: allowedCaseOptions,
       },
       {
         type: 'object',
@@ -51,109 +51,102 @@ export default {
     ],
   },
   create(context) {
+    const caseOption = context.options[0];
+    const options = context.options[1] || {};
+    const caseType =
+      allowedCaseOptions.indexOf(caseOption) !== -1 ? caseOption : defaultCase;
+
+    const ignores: RegExp[] = (options.ignores || []).map(toRegExp);
+    const registeredComponentsOnly = options.registeredComponentsOnly !== false;
+    const tokens =
+      context.parserServices.getTemplateBodyTokenStore &&
+      context.parserServices.getTemplateBodyTokenStore();
+
     const registeredComponents: string[] = [];
-    const { registeredComponentsOnly = true, ignores = [] }: RuleOptions =
-      context.options[1] ?? {};
 
-    const ruleListener: Rule.RuleListener = processRule(context, () => {
-      const caseOption: AllowedCaseOptions =
-        context.options[0] === 'kebab-case' ? 'kebab-case' : 'PascalCase';
-      const ignoresRE: RegExp[] = ignores.map(toRegExp);
-
-      /**
-       * Checks whether the given tag is the verification target.
-       *
-       * @param tagName Name of the tag.
-       * @returns `true` if the given node is the verification target node.
-       */
-      function isVerifyTarget(tagName: string): boolean {
-        if (ignoresRE.some((re) => re.test(tagName))) {
-          // ignore
-          return false;
-        }
-
-        if (!registeredComponentsOnly) {
-          // Checks all component tags.
-          if (
-            isHtmlWellKnownElementName(tagName) ||
-            isSvgWellKnownElementName(tagName) ||
-            isMathMlWellKnownElementName(tagName)
-          ) {
-            return false;
-          }
-          return true;
-        }
-
-        // When defining a component with PascalCase, we can use either case.
-        if (
-          registeredComponents.some(
-            (name) => tagName === name || pascalCase(tagName) === name,
-          )
-        ) {
-          return true;
-        }
-
+    /**
+     * Checks whether the given node is the verification target node.
+     * @param {VElement} node element node
+     * @returns {boolean} `true` if the given node is the verification target node.
+     */
+    function isVerifyTarget(node): boolean {
+      if (ignores.some((re) => re.test(node.rawName))) {
+        // ignore
         return false;
       }
 
-      return {
-        tag(token) {
-          const tagName: string = token.val;
+      if (!registeredComponentsOnly) {
+        // If the user specifies registeredComponentsOnly as false, it checks all component tags.
+        if (
+          (!utils.isHtmlElementNode(node) && !utils.isSvgElementNode(node)) ||
+          utils.isHtmlWellKnownElementName(node.rawName) ||
+          utils.isSvgWellKnownElementName(node.rawName)
+        ) {
+          return false;
+        }
+        return true;
+      }
+      // We only verify the components registered in the component.
+      if (
+        registeredComponents
+          .filter((name) => casing.isPascalCase(name)) // When defining a component with PascalCase, you can use either case
+          .some(
+            (name) =>
+              node.rawName === name || casing.pascalCase(node.rawName) === name,
+          )
+      ) {
+        return true;
+      }
 
-          if (!isVerifyTarget(tagName)) {
+      return false;
+    }
+
+    let hasInvalidEOF = false;
+
+    return utils.defineTemplateBodyVisitor(
+      context,
+      {
+        VElement(node) {
+          if (hasInvalidEOF) {
             return;
           }
 
-          if (!getChecker(caseOption)(tagName)) {
-            const loc: Loc = token.loc;
+          if (!isVerifyTarget(node)) {
+            return;
+          }
 
-            // @ts-expect-error: Access range from token
-            const range: AST.Range = token.range;
-            const columnStart: number = loc.start.column - 1;
-            const columnEnd: number = columnStart + tagName.length;
-
+          const name = node.rawName;
+          if (!casing.getChecker(caseType)(name)) {
+            const startTag = node.startTag;
+            const open = tokens.getFirstToken(startTag);
+            const casingName = casing.getExactConverter(caseType)(name);
             context.report({
-              loc: {
-                line: loc.start.line,
-                column: loc.start.column - 1,
-                start: {
-                  line: loc.start.line,
-                  column: columnStart,
-                },
-                end: {
-                  line: loc.end.line,
-                  column: columnEnd,
-                },
-              },
+              node: open,
+              loc: open.loc,
               message: 'Component name "{{name}}" is not {{caseType}}.',
               data: {
-                name: tagName,
-                caseType: caseOption,
+                name,
+                caseType,
               },
-              fix(fixer) {
-                const casingTagName: string =
-                  getExactConverter(caseOption)(tagName);
-                return fixer.replaceTextRange(range, casingTagName);
+              *fix(fixer) {
+                yield fixer.replaceText(open, `${casingName}`);
               },
             });
           }
         },
-      };
-    });
-
-    return Object.keys(ruleListener).length > 0
-      ? {
-          ...(registeredComponentsOnly
-            ? executeOnVue(context, (obj) => {
-                registeredComponents.push(
-                  ...getRegisteredVueComponents(obj)
-                    .map((n) => n!.name)
-                    .filter(isPascalCase),
-                );
-              })
-            : {}),
-          ...ruleListener,
-        }
-      : {};
+      },
+      {
+        Program(node) {
+          hasInvalidEOF = utils.hasInvalidEOF(node);
+        },
+        ...(registeredComponentsOnly
+          ? utils.executeOnVue(context, (obj) => {
+              registeredComponents.push(
+                ...utils.getRegisteredComponents(obj).map((n) => n.name),
+              );
+            })
+          : {}),
+      },
+    );
   },
 } as Rule.RuleModule;
