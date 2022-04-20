@@ -10,6 +10,7 @@ import noTextareaMustache from './no-textarea-mustache';
 import noUseVIfWithVFor from './no-use-v-if-with-v-for';
 import requireComponentIs from './require-component-is';
 import requireVForKey from './require-v-for-key';
+import scriptSetupUsesVars from './script-setup-uses-vars';
 import thisInTemplate from './this-in-template';
 import useVOnExact from './use-v-on-exact';
 import validTemplateRoot from './valid-template-root';
@@ -30,6 +31,7 @@ export default {
   'no-use-v-if-with-v-for': noUseVIfWithVFor,
   'require-component-is': requireComponentIs,
   'require-v-for-key': requireVForKey,
+  'script-setup-uses-vars': scriptSetupUsesVars,
   'this-in-template': thisInTemplate,
   'use-v-on-exact': useVOnExact,
   'valid-template-root': validTemplateRoot,
