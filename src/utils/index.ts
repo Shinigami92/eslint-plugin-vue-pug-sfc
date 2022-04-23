@@ -332,7 +332,7 @@ export function tokenLength(
     return token.loc.end.column - token.loc.start.column;
   }
 
-  console.debug('Please report token:', JSON.stringify(token));
+  console.debug('[plugin:vue-pug-sfc] Please report token:', JSON.stringify(token));
   return 0;
 }
 
