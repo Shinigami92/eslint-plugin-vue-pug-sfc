@@ -5,6 +5,7 @@ import noDeprecatedDollarScopedslotsApi from './no-deprecated-dollar-scopedslots
 import noDeprecatedFilter from './no-deprecated-filter';
 import noDupeVElseIf from './no-dupe-v-else-if';
 import noDuplicateAttributes from './no-duplicate-attributes';
+import noMultipleTemplateRoot from './no-multiple-template-root';
 import noTemplateKey from './no-template-key';
 import noTextareaMustache from './no-textarea-mustache';
 import noUseVIfWithVFor from './no-use-v-if-with-v-for';
@@ -25,6 +26,7 @@ export default {
   'no-deprecated-filter': noDeprecatedFilter,
   'no-dupe-v-else-if': noDupeVElseIf,
   'no-duplicate-attributes': noDuplicateAttributes,
+  'no-multiple-template-root': noMultipleTemplateRoot,
   'no-template-key': noTemplateKey,
   'no-textarea-mustache': noTextareaMustache,
   'no-use-v-if-with-v-for': noUseVIfWithVFor,
