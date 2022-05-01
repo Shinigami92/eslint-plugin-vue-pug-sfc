@@ -17,6 +17,7 @@ import validVElse from './valid-v-else';
 import validVElseIf from './valid-v-else-if';
 import validVFor from './valid-v-for';
 import validVIf from './valid-v-if';
+import validVOn from './valid-v-on';
 
 export default {
   'attribute-hyphenation': attributeHyphenation,
@@ -37,4 +38,5 @@ export default {
   'valid-v-else': validVElse,
   'valid-v-for': validVFor,
   'valid-v-if': validVIf,
+  'valid-v-on': validVOn,
 } as Record<string, Rule.RuleModule>;
